@@ -21,7 +21,7 @@ class Surface
     public static function make($name, $param = [])
     {
         $path = strtolower($name);
-        $build = "\\Surface\\{$path}\\" . ucfirst($path);
+        $build = "\\surface\\{$path}\\" . ucfirst($path);
         if (class_exists($build)) {
             return (new \ReflectionClass($build))->newInstanceArgs($param);
         }

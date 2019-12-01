@@ -108,6 +108,37 @@ echo Test::form();
 
 [/src/README.md](/src/README.md)
 
+>  注意
+
+ * 返回格式
+```shell
+code === 0 成功  code > 0 失败
+
+json_encode（['code' => 0, 'msg'=> '成功', 'data' => []]）
+```
+ * 文件上传
+```shell
+json_encode（['code' => 0, 'msg'=> '成功', 'data' => ['url' => '....']]）
+```
+
+ * editor 富文本中文件上传
+```shell
+json_encode（['code' => '000', 'message'=> '成功', 'data' => ['url' => '....']]）
+json_encode（['code' => '001', 'message'=> '失败'）
+```
+
+ * editor 富文本中文件管理
+```shell
+json_encode（['code' => '000', 'count'=> 100, 'data' => [[
+                                                            'name' => '', // 增加 BUpload.js:578 FManager.js:230 增加item.name参数 显示资源名称
+                                                            'oriURL' => '',   // 文件地址
+                                                            'thumbURL' => '', //预览地址
+                                                            'height' => '',  // 高度
+                                                            'width' => '', // 宽度
+                                                            'size' => '' // 大小
+                                                        ]]）
+```
+
 
 ## 关于
 作者：zsw  
