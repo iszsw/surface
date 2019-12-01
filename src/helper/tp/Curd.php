@@ -1,0 +1,20 @@
+<?php
+/*
+ * Author: zsw zswemail@qq.com
+ */
+
+namespace surface\helper\tp;
+
+/**
+ * 封装的curd便捷操作
+ *
+ * Trait Curd
+ *
+ * @package Surface\helper\tp
+ * Author: zsw
+ */
+trait Curd
+{
+    use Read;
+    use Update;
+}
