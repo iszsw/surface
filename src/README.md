@@ -41,7 +41,7 @@
     ])
 
 ### tab 标签页
-#####1.对象方式
+    1.对象方式
     $form::tab('pic', 'tab', '', ['children' => [
         'alioss' => [
             'name' => 'alioss01',
@@ -59,8 +59,8 @@
             ]
         ],
     ]])
-    
-#####2.config方式
+
+    2.config方式
     正常tab格式
     ['type' => 'tab', 'field' => 'aaa01', 'title' => 'hello01', 'props'=>[
         'activeValue' => true   // 在tabs下提交选中的tab的值 默认false
@@ -89,7 +89,7 @@
         ],
     ]]
 
-    无限级递归
+    无限级
     ['type' => 'tab', 'field' => 'aaa', 'title' => 'hello', 'props'=>['activeValue' => true], 'children' => [
         [
             'name' => 'alioss',

@@ -58,9 +58,24 @@ $ composer require iszsw/surface
 
 - 2、注册全局配置
 
+使用了thinkPHP框架可以直接在config目录添加surface.php配置文件
 
-    使用了thinkPHP框架可以直接在config目录添加surface.php配置文件
-    return [
+```shell
+return [
+        'upload' => [
+            'manageShow' => true,    // 图片管理
+            'manageUrl'  => '',    // 文件管理地址
+            'action'     => '',    // 文件上传地址
+            'uploadType' => 'image', // 文件类型 支持image|file
+            'multiple'   => false,
+            'limit'      => 1,
+        ]
+];
+```
+
+// 方式二
+```shell
+Form::global([
             'upload' => [
                 'manageShow' => true,    // 图片管理
                 'manageUrl'  => '',    // 文件管理地址
@@ -69,36 +84,27 @@ $ composer require iszsw/surface
                 'multiple'   => false,
                 'limit'      => 1,
             ]
-    ];
-    
-    // 方式二
-    Form::global([
-                'upload' => [
-                    'manageShow' => true,    // 图片管理
-                    'manageUrl'  => '',    // 文件管理地址
-                    'action'     => '',    // 文件上传地址
-                    'uploadType' => 'image', // 文件类型 支持image|file
-                    'multiple'   => false,
-                    'limit'      => 1,
-                ]
-         ]);
-         
+     ]);
+```
     
 - 3、创建控制器 引入测试文件
     
     
-    use surface\test\Test;
-    
-    $type = $_GET['type'] ?? null;
-    if ($type) {
-        if ($type == 'file') {
-            echo Test::table();die;
-        }
+```shell
+use surface\test\Test;
+
+$type = $_GET['type'] ?? null;
+if ($type) {
+    if ($type == 'file') {
+        echo Test::table();die;
     }
-    echo Test::form();
+}
+echo Test::form();
+```
 
+参考
 
-参考 test/test,php
+[/test/test.php](/test/test.php)
 
 [/src/README.md](/src/README.md)
 
