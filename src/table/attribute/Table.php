@@ -11,7 +11,7 @@ use surface\AttrBase;
  * table配置
  * Class Table
  *
- * @package Surface\table\attribute
+ * @package surface\table\attribute
  * Author: zsw zswemail@qq.com
  */
 class Table extends AttrBase

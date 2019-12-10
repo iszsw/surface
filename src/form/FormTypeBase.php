@@ -13,7 +13,7 @@ use surface\helper\Helper;
  * 格式化数据
  *
  * Class FormTypeBase
- * @package Surface\form
+ * @package surface\form
  * Author: zsw zswemail@qq.com
  */
 abstract class FormTypeBase implements DataTypeInterface, \JsonSerializable
@@ -130,12 +130,12 @@ abstract class FormTypeBase implements DataTypeInterface, \JsonSerializable
     {
         $global = Form::global();
         $called = get_called_class();
-        $config = $global[strtolower(basename($called))] ?? [];
+        $config = $global[strtolower(basename(str_replace('\\', '/', $called)))] ?? [];
         $current = get_class();
         $called_parent = get_parent_class(get_called_class());
         while (1){
             if ($called_parent === $current){break;}
-            $config = array_merge($global[strtolower(basename($called_parent))] ?? [], $config);
+            $config = array_merge($global[strtolower(basename(str_replace('\\', '/', $called_parent)))] ?? [], $config);
             $called_parent = get_parent_class($called_parent);
         }
         return $config;

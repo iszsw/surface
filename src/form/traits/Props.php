@@ -10,7 +10,7 @@ use surface\form\attribute\Props as PropsAttr;
  * input基类
  *
  * Class Input
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 trait Props

@@ -11,7 +11,7 @@ use surface\form\Type;
  * 评分
  *
  * Class Rate
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 class Rate extends FormTypeBase

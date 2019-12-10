@@ -10,7 +10,7 @@ use surface\form\Type;
 /**
  * 选择项
  * Class Tab
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 class Tab extends FormTypeBase

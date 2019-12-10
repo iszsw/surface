@@ -3,11 +3,11 @@ surface根据PHP代码配置创建Table、Form页面
 
 如果使用ThinkPHP的同学使用内置助手类，对tp更友好，可以查看/vender/iszsw/test/ThinkPhp.php中示例
 
+项目演示地址   [http://demo.surface.zsw.ink/login/index.html](http://demo.surface.zsw.ink/login/index.html)
 
+github  [https://github.com/iszsw/surface](https://github.com/iszsw/surface)
 
-（iview主题暂时未兼容正在完善）
-
-
+gitee   [https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
 >  Form组件
 
 - upload

@@ -10,7 +10,7 @@ use surface\DataTypeInterface;
 /**
  *
  * Class Input
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 trait Rule

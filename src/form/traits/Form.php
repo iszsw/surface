@@ -9,7 +9,7 @@ use surface\form\attribute\Form as FormAttr;
 /**
  *
  * Class Input
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 trait Form

@@ -21,7 +21,7 @@ use surface\DataTypeInterface;
  * @method type\In in($field, $title = null, $column = null) static
  * @method type\Button button($type = '', $title = '', $params = [], $faClass = '') static
  *
- * @package Surface\table
+ * @package surface\table
  * Author: zsw zswemail@qq.com
  */
 class Table extends Base

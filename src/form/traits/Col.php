@@ -9,7 +9,7 @@ use surface\form\attribute\Col as ColAttr;
 /**
  *
  * Class Input
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 trait Col

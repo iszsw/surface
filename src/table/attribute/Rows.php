@@ -11,7 +11,7 @@ use surface\AttrBase;
  * 只处理复杂表头信息时用到。需要配置 columns 一起使用
  * Class TitleRows
  *
- * @package Surface\table\attribute
+ * @package surface\table\attribute
  * Author: zsw zswemail@qq.com
  */
 class Rows extends AttrBase

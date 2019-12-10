@@ -6,7 +6,7 @@ namespace surface\form\traits;
 
 /**
  * Trait Globals
- * @package Surface\form\traits
+ * @package surface\form\traits
  * Author: zsw zswemail@qq.com
  */
 trait Globals

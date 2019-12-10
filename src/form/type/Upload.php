@@ -16,4 +16,11 @@ class Upload extends FormTypeBase
         $this->rule = $this->createRule($field, $title, $value, $rule);
     }
 
+    public function init($self): void
+    {
+        if( !$this->props('action') ){
+            $this->props('action', ''); // 配置默认值
+        }
+    }
+
 }

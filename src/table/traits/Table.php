@@ -11,7 +11,7 @@ use surface\table\attribute\Table as TableAttr;
 /**
  *
  * Class Input
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 trait Table

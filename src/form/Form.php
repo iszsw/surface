@@ -43,7 +43,7 @@ use surface\form\type\Button;
  * @method type\Editor editor($field = '', $title = '', $value = '', $rule = []) static
  * @method type\Tab tab($field = '', $title = '', $value = '', $rule = []) static
  *
- * @package Surface\form
+ * @package surface\form
  * Author: zsw zswemail@qq.com
  */
 class Form extends Base

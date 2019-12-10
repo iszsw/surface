@@ -10,7 +10,7 @@ namespace surface\helper\tp;
  *
  * Trait Curd
  *
- * @package Surface\helper\tp
+ * @package surface\helper\tp
  * Author: zsw
  */
 trait Curd

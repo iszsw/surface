@@ -8,7 +8,7 @@ namespace surface\table\attribute;
 use surface\AttrBase;
 
 /**
- * @package Surface\table\attribute
+ * @package surface\table\attribute
  * Author: zsw zswemail@qq.com
  */
 class Button extends AttrBase

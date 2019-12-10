@@ -12,7 +12,7 @@ use surface\form\FormTypeBase;
  * input基类
  *
  * Class Input
- * @package Surface\form\type
+ * @package surface\form\type
  * Author: zsw zswemail@qq.com
  */
 class Input extends FormTypeBase
