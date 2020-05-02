@@ -1,3 +1,8 @@
+/**
+ * surface 表格
+ *
+ * @author zsw zswemail@qq.com
+ */
 ;(function (w, d) {
     "use strict"
     w.submitHook = false
@@ -248,12 +253,13 @@
                 title: '',
                 topBtn: [],
                 operations: [],
-                rows: [],                                      // 列
-                pageCountNum: 1,                               // 数据总数量
-                loading: false,                                // 加载中
-                checkAll: false,                               // 全选
-                checkList: [],                                 // 选中列表
-                defaultParams: [],                             // 默认提交参数
+                rows: [],               // 列
+                pageCountNum: 1,        // 数据总数量
+                loading: false,         // 加载中
+                checkAll: false,        // 全选
+                checkList: [],          // 选中列表
+                defaultParams: [],      // 默认提交参数
+                requestParams: [],      // url参数
             }, d)
             Vue.prototype.$swal = swal
             Vue.prototype.axios = axios
@@ -286,6 +292,8 @@
                                     frame.src = param.url + '?' + _q.substring(1);
                                 }
                                 frame.className = "surface-table-frame";
+
+                                document.documentElement.style.overflow = "hidden";
                                 this.$swal({
                                     className: "table-modal",
                                     title: param.title,
@@ -295,7 +303,9 @@
                                         value: true,
                                         visible: true,
                                         closeModal: false,
-                                    }],
+                                    }]
+                                }).then(()=>{
+                                    document.documentElement.style.overflow="scroll";
                                 })
                                 // sweet confirm重复提交不能触发promise
                                 // 下列代码覆盖 sweet 的 click
@@ -312,6 +322,57 @@
                                     frame.contentWindow.submitHook && frame.contentWindow.submitHook()
                                     this.$swal.stopLoading()
                                 });
+
+                                // 添加拖动
+                                let state = false // 事件状态
+                                const resize = function () {
+                                    let tableModal = document.querySelectorAll(".table-modal")[0];
+                                    let swalTitle = tableModal.querySelectorAll(".swal-title")[0];
+                                    if (tableModal.offsetWidth >= 1024 && state == false) {
+                                        let bDrag = false;
+                                        let disX =0, disY = 0;
+                                        swalTitle.onmousedown = function (event)
+                                        {
+                                            let e = event || window.event;
+                                            bDrag = true;
+                                            disX = e.clientX - tableModal.offsetLeft;
+                                            disY = e.clientY - tableModal.offsetTop;
+                                            this.setCapture && this.setCapture();
+                                            return false
+                                        };
+                                        document.onmousemove = function (event)
+                                        {
+                                            if (!bDrag) return;
+                                            let e = event || window.event;
+                                            let iL = e.clientX - disX;
+                                            let iT = e.clientY - disY;
+                                            let maxL = document.documentElement.clientWidth - tableModal.offsetWidth;
+                                            let maxT = document.documentElement.clientHeight - tableModal.offsetHeight;
+                                            iL = iL < 0 ? 0 : iL;
+                                            iL = iL > maxL ? maxL : iL;
+                                            iT = iT < 0 ? 0 : iT;
+                                            iT = iT > maxT ? maxT : iT;
+
+                                            tableModal.style.marginTop = tableModal.style.marginLeft = 0;
+                                            tableModal.style.left = iL + "px";
+                                            tableModal.style.top = iT + "px";
+                                            return false
+                                        };
+                                        document.onmouseup = window.onblur = swalTitle.onlosecapture = function ()
+                                        {
+                                            bDrag = false;
+                                            swalTitle.releaseCapture && swalTitle.releaseCapture();
+                                        };
+                                        state = true
+                                    }else if (tableModal.offsetWidth < 1024 && state == true){
+                                        swalTitle.onmousedown = ()=>{}
+                                        document.onmousemove = ()=>{}
+                                        document.onmouseup = window.onblur = swalTitle.onlosecapture = ()=>{}
+                                        state = false
+                                    }
+                                }
+                                window.onresize = () => resize()
+                                resize()
 
                                 break;
                             case 'submit':
@@ -430,6 +491,7 @@
                         }, (r) => {
                             this.pageShow && (r.data.count && (this.pageCountNum = r.data.count))
                             this.rows = r.data.list || {}
+                            this.requestAfter()
                         }, '', '', ()=>{
                             this.checkList = []
                         })
@@ -559,7 +621,6 @@
 
                         let _d = {};
                         _d[this.pk] = r[this.pk]
-                        // _d['pk'] = r[this.pk]
                         _d[c.field] = val
 
                         this.request({
@@ -596,10 +657,33 @@
                         }
                         return theRequest;
                     },
+                    requestAfter() {
+                        setTimeout(()=> {
+                            var _field = this.requestParams._field || ''
+                            var data = []
+                            if (_field && parent.$f) {
+                                data = parent.$f.getValue(_field) || []
+                                if (typeof data == "number" || typeof data == "string"){
+                                    this.doCheck(data)
+                                }else{
+                                    data.forEach(v => {
+                                        this.doCheck(v)
+                                    })
+                                }
+                            }
+                        }, 1)
+                    }
                 },
                 created() {
-                    this.defaultParams = Object.assign(this.defaultParams, this.getRequestString())
+                    var requestParams = this.getRequestString()
+                    this.requestParams = {...requestParams};
+                    delete requestParams['_field']
+                    delete requestParams['_limit']
+                    delete requestParams['_type']
+                    this.defaultParams = Object.assign(this.defaultParams, requestParams)
                     this.getRows();
+                },
+                mounted(){
                 },
                 watch: {
                     pageCurrent(n, o) {

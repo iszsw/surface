@@ -1,3 +1,8 @@
+/**
+ * surface 表单
+ *
+ * @author zsw zswemail@qq.com
+ */
 ;(function (w) {
     "use strict"
     w.submitHook = false;
@@ -126,7 +131,7 @@
         init(){
             let style = document.createElement("style");
             style.type = "text/css";
-            style.innerText = `@media screen and (max-height: 768px) {.el-dialog{margin-top:10px !important;}}.el-dialog__body{padding: 0px;}.wrapper{padding: 0px;}.upload-box{width:98%;max-width:970px;max-height:620px;}.upload-box .manage-img{width:100%;max-height:500px;height:74vh;border:none;}.el-button{border-radius:0px;}.el-input__inner{border-radius:0px}.el-form-item__content{margin-left: 100px;}.el-form-item .el-form-item{margin-bottom:5px}.ivu-input,.ivu-select-selection{border-radius:0}.ql-formats{line-height:normal}${this.e}{background-color:white;padding:5px}.z-marker{padding: 3px 0px;line-height:15px;margin-bottom: 0;font-style: italic;font-size: 12px;color: #a4a4a4;}`
+            style.innerText = `@media screen and (max-height: 768px) {.el-dialog{margin-top:10px !important;}}.el-dialog__body{padding: 0px;}.wrapper{padding: 0px;}.upload-box{width:98%;max-width:970px;max-height:620px;}.upload-box .manage-img{width:100%;max-height:500px;height:74vh;border:none;}.el-button{border-radius:0px;}.el-input__inner{border-radius:0px}.el-form-item__content{margin-left: 100px;}.el-form-item .el-form-item{margin-bottom:5px}.ivu-input,.ivu-select-selection{border-radius:0}.ql-formats{line-height:normal}body{margin:0px}${this.e}{background-color:white;padding:20px;}.z-marker{padding: 3px 0px;line-height:15px;margin-bottom: 0;font-style: italic;font-size: 12px;color: #a4a4a4;}.v-modal{background: rgba(241,243,246, .8);}.el-message-box{box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);}`
             document.querySelector('head').appendChild(style);
         },
         component(){
@@ -316,25 +321,67 @@
                     case 'frame':
                         isNaN(c.props.maxLength) && (c.props.maxLength = 1)
                         c.props.src = updateQueryStringParam(c.props.src, {
-                            field: c.field,
-                            limit: c.props.maxLength || 1,
-                            type: c.props.type,
+                            _field: c.field,
+                            _limit: c.props.maxLength || 1,
+                            _type: c.props.type,
                         })
                         if (c.value == undefined || c.value == '') {
                             c.value = []
+                        }else if (typeof c.value == "number" || typeof c.value == "string"){
+                            c.value = [c.value]
+                        }
+                        const e = this;
+
+                        let _fromHandle = false
+                        let _defaultSrc = c.props.src
+
+                        c.props.onHandle = function(v) {
+                            const h = e.vm.$createElement;
+                            if (this.type == 'image') {
+                                e.$msgbox({
+                                    title: '图片',
+                                    message: h('p', {style: {padding: "10px 5px"}}, [
+                                        h("img", {style: {width: "100%"}, attrs: {src: v}}),
+                                    ]),
+                                    center: true
+                                });
+                            }else if(this.type == 'file') {
+                                _fromHandle = true
+                                $f.model()[c.field].props.src = updateQueryStringParam(_defaultSrc, 'pk', v)
+                                this.showModel()
+                            }
+                        }
+                        c.props.onOpen = () => {
+                            if (!_fromHandle) {
+                                $f.model()[c.field].props.src = _defaultSrc
+                            }
+                            _fromHandle = false
                         }
                         c.props.onOk = () => {
                             let frame = document.querySelector('iframe[src="'+c.props.src +'"]')
                             if (frame.contentWindow.$t && frame.contentWindow.$t.v.checkList) {
-                                if (c.props.maxLength > 0 && frame.contentWindow.$t.v.checkList.length + c.value.length > c.props.maxLength) {
-                                    this.vm.$message.error(`只能选取${c.props.maxLength - c.value.length}个`);
+                                var oldV = c.value.concat(frame.contentWindow.$t.v.checkList)
+                                if (c.props.unique != false) {
+                                    var res = [];
+                                    var obj = {};
+                                    for(var i=0; i<oldV.length; i++){
+                                        if( !obj[oldV[i]] ){
+                                            obj[oldV[i]] = 1;
+                                            res.push(oldV[i]);
+                                        }
+                                    }
+                                    oldV = res;
+                                }
+                                if (c.props.maxLength > 0 && oldV.length > c.props.maxLength) {
+                                    this.vm.$message.error(`只能选取${c.props.maxLength}个`);
                                     return false;
                                 }
-                                c.value = c.value.concat(frame.contentWindow.$t.v.checkList)
+                                c.value = oldV
                             }
                         }
                         break;
                     case 'upload':
+                        const _v = this.vm
                         c.props.data || (c.props.data = {})
                         if (!c.props.data.type) {
                             c.props.data.type = c.props.uploadType
@@ -343,12 +390,12 @@
                             if (r.code === 0) {
                                 f.url = r.data.url
                             } else {
-                                this.vm.$message.error(f.name + " " + (r.msg || "上传失败"));
+                                _v.$message.error(f.name + " " + (r.msg || "上传失败"));
                                 fl.pop()
                             }
                         }
                         c.props.onError = (r, f, fl)=> {
-                            this.vm.$message.error('上传失败, 【 ' + r + ' 】');
+                            _v.$message.error('上传失败, 【 ' + r + ' 】');
                         }
                         if (c.props.manageShow) {
                             var manageShowClick = (event)=>{
@@ -357,11 +404,14 @@
                                 }
                                 let id = 'manageImg' + Date.now()
                                 c.props.manageUrl = updateQueryStringParam(c.props.manageUrl, {
-                                    field: c.field,
-                                    type: c.props.data.type,
-                                    limit: c.props.limit,
+                                    _field: c.field,
+                                    _type: c.props.data.type,
+                                    _limit: c.props.limit,
                                 })
-                                this.vm.$confirm('<iframe class="manage-img" id="'+id+'" src="'+c.props.manageUrl+'"></iframe>', '图库', {
+
+                                _v.$confirm(_v.$createElement("iframe", {
+                                    attrs: {src: c.props.manageUrl, class: 'manage-img', id: id}
+                                }), '图库', {
                                     confirmButtonText: '确定',
                                     showCancelButton: false,
                                     customClass:'upload-box',

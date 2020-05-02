@@ -22,7 +22,6 @@ class Editor extends FormTypeBase
     /**
      *
      * @param $self Form
-     * Author: zsw zswemail@qq.com
      */
     public function init($self):void
     {

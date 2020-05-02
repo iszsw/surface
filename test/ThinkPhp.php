@@ -8,7 +8,7 @@ use surface\helper\tp\FormInterface;
 use surface\helper\tp\TableInterface;
 use surface\table\Table;
 
-class Index
+class ThinkPhp
 {
 
     use Curd;
@@ -24,7 +24,6 @@ class Index
      * 单页面太臃肿可以将TableInterface FormInterface实现独立成单独文件
      *
      * @return TableInterface
-     * Author: zsw zswemail@qq.com
      */
     private function getTable()
     {

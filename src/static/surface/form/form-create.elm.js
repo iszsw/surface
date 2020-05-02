@@ -1,6 +1,6 @@
 /*!
- * @form-create/element-ui v1.0.4
- * (c) 2018-2019 xaboy
+ * @form-create/element-ui v1.0.7
+ * (c) 2018-2020 xaboy
  * Github https://github.com/xaboy/form-create
  * Released under the MIT License.
  */
@@ -123,17 +123,19 @@
     }
 
     Vue = Vue && Vue.hasOwnProperty("default") ? Vue.default : Vue;
-    var normalMerge = ["attrs", "props", "domProps"], toArrayMerge = ["class", "style", "directives"],
-        functionalMerge = ["on", "nativeOn"], mergeJsxProps = function (e) {
+    var normalMerge = ["attrs", "props", "domProps"],
+        toArrayMerge = ["class", "style", "directives"], functionalMerge = ["on", "nativeOn"],
+        mergeJsxProps = function (e) {
             return e.reduce(function (e, t) {
                 for (var r in t) if (e[r]) if (-1 !== normalMerge.indexOf(r)) e[r] = _extends({}, e[r], t[r]); else if (-1 !== toArrayMerge.indexOf(r)) {
-                    var n = e[r] instanceof Array ? e[r] : [e[r]], i = t[r] instanceof Array ? t[r] : [t[r]];
+                    var n = e[r] instanceof Array ? e[r] : [e[r]],
+                        i = t[r] instanceof Array ? t[r] : [t[r]];
                     e[r] = n.concat(i)
-                } else if (-1 !== functionalMerge.indexOf(r)) for (var o in t[r]) if (e[r][o]) {
-                    var a = e[r][o] instanceof Array ? e[r][o] : [e[r][o]],
-                        s = t[r][o] instanceof Array ? t[r][o] : [t[r][o]];
-                    e[r][o] = a.concat(s)
-                } else e[r][o] = t[r][o]; else if ("hook" == r) for (var u in t[r]) e[r][u] = e[r][u] ? mergeFn(e[r][u], t[r][u]) : t[r][u]; else e[r] = t[r]; else e[r] = t[r];
+                } else if (-1 !== functionalMerge.indexOf(r)) for (var a in t[r]) if (e[r][a]) {
+                    var o = e[r][a] instanceof Array ? e[r][a] : [e[r][a]],
+                        s = t[r][a] instanceof Array ? t[r][a] : [t[r][a]];
+                    e[r][a] = o.concat(s)
+                } else e[r][a] = t[r][a]; else if ("hook" == r) for (var u in t[r]) e[r][u] = e[r][u] ? mergeFn(e[r][u], t[r][u]) : t[r][u]; else e[r] = t[r]; else e[r] = t[r];
                 return e
             }, {})
         }, mergeFn = function (e, t) {
@@ -160,7 +162,7 @@
         return null == e
     }
 
-    function toString(e) {
+    function toString$1(e) {
         return null == e ? "" : "object" === _typeof(e) ? JSON.stringify(e, null, 2) : String(e)
     }
 
@@ -172,7 +174,7 @@
     function debounce(e, t) {
         var r = null;
         return function () {
-            for (var n = arguments.length, i = new Array(n), o = 0; o < n; o++) i[o] = arguments[o];
+            for (var n = arguments.length, i = new Array(n), a = 0; a < n; a++) i[a] = arguments[a];
             null !== r && clearTimeout(r), r = setTimeout(function () {
                 return e.apply(void 0, i)
             }, t)
@@ -221,11 +223,18 @@
         for (var n in t) if (Object.prototype.hasOwnProperty.call(t, n)) {
             var i = t[n];
             if ((r = Array.isArray(i)) || isPlainObject(i)) {
-                var o = void 0 === e[n];
-                r ? (r = !1, o && $set(e, n, [])) : o && $set(e, n, {}), deepExtend(e[n], i)
+                var a = void 0 === e[n];
+                r ? (r = !1, a && $set(e, n, [])) : a && $set(e, n, {}), deepExtend(e[n], i)
             } else $set(e, n, i)
         }
         return e
+    }
+
+    function deepExtendArgs(e) {
+        for (var t = arguments.length, r = new Array(t > 1 ? t - 1 : 0), n = 1; n < t; n++) r[n - 1] = arguments[n];
+        return r.forEach(function (t) {
+            e = deepExtend(e, t)
+        }), e
     }
 
     var id = 0;
@@ -327,15 +336,21 @@
                     }
                 }
             }]), [this.options.map(function (r, n) {
-                var i = _objectSpread2({}, r), o = "button" === e.type ? "ElCheckboxButton" : "ElCheckbox";
-                return delete i.value, t(o, {props: _objectSpread2({}, i), key: NAME + o + n + e.unique})
+                var i = _objectSpread2({}, r),
+                    a = "button" === e.type ? "ElCheckboxButton" : "ElCheckbox";
+                return delete i.value, t(a, {
+                    props: _objectSpread2({}, i),
+                    key: NAME + a + n + e.unique
+                })
             }).concat(this.chlidren)])
         }
     }, formCreateName = "FormCreate";
 
     function $FormCreate(e, t) {
         return {
-            name: formCreateName, props: {
+            name: formCreateName,
+            componentName: formCreateName,
+            props: {
                 rule: {
                     type: Array, required: !0, default: function () {
                         return {}
@@ -345,11 +360,22 @@
                         return {}
                     }, required: !1
                 }, value: Object
-            }, data: function () {
-                return {formData: void 0, buttonProps: void 0, resetProps: void 0, $f: void 0, isShow: !0, unique: 1}
-            }, components: t, render: function () {
+            },
+            data: function () {
+                return {
+                    formData: void 0,
+                    buttonProps: void 0,
+                    resetProps: void 0,
+                    $f: void 0,
+                    isShow: !0,
+                    unique: 1
+                }
+            },
+            components: t,
+            render: function () {
                 return this.formCreate.render()
-            }, methods: {
+            },
+            methods: {
                 _buttonProps: function (e) {
                     this.$set(this, "buttonProps", deepExtend(this.buttonProps, e))
                 }, _resetProps: function (e) {
@@ -357,18 +383,23 @@
                 }, _refresh: function () {
                     this.unique += 1
                 }
-            }, watch: {
+            },
+            watch: {
                 option: "_refresh", rule: function (e) {
                     this.formCreate.handle.reloadRule(e)
                 }
-            }, beforeCreate: function () {
+            },
+            beforeCreate: function () {
                 var t = this.$options.propsData, r = t.rule, n = t.option;
                 this.formCreate = new e(r, n), this.formCreate.beforeCreate(this)
-            }, created: function () {
+            },
+            created: function () {
                 this.formCreate.created(), this.$f = this.formCreate.api(), this.$emit("input", this.$f)
-            }, mounted: function () {
+            },
+            mounted: function () {
                 this.formCreate.mounted(), this.$emit("input", this.$f)
-            }, beforeDestroy: function () {
+            },
+            beforeDestroy: function () {
                 this.formCreate.handle.reloadRule([]), this.formCreate.handle.$render.clearCacheAll()
             }
         }
@@ -398,10 +429,11 @@
 
             return _createClass(e, [{
                 key: "class", value: function (e) {
-                    var t = this, r = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
+                    var t = this,
+                        r = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
                     return isUndef(e) ? this : (Array.isArray(e) ? e.forEach(function (e) {
-                        $set(t._data.class, toString(e), !0)
-                    }) : isPlainObject(e) ? $set(this._data, "class", extend(this._data.class, e)) : $set(this._data.class, toString(e), void 0 === r || r), this)
+                        $set(t._data.class, toString$1(e), !0)
+                    }) : isPlainObject(e) ? $set(this._data, "class", extend(this._data.class, e)) : $set(this._data.class, toString$1(e), void 0 === r || r), this)
                 }
             }, {
                 key: "directives", value: function (e) {
@@ -446,8 +478,9 @@
 
     function creatorTypeFactory(e, t) {
         var r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : "type";
-        return function (n, i, o) {
-            var a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {}, s = new Creator(e, n, i, o, a);
+        return function (n, i, a) {
+            var o = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {},
+                s = new Creator(e, n, i, a, o);
             return isFunction(t) ? t(s) : s.props(r, t), s
         }
     }
@@ -458,34 +491,35 @@
         }
     }), objList.forEach(function (e) {
         VData.prototype[e] = function (t, r) {
-            return isUndef(t) ? this : (isPlainObject(t) ? $set(this._data, e, extend(this._data[e], t)) : $set(this._data[e], toString(t), r), this)
+            return isUndef(t) ? this : (isPlainObject(t) ? $set(this._data, e, extend(this._data[e], t)) : $set(this._data[e], toString$1(t), r), this)
         }
     });
     var Creator = function (e) {
-        function t(e, r, n, i) {
-            var o, a = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : {};
-            return _classCallCheck(this, t), extend((o = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this)))._data, baseRule()), extend(o._data, {
-                type: e,
-                title: r,
-                field: n,
-                value: i
-            }), isPlainObject(a) && o.props(a), o
-        }
+            function t(e, r, n, i) {
+                var a, o = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : {};
+                return _classCallCheck(this, t), extend((a = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this)))._data, baseRule()), extend(a._data, {
+                    type: e,
+                    title: r,
+                    field: n,
+                    value: i
+                }), isPlainObject(o) && a.props(o), a
+            }
 
-        return _inherits(t, VData), _createClass(t, [{
-            key: "type", value: function (e) {
-                return this.props("type", e), this
-            }
-        }, {
-            key: "getRule", value: function () {
-                return this._data
-            }
-        }, {
-            key: "event", value: function () {
-                return this.on.apply(this, arguments), this
-            }
-        }]), t
-    }(), keyAttrs = ["emitPrefix", "className", "value", "name", "title", "native", "info"];
+            return _inherits(t, VData), _createClass(t, [{
+                key: "type", value: function (e) {
+                    return this.props("type", e), this
+                }
+            }, {
+                key: "getRule", value: function () {
+                    return this._data
+                }
+            }, {
+                key: "event", value: function () {
+                    return this.on.apply(this, arguments), this
+                }
+            }]), t
+        }(),
+        keyAttrs = ["emitPrefix", "className", "value", "name", "title", "native", "info", "hidden", "visibility"];
     keyAttrs.forEach(function (e) {
         Creator.prototype[e] = function (t) {
             return $set(this._data, e, t), this
@@ -524,17 +558,40 @@
         return {value: e, enumerable: !1, configurable: !1}
     }
 
+    function copyRule(e) {
+        return copyRules([e])[0]
+    }
+
+    function copyRules(e) {
+        return e.map(function (e) {
+            return isString(e) ? e : (isFunction(e.getRule) ? ((t = new Creator)._data = _objectSpread2({}, e._data), t._data.field && void 0 === t._data.value && t.value(null), isValidChildren(t._data.children) && (t._data.children = copyRules(t._data.children))) : ((t = _objectSpread2({}, e)).field && void 0 === t.value && (t.value = null), isValidChildren(t.children) && (t.children = copyRules(t.children))), t);
+            var t
+        })
+    }
+
+    arrAttrs.forEach(function (e) {
+        Creator.prototype[e] = function (t) {
+            return Array.isArray(t) || (t = [t]), $set(this._data, e, this._data[e].concat(t)), this
+        }
+    });
+    var commonMaker = creatorFactory("");
+
+    function create(e, t, r) {
+        var n = commonMaker("", t);
+        return n._data.type = e, n._data.title = r, n
+    }
+
+    function createTmp(e, t, r, n) {
+        var i = commonMaker("", r);
+        return i._data.type = "template", i._data.template = e, i._data.title = n, i._data.vm = t, i
+    }
+
     function makerFactory() {
-        var e = {}, t = creatorFactory("");
+        var e = {};
         return extend(e, {
-            create: function (e, r, n) {
-                var i = t("", r);
-                return i._data.type = e, i._data.title = n, i
-            }, createTmp: function (e, r, n, i) {
-                var o = t("", n);
-                return o._data.type = "template", o._data.template = e, o._data.title = i, o._data.vm = r, o
-            }
-        }), e.template = e.createTmp, e.parse = parse, e
+            create: create,
+            createTmp: createTmp
+        }), e.template = createTmp, e.parse = parse, e
     }
 
     function parse(e) {
@@ -548,7 +605,10 @@
             var n = e.map(function (e) {
                 return parse(e, t)
             });
-            return Object.defineProperties(n, {find: enumerable(findField), model: enumerable(model)}), n
+            return Object.defineProperties(n, {
+                find: enumerable(findField),
+                model: enumerable(model)
+            }), n
         }
         return e
     }
@@ -586,11 +646,6 @@
         return isFunction(e) ? e() : e || []
     }
 
-    arrAttrs.forEach(function (e) {
-        Creator.prototype[e] = function (t) {
-            return Array.isArray(t) || (t = [t]), $set(this._data, e, this._data[e].concat(t)), this
-        }
-    });
     var VNode = function () {
         function e(t) {
             _classCallCheck(this, e), t && this.setVm(t)
@@ -608,7 +663,7 @@
         }], [{
             key: "use", value: function (t) {
                 Object.keys(t).forEach(function (r) {
-                    e.prototype[toString(r).toLocaleLowerCase()] = e.prototype[r] = function (e, n) {
+                    e.prototype[toString$1(r).toLocaleLowerCase()] = e.prototype[r] = function (e, n) {
                         return this.make(t[r], e, n)
                     }
                 })
@@ -616,7 +671,7 @@
         }]), e
     }(), BaseParser = function () {
         function e(t, r, n) {
-            _classCallCheck(this, e), this.rule = r, this.vData = new VData, this.vNode = new VNode, this.id = n, this.watch = [], this.originType = r.type, this.type = toString(r.type).toLocaleLowerCase(), this.isDef = !0, this.el = void 0, r.field ? this.field = r.field : (this.field = "_def_" + uniqueId(), this.isDef = !1), this.name = r.name, this.unique = "fc_" + n, this.key = "key_" + n, this.refName = "__" + this.field + this.id, this.formItemRefName = "fi" + this.refName, this.update(t), this.init()
+            _classCallCheck(this, e), this.rule = r, this.vData = new VData, this.vNode = new VNode, this.id = n, this.watch = [], this.originType = r.type, this.type = toString$1(r.type).toLocaleLowerCase(), this.isDef = !0, this.el = void 0, r.field ? this.field = r.field : (this.field = "_def_" + uniqueId(), this.isDef = !1), this.name = r.name, this.unique = "fc_" + n, this.key = "key_" + n, this.refName = "__" + this.field + this.id, this.formItemRefName = "fi" + this.refName, this.update(t), this.init()
         }
 
         return _createClass(e, [{
@@ -692,39 +747,42 @@
             }
         }, {
             key: "setGlobalConfig", value: function (e) {
-                this.options.global && (this.options.global["*"] && this.toData(e, this.options.global["*"]), this.options.global[e.type] && this.toData(e, this.options.global[e.type]))
+                if (this.options.global) {
+                    var t = this.options.global;
+                    t["*"] && this.toData(e, t["*"]), t[e.type] ? this.toData(e, t[e.type]) : t[e.originType] && this.toData(e, t[e.originType])
+                }
             }
         }, {
             key: "renderTemplate", value: function (e) {
                 var t = this, r = e.id, n = e.rule, i = e.key;
-                if (void 0 === _vue.compile) return console.error("使用的 Vue 版本不支持 compile" + errMsg()), [];
+                if (isUndef(_vue.compile)) return console.error("使用的 Vue 版本不支持 compile" + errMsg()), [];
                 if (!this.renderList[r]) {
-                    var o = n.vm;
-                    isUndef(n.vm) ? o = new _vue : isFunction(n.vm) && (o = n.vm(this.$handle.getInjectData(n))), this.renderList[r] = {
-                        vm: o,
+                    var a = n.vm;
+                    isUndef(n.vm) ? a = new _vue : isFunction(n.vm) && (a = n.vm(this.$handle.getInjectData(n))), this.renderList[r] = {
+                        vm: a,
                         template: _vue.compile(n.template)
                     }
                 }
-                var a = this.renderList[r], s = a.vm, u = a.template;
+                var o = this.renderList[r], s = o.vm, u = o.template;
                 setTemplateProps(s, e, this.$handle.fCreateApi), s.$off("input"), s.$on("input", function (r) {
                     t.onInput(e, r)
                 });
                 var l = u.render.call(s);
-                return void 0 === l.data && (l.data = {}), l.key = i, l
+                return isUndef(l.data) && (l.data = {}), l.key = i, l
             }
         }, {
             key: "renderParser", value: function (e, t) {
                 if (e.vData.get(), this.setGlobalConfig(e), !this.cache[e.id] || "template" === e.type) {
-                    var r, n = e.type, i = e.rule, o = this.$form;
+                    var r, n = e.type, i = e.rule, a = this.$form;
                     if ("template" === n && i.template) {
-                        if (r = this.renderTemplate(e), t) return this.setCache(e, r, t), r
+                        if (r = this.renderTemplate(e), t && isUndef(i.native)) return this.setCache(e, r, t), r
                     } else if (this.$handle.isNoVal(e)) {
-                        if (r = this.defaultRender(e, this.renderChildren(e)), t) return this.setCache(e, r, t), r
+                        if (r = this.defaultRender(e, this.renderChildren(e)), t && isUndef(i.native)) return this.setCache(e, r, t), r
                     } else {
-                        var a = this.renderChildren(e);
-                        r = e.render ? e.render(a) : this.defaultRender(e, a)
+                        var o = this.renderChildren(e);
+                        r = e.render ? e.render(o) : this.defaultRender(e, o)
                     }
-                    return !0 !== i.native && (r = o.container(r, e)), this.setCache(e, r, t), r
+                    return !0 !== i.native && (r = a.container(r, e)), this.setCache(e, r, t), r
                 }
                 return this.getCache(e)
             }
@@ -742,10 +800,12 @@
             key: "inputVData", value: function (e, t) {
                 var r = this, n = e.refName, i = e.key;
                 this.parserToData(e);
-                var o = e.vData.ref(n).key("fc_item" + i).props("formCreate", this.$handle.fCreateApi);
-                return t || o.on("input", function (t) {
+                var a = e.vData.ref(n).key("fc_item" + i).props("formCreate", this.$handle.fCreateApi).on("fc.subForm", function (t) {
+                    return r.$handle.addSubForm(e, t)
+                });
+                return t || a.on("input", function (t) {
                     r.onInput(e, t)
-                }).props("value", this.$handle.getFormData(e)), this.$form.inputVData && this.$form.inputVData(e, t), o
+                }).props("value", this.$handle.getFormData(e)), this.$form.inputVData && this.$form.inputVData(e, t), a
             }
         }, {
             key: "onInput", value: function (e, t) {
@@ -780,7 +840,7 @@
         }
     }
 
-    function baseApi(e) {
+    function Api(e) {
         function t(t) {
             var r = arguments.length > 1 && void 0 !== arguments[1] && arguments[1];
             return t ? Array.isArray(t) || (t = [t]) : t = r ? Object.keys(e.fieldList) : e.fields(), t
@@ -819,33 +879,31 @@
             }, fields: function () {
                 return e.fields()
             }, append: function (t, r, n) {
-                var i = Object.keys(e.fieldList), o = e.sortList.length, a = e.rules;
+                var i = Object.keys(e.fieldList), a = e.sortList.length, o = e.rules;
                 if (t.field && -1 !== i.indexOf(t.field)) return console.error("".concat(t.field, " 字段已存在") + errMsg());
                 var s = e.getParser(r);
-                s && (n ? (a = s.rule.children, o = s.rule.children.length) : o = s.root.indexOf(s.rule.__origin__)), a.splice(o + 1, 0, t)
+                s && (n ? (o = s.rule.children, a = s.rule.children.length) : a = s.root.indexOf(s.rule.__origin__)), o.splice(a + 1, 0, t)
             }, prepend: function (t, r, n) {
-                var i = Object.keys(e.fieldList), o = 0, a = e.rules;
+                var i = Object.keys(e.fieldList), a = 0, o = e.rules;
                 if (t.field && -1 !== i.indexOf(t.field)) return console.error("".concat(t.field, " 字段已存在") + errMsg());
                 var s = e.getParser(r);
-                s && (n ? a = s.rule.children : o = s.root.indexOf(s.rule.__origin__)), a.splice(o, 0, t)
+                s && (n ? o = s.rule.children : a = s.root.indexOf(s.rule.__origin__)), o.splice(a, 0, t)
             }, hidden: function (r, n) {
-                var i = e.$form.hidden;
                 t(n, !0).forEach(function (t) {
                     var n = e.getParser(t);
-                    n && (r && -1 === i.indexOf(n) ? i.push(n) : r || -1 === i.indexOf(n) || i.splice(i.indexOf(n), 1), e.$render.clearCache(n, !0))
+                    n && ($set(n.rule, "hidden", !!r), e.$render.clearCache(n, !0))
                 }), e.refresh()
             }, hiddenStatus: function (t) {
                 var r = e.getParser(t);
-                return -1 !== e.$form.hidden.indexOf(r)
+                if (r) return !!r.rule.hidden
             }, visibility: function (r, n) {
-                var i = e.$form.visibility;
                 t(n, !0).forEach(function (t) {
                     var n = e.getParser(t);
-                    n && (r && -1 === i.indexOf(n) ? i.push(n) : r || -1 === i.indexOf(n) || i.splice(i.indexOf(n), 1), e.$render.clearCache(n, !0))
+                    n && ($set(n.rule, "visibility", !!r), e.$render.clearCache(n, !0))
                 }), e.refresh()
             }, visibilityStatus: function (t) {
                 var r = e.getParser(t);
-                return -1 !== e.$form.visibility.indexOf(r)
+                if (r) return !!r.rule.visibility
             }, disabled: function (r, n) {
                 t(n, !0).forEach(function (t) {
                     var n = e.fieldList[t];
@@ -936,11 +994,92 @@
                 var t;
                 (t = e.vm).$off.apply(t, arguments)
             }, trigger: function (e, t) {
-                for (var r = this.el(e), n = arguments.length, i = new Array(n > 2 ? n - 2 : 0), o = 2; o < n; o++) i[o - 2] = arguments[o];
+                for (var r = this.el(e), n = arguments.length, i = new Array(n > 2 ? n - 2 : 0), a = 2; a < n; a++) i[a - 2] = arguments[a];
                 r && r.$emit.apply(r, [t].concat(i))
             }, el: function (t) {
                 var r = e.getParser(t);
                 if (r) return r.el
+            }, validate: function (t) {
+                var r, n = this, i = !1, a = _objectSpread2({}, {
+                    ___this: {
+                        validate: function (t) {
+                            e.$form.validate(function (e) {
+                                t && t(e)
+                            })
+                        }
+                    }
+                }, {}, e.subForm), o = Object.keys(a), s = o.length, u = function (e, a) {
+                    e ? r > 1 ? r-- : s > 1 ? s-- : t(!0) : (i || (t(!1), i = !0), a && n.clearValidateState(a, !1))
+                };
+                o.forEach(function (e) {
+                    var t = a[e];
+                    Array.isArray(t) ? (r = t.length, t.forEach(function (t) {
+                        t.validate(function (t) {
+                            return u(t, e)
+                        })
+                    })) : t && (r = 1, t.validate(u))
+                })
+            }, validateField: function (t, r) {
+                e.fieldList[t] && e.$form.validateField(t, r)
+            }, resetFields: function (r) {
+                var n = e.fieldList;
+                t(r, !0).forEach(function (t) {
+                    var r = n[t];
+                    r && "hidden" !== r.type && (e.vm.$refs[r.formItemRefName].resetField(), e.$render.clearCache(r, !0))
+                })
+            }, submit: function (t, r) {
+                var n = this;
+                this.validate(function (i) {
+                    if (i) {
+                        var a = n.formData();
+                        isFunction(t) ? t(a, n) : (e.options.onSubmit && e.options.onSubmit(a, n), e.fc.$emit("on-submit", a, n))
+                    } else r && r(n)
+                })
+            }, clearValidateState: function (r) {
+                var n = this,
+                    i = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
+                t(r).forEach(function (t) {
+                    i && n.clearSubValidateState(t);
+                    var r = e.fieldList[t];
+                    if (r) {
+                        var a = e.vm.$refs[r.formItemRefName];
+                        a && (a.validateMessage = "", a.validateState = "")
+                    }
+                })
+            }, clearSubValidateState: function (r) {
+                t(r).forEach(function (t) {
+                    var r = e.subForm[t];
+                    r && (Array.isArray(r) ? r.forEach(function (e) {
+                        e.clearValidateState()
+                    }) : r && r.clearValidateState())
+                })
+            }, getSubForm: function (t) {
+                return e.subForm[t]
+            }, btn: {
+                loading: function () {
+                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
+                    e.vm._buttonProps({loading: !!t})
+                }, disabled: function () {
+                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
+                    e.vm._buttonProps({disabled: !!t})
+                }, show: function () {
+                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
+                    e.vm._buttonProps({show: !!t})
+                }
+            }, resetBtn: {
+                loading: function () {
+                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
+                    e.vm._resetProps({loading: !!t})
+                }, disabled: function () {
+                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
+                    e.vm._resetProps({disabled: !!t})
+                }, show: function () {
+                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
+                    e.vm._resetProps({show: !!t})
+                }
+            }, closeModal: function (t) {
+                var r = e.fieldList[t];
+                r && r.closeModel && r.closeModel()
             }
         }
     }
@@ -953,7 +1092,7 @@
         function e(t) {
             _classCallCheck(this, e);
             var r = t.vm, n = t.rules, i = t.options;
-            this.watching = !1, this.vm = r, this.fc = t, this.id = uniqueId(), this.options = i, this.validate = {}, this.formData = {}, this.fCreateApi = void 0, this.__init(n), this.$form = new t.drive.formRender(this, this.id), this.$render = new Render(this), this.loadRule(this.rules, !1), this.$render.initOrgChildren(), this.$form.init()
+            this.watching = !1, this.vm = r, this.fc = t, this.id = uniqueId(), this.options = i, this.validate = {}, this.formData = {}, this.subForm = {}, this.fCreateApi = void 0, this.__init(n), this.$form = new t.drive.formRender(this, this.id), this.$render = new Render(this), this.loadRule(this.rules, !1), this.$render.initOrgChildren(), this.$form.init()
         }
 
         return _createClass(e, [{
@@ -963,24 +1102,23 @@
         }, {
             key: "loadRule", value: function (e, t) {
                 var r = this;
-                e.map(function (e) {
-                    if (!t || !isString(e)) {
-                        if (!e.type) return console.error("未定义生成规则的 type 字段" + errMsg());
-                        var n;
-                        if (e.__fc__) {
-                            if ((n = e.__fc__).vm !== r.vm && !n.deleted) return console.error("".concat(e.type, "规则正在其他的 <form-create> 中使用") + errMsg());
-                            n.update(r);
-                            var i = n.rule;
-                            r.parseOn(i), r.parseProps(i)
-                        } else n = r.createParser(r.parseRule(e));
-                        var o = n.rule.children, a = n.rule;
-                        return r.notField(n.field) ? (r.setParser(n), e.__fc__ || bindParser(e, n), isValidChildren(o) && r.loadRule(o, !0), t || r.sortList.push(n.id), r.isNoVal(n) || Object.defineProperty(n.rule, "value", {
+                e.map(function (n, i) {
+                    if (!t || !isString(n)) {
+                        if (!n.type) return console.error("未定义生成规则的 type 字段" + errMsg());
+                        var a;
+                        if (n.__fc__) if ((a = n.__fc__).vm === r.vm || a.deleted) {
+                            a.update(r);
+                            var o = a.rule;
+                            r.parseOn(o), r.parseProps(o)
+                        } else n = copyRule(n), e[i] = n, a = r.createParser(r.parseRule(n)); else a = r.createParser(r.parseRule(n));
+                        var s = a.rule.children, u = a.rule;
+                        return r.notField(a.field) ? (r.setParser(a), n.__fc__ || bindParser(n, a), isValidChildren(s) && r.loadRule(s, !0), t || r.sortList.push(a.id), r.isNoVal(a) || Object.defineProperty(a.rule, "value", {
                             get: function () {
-                                return n.toValue(r.getFormData(n))
+                                return a.toValue(r.getFormData(a))
                             }, set: function (e) {
-                                r.isChange(n, e) && (r.$render.clearCache(n, !0), r.setFormData(n, n.toFormValue(e)))
+                                r.isChange(a, e) && (r.refresh(), r.$render.clearCache(a, !0), r.setFormData(a, a.toFormValue(e)))
                             }
-                        }), n) : console.error("".concat(a.field, " 字段已存在") + errMsg())
+                        }), a) : console.error("".concat(u.field, " 字段已存在") + errMsg())
                     }
                 }).filter(function (e) {
                     return e
@@ -990,7 +1128,8 @@
             }
         }, {
             key: "createParser", value: function (e) {
-                var t = this.id + "" + uniqueId(), r = this.fc.parsers, n = toString(e.type).toLocaleLowerCase();
+                var t = this.id + "" + uniqueId(), r = this.fc.parsers,
+                    n = toString$1(e.type).toLocaleLowerCase();
                 return new (r[n] ? r[n] : BaseParser)(this, e, t)
             }
         }, {
@@ -1023,7 +1162,13 @@
         }, {
             key: "getInjectData", value: function (e, t) {
                 var r = this.vm.$options.propsData, n = r.option, i = r.rule;
-                return {$f: this.fCreateApi, rule: i, self: e.__origin__, option: n, inject: t || i.inject || {}}
+                return {
+                    $f: this.fCreateApi,
+                    rule: i,
+                    self: e.__origin__,
+                    option: n,
+                    inject: t || i.inject || {}
+                }
             }
         }, {
             key: "inject", value: function (e, t, r) {
@@ -1032,22 +1177,23 @@
                     t = t.__origin
                 }
                 var n = this, i = function () {
-                    for (var i = arguments.length, o = new Array(i), a = 0; a < i; a++) o[a] = arguments[a];
-                    o.unshift(n.getInjectData(e, r)), t.apply(void 0, o)
+                    for (var i = arguments.length, a = new Array(i), o = 0; o < i; o++) a[o] = arguments[o];
+                    a.unshift(n.getInjectData(e, r)), t.apply(void 0, a)
                 };
                 return i.__inject = !0, i.__origin = t, i
             }
         }, {
             key: "parseEmit", value: function (e) {
-                var t = this, r = {}, n = e.emit, i = e.emitPrefix, o = e.field;
+                var t = this, r = {}, n = e.emit, i = e.emitPrefix, a = e.field;
                 return Array.isArray(n) ? (n.forEach(function (n) {
-                    var a, s = n;
-                    if (isPlainObject(n) && (s = n.name, a = n.inject), s) {
-                        var u = toLine("".concat(i || o, "-").concat(s)).replace("_", "-"), l = function () {
-                            for (var e, r = arguments.length, n = new Array(r), i = 0; i < r; i++) n[i] = arguments[i];
-                            (e = t.vm).$emit.apply(e, [u].concat(n))
-                        };
-                        l.__emit = !0, r[s] = t.options.injectEvent || void 0 !== n.inject ? t.inject(e, l, a) : l
+                    var o, s = n;
+                    if (isPlainObject(n) && (s = n.name, o = n.inject), s) {
+                        var u = toLine("".concat(i || a, "-").concat(s)).replace("_", "-"),
+                            l = function () {
+                                for (var e, r = arguments.length, n = new Array(r), i = 0; i < r; i++) n[i] = arguments[i];
+                                (e = t.vm).$emit.apply(e, [u].concat(n))
+                            };
+                        l.__emit = !0, r[s] = t.options.injectEvent || void 0 !== n.inject ? t.inject(e, l, o) : l
                     }
                 }), r) : r
             }
@@ -1059,6 +1205,10 @@
             key: "setParser", value: function (e) {
                 var t = e.id, r = e.field, n = e.name, i = e.rule;
                 this.parsers[t] || (this.parsers[t] = e, n && $set(this.customData, n, e), this.isNoVal(e) || (this.fieldList[r] = e, $set(this.formData, r, e.toFormValue(i.value)), $set(this.validate, r, i.validate || []), $set(this.trueData, r, e)))
+            }
+        }, {
+            key: "addSubForm", value: function (e, t) {
+                this.subForm[e.field] = t
             }
         }, {
             key: "notField", value: function (e) {
@@ -1079,7 +1229,7 @@
         }, {
             key: "created", value: function () {
                 var e = this.vm;
-                e.$set(e, "buttonProps", this.options.submitBtn), e.$set(e, "resetProps", this.options.resetBtn), e.$set(e, "formData", this.formData), void 0 === this.fCreateApi && (this.fCreateApi = this.fc.drive.getGlobalApi(this, baseApi(this))), this.fCreateApi.rule = this.rules, this.fCreateApi.config = this.options
+                e.$set(e, "buttonProps", this.options.submitBtn), e.$set(e, "resetProps", this.options.resetBtn), e.$set(e, "formData", this.formData), void 0 === this.fCreateApi && (this.fCreateApi = Api(this)), this.fCreateApi.rule = this.rules, this.fCreateApi.config = this.options
             }
         }, {
             key: "addParserWitch", value: function (e) {
@@ -1114,9 +1264,9 @@
                 this.mountedParser(), e && e(this.fCreateApi), this.fc.$emit("on-reload", this.fCreateApi)
             }
         }, {
-            key: "removeField", value: function (e) {
-                var t = e.id, r = e.field, n = this.sortList.indexOf(t);
-                delParser(e), $del(this.parsers, t), -1 !== n && this.sortList.splice(n, 1), this.fieldList[r] || ($del(this.validate, r), $del(this.formData, r), $del(this.customData, r), $del(this.fieldList, r), $del(this.trueData, r))
+            key: "removeField", value: function (e, t) {
+                var r = e.id, n = e.field, i = this.sortList.indexOf(r);
+                delParser(e, t), $del(this.parsers, r), -1 !== i && this.sortList.splice(i, 1), this.fieldList[n] || ($del(this.validate, n), $del(this.formData, n), $del(this.customData, n), $del(this.fieldList, n), $del(this.trueData, n)), this.subForm[e.field] && $del(this.subForm, n)
             }
         }, {
             key: "refresh", value: function () {
@@ -1127,18 +1277,18 @@
                 var t = this, r = this.vm;
                 if (!e) return this.reloadRule(this.rules);
                 this.origin.length || this.fCreateApi.refresh(), this.origin = _toConsumableArray(e);
-                var n = _objectSpread2({}, this.parsers);
+                var n = _objectSpread2({}, this.parsers), i = this.fCreateApi.formData();
                 this.__init(e), this.loadRule(e, !1), Object.keys(n).filter(function (e) {
                     return void 0 === t.parsers[e]
                 }).forEach(function (e) {
-                    return t.removeField(n[e])
+                    return t.removeField(n[e], i[n[e].field])
                 }), this.$render.initOrgChildren(), this.created(), r.$nextTick(function () {
                     t.reload()
                 }), r.$f = this.fCreateApi, this.$render.clearCacheAll(), this.refresh()
             }
         }, {
             key: "setFormData", value: function (e, t) {
-                this.formData[e.field] = t
+                $set(this.formData, e.field, t)
             }
         }, {
             key: "getFormData", value: function (e) {
@@ -1155,10 +1305,10 @@
         }]), e
     }();
 
-    function delParser(e) {
+    function delParser(e, t) {
         e.watch.forEach(function (e) {
             return e()
-        }), e.watch = [], e.deleted = !0, Object.defineProperty(e.rule, "value", {value: extend({}, {value: e.rule.value}).value})
+        }), e.watch = [], e.deleted = !0, Object.defineProperty(e.rule, "value", {value: t})
     }
 
     function parseArray(e) {
@@ -1174,7 +1324,7 @@
             on: {},
             options: [],
             title: void 0,
-            value: "",
+            value: null,
             field: "",
             name: void 0,
             className: void 0
@@ -1188,10 +1338,10 @@
     var _vue = "undefined" != typeof window && window.Vue ? window.Vue : Vue;
 
     function createFormCreate(e) {
-        var t = {}, r = {}, n = makerFactory(), i = e.getConfig(), o = {};
+        var t = {}, r = {}, n = makerFactory(), i = e.getConfig(), a = {};
 
-        function a(e, t) {
-            e = toString(e), r[e.toLocaleLowerCase()] = t, d.maker[e] = creatorFactory(e)
+        function o(e, t) {
+            e = toString$1(e), r[e.toLocaleLowerCase()] = t, h.maker[e] = creatorFactory(e)
         }
 
         function s() {
@@ -1205,18 +1355,18 @@
         }
 
         function u(e, r) {
-            var n = (e = toString(e)).toLocaleLowerCase();
+            var n = (e = toString$1(e)).toLocaleLowerCase();
             return "form-create" === n || "formcreate" === n ? c() : void 0 === r ? t[e] : void(t[e] = r)
         }
 
         function l(e, t) {
-            isBool(t.sumbitBtn) && (t.sumbitBtn = {show: t.sumbitBtn}), isBool(t.resetBtn) && (t.resetBtn = {show: t.resetBtn});
+            isBool(t.submitBtn) && (t.submitBtn = {show: t.submitBtn}), isBool(t.resetBtn) && (t.resetBtn = {show: t.resetBtn});
             var r = deepExtend(e, t);
             return $set(r, "el", r.el ? isElement(r.el) ? r.el : document.querySelector(r.el) : window.document.body), r
         }
 
         function c() {
-            return _vue.extend($FormCreate(d, t))
+            return _vue.extend($FormCreate(h, t))
         }
 
         function f(t) {
@@ -1225,9 +1375,11 @@
                 ui: e.ui,
                 maker: n,
                 component: u,
-                setParser: a,
+                setParser: o,
                 createParser: s,
-                data: o,
+                data: a,
+                copyRule: copyRule,
+                copyRules: copyRules,
                 $form: function () {
                     return c()
                 },
@@ -1237,7 +1389,7 @@
             })
         }
 
-        function h(e, t) {
+        function d(e, t) {
             var r = new _vue({
                 data: function () {
                     return {rule: e, option: isElement(t) ? {el: t} : t}
@@ -1248,10 +1400,10 @@
             return r.$mount(), r
         }
 
-        var d = function () {
+        var h = function () {
             function t(n) {
-                var o = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
-                _classCallCheck(this, t), this.fCreateApi = void 0, this.drive = e, this.parsers = r, this.vm = void 0, this.rules = Array.isArray(n) ? n : [], this.options = l(deepExtend({formData: {}}, i), o)
+                var a = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
+                _classCallCheck(this, t), this.fCreateApi = void 0, this.drive = e, this.parsers = r, this.vm = void 0, this.rules = Array.isArray(n) ? n : [], this.options = l(deepExtend({formData: {}}, i), a)
             }
 
             return _createClass(t, [{
@@ -1276,13 +1428,14 @@
                 }
             }, {
                 key: "$emit", value: function (e) {
-                    for (var t, r, n = arguments.length, i = new Array(n > 1 ? n - 1 : 0), o = 1; o < n; o++) i[o - 1] = arguments[o];
+                    for (var t, r, n = arguments.length, i = new Array(n > 1 ? n - 1 : 0), a = 1; a < n; a++) i[a - 1] = arguments[a];
                     this.$parent && (t = this.$parent).$emit.apply(t, ["fc:".concat(e)].concat(i)), (r = this.vm).$emit.apply(r, [e].concat(i))
                 }
             }], [{
                 key: "create", value: function (e) {
                     var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
-                        r = arguments.length > 2 ? arguments[2] : void 0, n = h(e, t), i = n.$refs.fc.formCreate;
+                        r = arguments.length > 2 ? arguments[2] : void 0, n = d(e, t),
+                        i = n.$refs.fc.formCreate;
                     return i.parent = r, i.options.el.appendChild(n.$el), i.handle.fCreateApi
                 }
             }, {
@@ -1295,7 +1448,7 @@
                 }
             }, {
                 key: "init", value: function (e) {
-                    var t = h(e, arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}),
+                    var t = d(e, arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}),
                         r = t.$refs.fc.formCreate;
                     return {
                         mount: function (e) {
@@ -1309,16 +1462,16 @@
                 }
             }]), t
         }();
-        return f(d), e.components.forEach(function (e) {
-            d.component(e.name, e)
+        return f(h), e.components.forEach(function (e) {
+            h.component(e.name, e)
         }), e.parsers.forEach(function (e) {
             var t = e.name, r = e.parser;
-            d.setParser(t, r)
+            h.setParser(t, r)
         }), Object.keys(e.makers).forEach(function (t) {
-            d.maker[t] = e.makers[t]
+            h.maker[t] = e.makers[t]
         }), {
-            FormCreate: d, install: function (e, t) {
-                !0 !== e._installedFormCreate && (e._installedFormCreate = !0, t && isPlainObject(t) && l(i, t), e.use(d))
+            FormCreate: h, install: function (e, t) {
+                !0 !== e._installedFormCreate && (e._installedFormCreate = !0, t && isPlainObject(t) && l(i, t), e.use(h))
             }
         }
     }
@@ -1334,8 +1487,8 @@
             }
         }, {
             key: "getGetCol", value: function (e) {
-                var t = e.rule.col || {}, r = {}, n = {};
-                return this.options.global ? (this.options.global["*"] && (r = this.options.global["*"].col || {}), this.options.global[e.type] && (n = this.options.global[e.type].col || {}), t = deepExtend(deepExtend(deepExtend({}, r), n), t)) : t
+                var t = e.rule.col || {}, r = {}, n = {}, i = this.options.global;
+                return i ? (i["*"] && (r = i["*"].col || {}), (i[e.type] || i[e.originType]) && (n = i[e.type].col || i[e.originType].col || {}), t = deepExtendArgs({}, r, n, t)) : t
             }
         }, {
             key: "beforeRender", value: function () {
@@ -1381,22 +1534,23 @@
         void 0 === t && (t = {});
         var r = t.insertAt;
         if (e && "undefined" != typeof document) {
-            var n = document.head || document.getElementsByTagName("head")[0], i = document.createElement("style");
+            var n = document.head || document.getElementsByTagName("head")[0],
+                i = document.createElement("style");
             i.type = "text/css", "top" === r && n.firstChild ? n.insertBefore(i, n.firstChild) : n.appendChild(i), i.styleSheet ? i.styleSheet.cssText = e : i.appendChild(document.createTextNode(e))
         }
     }
 
-    var css = ".fc-upload-btn, .fc-files {\n    display: inline-block;\n    width: 58px;\n    height: 58px;\n    text-align: center;\n    line-height: 58px;\n    border: 1px solid #c0ccda;\n    border-radius: 4px;\n    overflow: hidden;\n    background: #fff;\n    position: relative;\n    box-shadow: 2px 2px 5px rgba(0, 0, 0, .1);\n    margin-right: 4px;\n    box-sizing: border-box;\n}\n\n.__fc_h {\n    display: none;\n}\n\n.__fc_v {\n    visibility: hidden;\n}\n\n.fc-files img {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    vertical-align: top;\n}\n\n.fc-upload-btn {\n    border: 1px dashed #c0ccda;\n    cursor: pointer;\n}\n\n.fc-upload .fc-upload-cover {\n    opacity: 0;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    background: rgba(0, 0, 0, .6);\n    transition: opacity .3s;\n}\n\n.fc-upload .fc-upload-cover i {\n    color: #fff;\n    font-size: 20px;\n    cursor: pointer;\n    margin: 0 2px;\n}\n\n.fc-files:hover .fc-upload-cover {\n    opacity: 1;\n}\n\n.fc-upload .el-upload {\n    display: block;\n}\n\n\n.form-create .el-form-item .el-rate {\n    margin-top: 10px;\n}\n\n.form-create .el-form-item .el-tree {\n    margin-top: 7px;\n}\n\n.fc-hide-btn .el-upload {\n    display: none;\n}",
+    var css = ".fc-upload-btn, .fc-files {\n    display: inline-block;\n    width: 58px;\n    height: 58px;\n    text-align: center;\n    line-height: 58px;\n    border: 1px solid #c0ccda;\n    border-radius: 4px;\n    overflow: hidden;\n    background: #fff;\n    position: relative;\n    box-shadow: 2px 2px 5px rgba(0, 0, 0, .1);\n    margin-right: 4px;\n    box-sizing: border-box;\n}\n\n.form-create .form-create .el-form-item {\n    margin-bottom: 22px;\n}\n\n.form-create .form-create .el-form-item .el-form-item {\n    margin-bottom: 0px;\n}\n\n.__fc_h {\n    display: none;\n}\n\n.__fc_v {\n    visibility: hidden;\n}\n\n.fc-files img {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    vertical-align: top;\n}\n\n.fc-upload-btn {\n    border: 1px dashed #c0ccda;\n    cursor: pointer;\n}\n\n.fc-upload .fc-upload-cover {\n    opacity: 0;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    background: rgba(0, 0, 0, .6);\n    transition: opacity .3s;\n}\n\n.fc-upload .fc-upload-cover i {\n    color: #fff;\n    font-size: 20px;\n    cursor: pointer;\n    margin: 0 2px;\n}\n\n.fc-files:hover .fc-upload-cover {\n    opacity: 1;\n}\n\n.fc-upload .el-upload {\n    display: block;\n}\n\n\n.form-create .el-form-item .el-rate {\n    margin-top: 10px;\n}\n\n.form-create .el-form-item .el-tree {\n    margin-top: 7px;\n}\n\n.fc-hide-btn .el-upload {\n    display: none;\n}\n",
         style = {
             "fc-upload-btn": "fc-upload-btn",
             "fc-files": "fc-files",
+            "form-create": "form-create",
+            "el-form-item": "el-form-item",
             __fc_h: "__fc_h",
             __fc_v: "__fc_v",
             "fc-upload": "fc-upload",
             "fc-upload-cover": "fc-upload-cover",
             "el-upload": "el-upload",
-            "form-create": "form-create",
-            "el-form-item": "el-form-item",
             "el-rate": "el-rate",
             "el-tree": "el-tree",
             "fc-hide-btn": "fc-hide-btn"
@@ -1464,6 +1618,8 @@
                 this.$emit("on-change", e), this.fileList = toArray(e)
             }, fileList: function (e) {
                 this.$emit("input", 1 === this.maxLength ? e[0] || "" : e)
+            }, src: function (e) {
+                this.modalVm && (this.modalVm.src = e)
             }
         },
         methods: {
@@ -1474,11 +1630,15 @@
             }, showModel: function () {
                 var e = this;
                 if (!this.disabled && !1 !== this.onOpen()) {
-                    var t = this.$props, r = t.width, n = t.height, i = t.src, o = t.title, a = t.okBtnText,
-                        s = t.closeBtnText;
-                    mount(_objectSpread2({width: r, title: o}, this.modal), function (t, r) {
+                    var t = this.$props, r = t.width, n = t.height, i = t.src, a = t.title,
+                        o = t.okBtnText, s = t.closeBtnText;
+                    mount(_objectSpread2({
+                        width: r,
+                        title: a,
+                        src: i
+                    }, this.modal), function (t, r) {
                         return e.modalVm = r, [t.make("iframe", {
-                            attrs: {src: i},
+                            attrs: {src: r.src},
                             style: {height: n, border: "0 none", width: "100%"},
                             on: {
                                 load: function (t) {
@@ -1510,19 +1670,23 @@
                                     !1 !== e.onOk() && r.onClose()
                                 }
                             }
-                        }, [a])])]
+                        }, [o])])]
                     })
                 }
             }, makeInput: function () {
-                var e = this, t = this.$createElement,
-                    r = {type: "text", value: this.fileList.toString(), icon: this.icon, readonly: !0, clearable: !1};
-                return t("Input", helper([{}, {props: r}, {}, {
+                var e = this, t = this.$createElement, r = {
+                    type: "text",
+                    value: this.fileList.toString(),
+                    readonly: !0,
+                    clearable: !1
+                };
+                return t("ElInput", helper([{}, {props: r}, {key: this.key("input")}]), [t("ElButton", helper([{attrs: {icon: this.icon}}, {
                     on: {
-                        "on-click": function () {
+                        click: function () {
                             return e.showModel()
                         }
                     }
-                }, {key: this.key("input")}]))
+                }, {slot: "append"}]))])
             }, makeGroup: function (e) {
                 var t = this.$createElement;
                 return (!this.maxLength || this.fileList.length < this.maxLength) && e.push(this.makeBtn()), t("div", {
@@ -1559,17 +1723,20 @@
             }, makeRemoveIcon: function (e, t) {
                 var r = this;
                 return (0, this.$createElement)("i", {
-                    class: "el-icon-delete", on: {
+                    class: "el-icon-delete",
+                    on: {
                         click: function () {
                             return r.handleRemove(e)
                         }
-                    }, key: this.key("ri" + t)
+                    },
+                    key: this.key("ri" + t)
                 })
             }, makeFiles: function () {
                 var e = this, t = this.$createElement;
                 return this.makeGroup(this.fileList.map(function (r, n) {
                     return e.makeItem(n, [t("i", {
-                        class: "el-icon-tickets", on: {
+                        class: "el-icon-tickets",
+                        on: {
                             click: function () {
                                 return e.handleClick(r)
                             }
@@ -1613,12 +1780,18 @@
             }
         }, render: function (e, t) {
             return e("ElRadioGroup", helper([{}, t.data]), [t.props.options.map(function (r, n) {
-                var i = _objectSpread2({}, r), o = "button" === t.props.type ? "ElRadioButton" : "ElRadio";
-                return delete i.value, e(o, {props: _objectSpread2({}, i), key: NAME$2 + o + n + t.unique})
+                var i = _objectSpread2({}, r),
+                    a = "button" === t.props.type ? "ElRadioButton" : "ElRadio";
+                return delete i.value, e(a, {
+                    props: _objectSpread2({}, i),
+                    key: NAME$2 + a + n + t.unique
+                })
             }).concat(t.chlidren)])
         }
     }, NAME$3 = "fc-elm-select", select = {
-        name: NAME$3, functional: !0, props: {
+        name: NAME$3,
+        functional: !0,
+        props: {
             options: {
                 type: Array, default: function () {
                     return []
@@ -1628,10 +1801,14 @@
                     return uniqueId()
                 }
             }
-        }, render: function (e, t) {
+        },
+        render: function (e, t) {
             return e("ElSelect", helper([{}, t.data]), [t.props.options.map(function (r, n) {
                 var i = r.slot ? toDefSlot(r.slot, e) : [];
-                return e("ElOption", {props: _objectSpread2({}, r), key: NAME$3 + n + t.props.unique}, [i])
+                return e("ElOption", {
+                    props: _objectSpread2({}, r),
+                    key: NAME$3 + n + t.props.unique
+                }, [i])
             }).concat(t.chlidren)])
         }
     }, tree = {
@@ -1640,11 +1817,14 @@
                 type: Object, default: function () {
                     return {props: {}}
                 }
-            }, children: {
+            },
+            children: {
                 type: Array, default: function () {
                     return []
                 }
-            }, type: {type: String, default: "checked"}, value: {
+            },
+            type: {type: String, default: "checked"},
+            value: {
                 type: [Array, String, Number], default: function () {
                     return []
                 }
@@ -1657,7 +1837,8 @@
             makeTree: function () {
                 var e = this;
                 return (0, this.$createElement)("ElTree", helper([{
-                    ref: "tree", on: {
+                    ref: "tree",
+                    on: {
                         "check-change": function () {
                             return e.updateValue()
                         }, "node-click": function () {
@@ -1685,257 +1866,421 @@
     }
 
     function getFileName(e) {
-        return toString(e).split("/").pop()
+        return toString$1(e).split("/").pop()
     }
 
     var NAME$4 = "fc-elm-upload", upload = {
-        name: NAME$4, props: {
-            ctx: {
-                type: Object, default: function () {
-                    return {props: {}}
+            name: NAME$4, props: {
+                ctx: {
+                    type: Object, default: function () {
+                        return {props: {}}
+                    }
+                },
+                children: {
+                    type: Array, default: function () {
+                        return []
+                    }
+                },
+                onHandle: {
+                    type: Function, default: function (e) {
+                        defaultOnHandle(e.url, this.modalTitle)
+                    }
+                },
+                uploadType: {type: String, default: "file"},
+                maxLength: {type: Number, default: 0},
+                allowRemove: {type: Boolean, default: !0},
+                modalTitle: {type: String, default: "预览"},
+                handleIcon: [String, Boolean],
+                value: [Array, String]
+            }, data: function () {
+                return {uploadList: [], unique: uniqueId()}
+            }, created: function () {
+                void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = !1), this.ctx.props.fileList = toArray(this.value).map(parseFile)
+            }, watch: {
+                value: function (e) {
+                    this.$refs.upload.uploadFiles.every(function (e) {
+                        return !e.status || "success" === e.status
+                    }) && (this.$refs.upload.uploadFiles = toArray(e).map(parseFile), this.uploadList = this.$refs.upload.uploadFiles)
+                }, maxLength: function (e, t) {
+                    1 !== t && 1 !== e || this.update()
                 }
-            },
-            children: {
-                type: Array, default: function () {
-                    return []
-                }
-            },
-            onHandle: {
-                type: Function, default: function (e) {
-                    defaultOnHandle(e.url, this.modalTitle)
-                }
-            },
-            uploadType: {type: String, default: "file"},
-            maxLength: {type: Number, default: 0},
-            allowRemove: {type: Boolean, default: !0},
-            modalTitle: {type: String, default: "预览"},
-            handleIcon: [String, Boolean],
-            value: [Array, String]
-        }, data: function () {
-            return {uploadList: [], unique: uniqueId()}
-        }, created: function () {
-            void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = !1), this.ctx.props.fileList = toArray(this.value).map(parseFile)
-        }, watch: {
-            value: function (e) {
-                this.$refs.upload.uploadFiles.every(function (e) {
-                    return !e.status || "success" === e.status
-                }) && (this.$refs.upload.uploadFiles = toArray(e).map(parseFile), this.uploadList = this.$refs.upload.uploadFiles)
-            }, maxLength: function (e, t) {
-                1 !== t && 1 !== e || this.update()
-            }
-        }, methods: {
-            key: function (e) {
-                return NAME$4 + e + this.unique
-            }, isDisabled: function () {
-                return !0 === this.ctx.props.disabled
-            }, onRemove: function (e) {
-                this.isDisabled() || this.$refs.upload.handleRemove(e)
-            }, handleClick: function (e) {
-                this.isDisabled() || this.onHandle(e)
-            }, makeDefaultBtn: function () {
-                var e = this.$createElement;
-                return e("div", {class: style["fc-upload-btn"]}, [e("i", {class: "el-icon-upload2"})])
-            }, makeItem: function (e, t) {
-                var r = this.$createElement;
-                return "image" === this.uploadType ? r("img", {
-                    attrs: {src: e.url},
-                    key: this.key("img" + t)
-                }) : r("i", {class: "el-icon-tickets", key: this.key("i" + t)})
-            }, makeRemoveIcon: function (e, t) {
-                var r = this;
-                return (0, this.$createElement)("i", {
-                    class: "el-icon-delete", on: {
-                        click: function () {
-                            return r.onRemove(e)
+            }, methods: {
+                key: function (e) {
+                    return NAME$4 + e + this.unique
+                }, isDisabled: function () {
+                    return !0 === this.ctx.props.disabled
+                }, onRemove: function (e) {
+                    this.isDisabled() || this.$refs.upload.handleRemove(e)
+                }, handleClick: function (e) {
+                    this.isDisabled() || this.onHandle(e)
+                }, makeDefaultBtn: function () {
+                    var e = this.$createElement;
+                    return e("div", {class: style["fc-upload-btn"]}, [e("i", {class: "el-icon-upload2"})])
+                }, makeItem: function (e, t) {
+                    var r = this.$createElement;
+                    return "image" === this.uploadType ? r("img", {
+                        attrs: {src: e.url},
+                        key: this.key("img" + t)
+                    }) : r("i", {class: "el-icon-tickets", key: this.key("i" + t)})
+                }, makeRemoveIcon: function (e, t) {
+                    var r = this;
+                    return (0, this.$createElement)("i", {
+                        class: "el-icon-delete",
+                        on: {
+                            click: function () {
+                                return r.onRemove(e)
+                            }
+                        },
+                        key: this.key("ri" + t)
+                    })
+                }, makeHandleIcon: function (e, t) {
+                    var r = this;
+                    return (0, this.$createElement)("i", {
+                        class: !0 === this.handleIcon || void 0 === this.handleIcon ? "el-icon-view" : this.handleIcon,
+                        on: {
+                            click: function () {
+                                return r.handleClick(e)
+                            }
+                        },
+                        key: this.key("hi" + t)
+                    })
+                }, makeProgress: function (e, t) {
+                    return (0, this.$createElement)("ElProgress", helper([{}, {
+                        props: {
+                            percentage: e.percentage,
+                            type: "circle",
+                            width: 52
                         }
-                    }, key: this.key("ri" + t)
-                })
-            }, makeHandleIcon: function (e, t) {
-                var r = this;
-                return (0, this.$createElement)("i", {
-                    class: !0 === this.handleIcon || void 0 === this.handleIcon ? "el-icon-view" : this.handleIcon,
+                    }, {style: "margin-top:2px;", key: this.key("pg" + t)}]))
+                }, makeIcons: function (e, t) {
+                    var r = this.$createElement, n = [];
+                    if (this.allowRemove || !1 !== this.handleIcon) return ("file" !== this.uploadType && !1 !== this.handleIcon || "file" === this.uploadType && this.handleIcon) && n.push(this.makeHandleIcon(e, t)), this.allowRemove && n.push(this.makeRemoveIcon(e, t)), r("div", {class: style["fc-upload-cover"]}, [n])
+                }, makeFiles: function () {
+                    var e = this, t = this.$createElement;
+                    return this.uploadList.map(function (r, n) {
+                        return t("div", {
+                            key: e.key(n),
+                            class: style["fc-files"]
+                        }, [void 0 !== r.percentage && "success" !== r.status ? e.makeProgress(r, n) : [e.makeItem(r, n), e.makeIcons(r, n)]])
+                    })
+                }, makeUpload: function () {
+                    return (0, this.$createElement)("ElUpload", helper([{
+                        ref: "upload",
+                        style: {display: "inline-block"}
+                    }, this.ctx, {key: this.key("upload")}]), [this.children])
+                }, initChildren: function () {
+                    hasSlot(this.children, "default") || this.children.push(this.makeDefaultBtn())
+                }, update: function () {
+                    var e = this.$refs.upload.uploadFiles.map(function (e) {
+                        return e.url
+                    }).filter(function (e) {
+                        return void 0 !== e
+                    });
+                    this.$emit("input", 1 === this.maxLength ? e[0] || "" : e)
+                }
+            }, render: function () {
+                var e, t = arguments[0], r = !this.maxLength || this.maxLength > this.uploadList.length;
+                return this.$refs.upload && (void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = this.$refs.upload.showFileList), this.ctx.props.fileList = this.$refs.upload.fileList), this.initChildren(), t("div", {class: (e = {}, _defineProperty(e, style["fc-upload"], !0), _defineProperty(e, style["fc-hide-btn"], !r), e)}, [[this.ctx.props.showFileList ? [] : this.makeFiles(), this.makeUpload()]])
+            }, mounted: function () {
+                var e = this;
+                this.uploadList = this.$refs.upload.uploadFiles, this.$watch(function () {
+                    return e.$refs.upload.uploadFiles
+                }, function () {
+                    e.update()
+                }, {deep: !0})
+            }
+        }, NAME$5 = "fc-elm-group", group = {
+            name: NAME$5,
+            props: {
+                rule: Object,
+                rules: Array,
+                max: {type: Number, default: 0},
+                min: {type: Number, default: 0},
+                value: {
+                    type: Array, default: function () {
+                        return []
+                    }
+                },
+                disabled: {type: Boolean, default: !1}
+            },
+            data: function () {
+                return {
+                    config: {submitBtn: !1, resetBtn: !1},
+                    len: 0,
+                    cacheRule: {},
+                    group$f: {},
+                    fieldRule: {}
+                }
+            },
+            computed: {
+                formRule: function () {
+                    return this.rule ? [this.rule] : this.rules ? this.rules : []
+                }, formData: function () {
+                    var e = this;
+                    return Object.keys(this.fieldRule).map(function (t) {
+                        var r = Object.keys(e.fieldRule[t]);
+                        return e.rule ? void 0 === r[0] ? null : e.fieldRule[t][r[0]].value : r.reduce(function (r, n) {
+                            return r[n] = e.fieldRule[t][n].value, r
+                        }, {})
+                    })
+                }
+            },
+            watch: {
+                disabled: function (e) {
+                    var t = this.group$f;
+                    Object.keys(t).forEach(function (r) {
+                        t[r].disabled(e)
+                    })
+                }, formData: function (e) {
+                    this.$emit("input", e)
+                }, value: function (e) {
+                    var t = this, r = Object.keys(this.cacheRule), n = r.length, i = n - e.length;
+                    if (i < 0) {
+                        for (var a = i; a < 0; a++) this.addRule(r[a]);
+                        for (var o = 0; o < n; o++) this.setValue(this.group$f[r[o]], e[o])
+                    } else {
+                        if (i > 0) {
+                            for (var s = 0; s < i; s++) this.removeRule(r[n - s - 1]);
+                            this.subForm()
+                        }
+                        e.forEach(function (n, i) {
+                            t.setValue(t.group$f[r[i]], e[i])
+                        })
+                    }
+                }
+            },
+            methods: {
+                setValue: function (e, t) {
+                    if (this.rule) {
+                        var r = e.fields();
+                        if (!r[0]) return;
+                        e.setValue(r[0], t)
+                    } else e.setValue(t)
+                }, addRule: function () {
+                    var e = this.copyRule();
+                    this.$set(this.cacheRule, ++this.len, e), this.$emit("add", e)
+                }, add$f: function (e, t, r) {
+                    this.group$f[t] = r, this.setValue(r, this.value[e]), this.syncData(t, r), this.subForm(), this.$emit("itemMounted", r)
+                }, subForm: function () {
+                    var e = this;
+                    this.$emit("fc.subForm", Object.keys(this.group$f).map(function (t) {
+                        return e.group$f[t]
+                    }))
+                }, syncData: function (e, t) {
+                    var r = this;
+                    this.$set(this.fieldRule, e, {}), t.fields().forEach(function (n) {
+                        r.fieldRule[e][n] = t.getRule(n)
+                    })
+                }, removeRule: function (e) {
+                    this.$delete(this.cacheRule, e), this.$delete(this.fieldRule, e), delete this.group$f[e], this.$emit("remove")
+                }, copyRule: function () {
+                    return this.$formCreate.copyRules(this.formRule)
+                }, addIcon: function (e) {
+                    var t = this;
+                    return (0, this.$createElement)("i", {
+                        key: "a".concat(e),
+                        class: "el-icon-circle-plus-outline",
+                        style: "font-size:28px;cursor:".concat(this.disabled ? "not-allowed;color:#c9cdd4" : "pointer", ";"),
+                        on: {
+                            click: function () {
+                                return !t.disabled && t.addRule()
+                            }
+                        }
+                    })
+                }, delIcon: function (e) {
+                    var t = this;
+                    return (0, this.$createElement)("i", {
+                        key: "d".concat(e),
+                        class: "el-icon-remove-outline",
+                        style: "font-size:28px;cursor:".concat(this.disabled ? "not-allowed;color:#c9cdd4" : "pointer;color:#606266", ";"),
+                        on: {
+                            click: function () {
+                                t.disabled || (t.removeRule(e), t.subForm())
+                            }
+                        }
+                    })
+                }, makeIcon: function (e, t, r) {
+                    return 0 === t ? [0 !== this.max && e >= this.max ? null : this.addIcon(r), 0 === this.min || e > this.min ? this.delIcon(r) : null] : t >= this.min ? this.delIcon(r) : void 0
+                }
+            },
+            created: function () {
+                for (var e = 0; e < this.value.length; e++) this.addRule()
+            },
+            render: function () {
+                var e = this, t = arguments[0], r = Object.keys(this.cacheRule);
+                return 0 === r.length ? t("i", {
+                    key: "a_def",
+                    class: "el-icon-circle-plus-outline",
+                    style: "font-size:28px;vertical-align:middle;color:".concat(this.disabled ? "#c9cdd4;cursor: not-allowed" : "#606266;cursor:pointer", ";"),
                     on: {
                         click: function () {
-                            return r.handleClick(e)
-                        }
-                    },
-                    key: this.key("hi" + t)
-                })
-            }, makeProgress: function (e, t) {
-                return (0, this.$createElement)("ElProgress", helper([{}, {
-                    props: {
-                        percentage: e.percentage,
-                        type: "circle",
-                        width: 52
-                    }
-                }, {style: "margin-top:2px;", key: this.key("pg" + t)}]))
-            }, makeIcons: function (e, t) {
-                var r = this.$createElement, n = [];
-                if (this.allowRemove || !1 !== this.handleIcon) return ("file" !== this.uploadType && !1 !== this.handleIcon || "file" === this.uploadType && this.handleIcon) && n.push(this.makeHandleIcon(e, t)), this.allowRemove && n.push(this.makeRemoveIcon(e, t)), r("div", {class: style["fc-upload-cover"]}, [n])
-            }, makeFiles: function () {
-                var e = this, t = this.$createElement;
-                return this.uploadList.map(function (r, n) {
-                    return t("div", {
-                        key: e.key(n),
-                        class: style["fc-files"]
-                    }, [void 0 !== r.percentage && "success" !== r.status ? e.makeProgress(r, n) : [e.makeItem(r, n), e.makeIcons(r, n)]])
-                })
-            }, makeUpload: function () {
-                return (0, this.$createElement)("ElUpload", helper([{
-                    ref: "upload",
-                    style: {display: "inline-block"}
-                }, this.ctx, {key: this.key("upload")}]), [this.children])
-            }, initChildren: function () {
-                hasSlot(this.children, "default") || this.children.push(this.makeDefaultBtn())
-            }, update: function () {
-                var e = this.$refs.upload.uploadFiles.map(function (e) {
-                    return e.url
-                }).filter(function (e) {
-                    return void 0 !== e
-                });
-                this.$emit("input", 1 === this.maxLength ? e[0] || "" : e)
-            }
-        }, render: function () {
-            var e, t = arguments[0], r = !this.maxLength || this.maxLength > this.uploadList.length;
-            return this.$refs.upload && (void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = this.$refs.upload.showFileList), this.ctx.props.fileList = this.$refs.upload.fileList), this.initChildren(), t("div", {class: (e = {}, _defineProperty(e, style["fc-upload"], !0), _defineProperty(e, style["fc-hide-btn"], !r), e)}, [[this.ctx.props.showFileList ? [] : this.makeFiles(), this.makeUpload()]])
-        }, mounted: function () {
-            var e = this;
-            this.uploadList = this.$refs.upload.uploadFiles, this.$watch(function () {
-                return e.$refs.upload.uploadFiles
-            }, function () {
-                e.update()
-            }, {deep: !0})
-        }
-    }, components = [checkbox, frame, radio, select, tree, upload], parser = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
-
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "render", value: function (e) {
-                var t = this, r = this.$render.inputVData(this, !0).get();
-                return this.vNode.checkbox({
-                    props: {
-                        ctx: r,
-                        type: r.props.type,
-                        options: this.rule.options,
-                        value: this.$handle.getFormData(this),
-                        children: e
-                    }, on: {
-                        input: function (e) {
-                            t.$render.onInput(t, e)
+                            return !e.disabled && e.addRule()
                         }
                     }
-                })
+                }) : t("div", {key: "con"}, [r.map(function (n, i) {
+                    var a = e.cacheRule[n];
+                    return t("ElRow", {
+                        attrs: {align: "middle", type: "flex"},
+                        key: n,
+                        style: "background-color:#f5f7fa;padding:10px;border-radius:5px;margin-bottom:10px;"
+                    }, [t("ElCol", {attrs: {span: 20}}, [t("ElFormItem", [t("FormCreate", {
+                        on: {
+                            mounted: function (t) {
+                                return e.add$f(i, n, t)
+                            }, "on-reload": function (t) {
+                                return e.syncData(n, t)
+                            }
+                        }, attrs: {rule: a, option: e.config}
+                    })])]), t("ElCol", {
+                        attrs: {
+                            span: 2,
+                            pull: 1,
+                            push: 1
+                        }
+                    }, [e.makeIcon(r.length, i, n)])])
+                })])
             }
-        }]), t
-    }(), name = "checkbox", checkbox$1 = {parser: parser, name: name}, Parser = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
+        }, components = [checkbox, frame, radio, select, tree, upload, group], parser = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
+            }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "mounted", value: function () {
-                var e = this;
-                this.toValue = function (t) {
-                    return e.el.formatToString(t)
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "render", value: function (e) {
+                    var t = this, r = this.$render.inputVData(this, !0).get();
+                    return this.vNode.checkbox({
+                        props: {
+                            ctx: r,
+                            type: r.props.type,
+                            options: this.rule.options,
+                            value: this.$handle.getFormData(this),
+                            children: e
+                        }, on: {
+                            input: function (e) {
+                                t.$render.onInput(t, e)
+                            }
+                        }
+                    })
                 }
+            }]), t
+        }(), name = "checkbox", checkbox$1 = {parser: parser, name: name}, Parser = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }]), t
-    }(), name$1 = "datePicker", datePicker = {parser: Parser, name: name$1}, Parser$1 = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "render", value: function (e) {
-                var t = this.$render.inputVData(this).props("field", this.field);
-                return this.vNode.frame(t, e)
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "toFormValue", value: function (e) {
+                    var t, r = Array.isArray(e), n = this.rule.props, i = n.type || "date";
+                    return t = -1 !== ["daterange", "datetimerange", "dates"].indexOf(i) ? r ? e.map(function (e) {
+                        return e ? timeStampToDate(e) : ""
+                    }) : ["", ""] : "date" === i && !0 === n.multiple ? toString(e) : (t = r ? e[0] || "" : e) ? timeStampToDate(t) : ""
+                }
+            }, {
+                key: "mounted", value: function () {
+                    var e = this;
+                    this.toValue = function (t) {
+                        return e.el.formatToString(t)
+                    }, this.toFormValue = function (t) {
+                        return e.el.parseString(t)
+                    }
+                }
+            }]), t
+        }(), name$1 = "datePicker", datePicker = {parser: Parser, name: name$1},
+        Parser$1 = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }, {
-            key: "closeModel", value: function () {
-                this.el.closeModel && this.el.closeModel()
-            }
-        }]), t
-    }(), name$2 = "frame", frame$1 = {parser: Parser$1, name: name$2}, name$3 = "hidden", parser$1 = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "render", value: function () {
-                return []
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "render", value: function (e) {
+                    var t = this.$render.inputVData(this).props("field", this.field);
+                    return this.vNode.frame(t, e)
+                }
+            }, {
+                key: "closeModel", value: function () {
+                    this.el.closeModel && this.el.closeModel()
+                }
+            }]), t
+        }(), name$2 = "frame", frame$1 = {parser: Parser$1, name: name$2}, name$3 = "hidden",
+        parser$1 = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }]), t
-    }(), hidden = {parser: parser$1, name: name$3}, Parser$2 = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "init", value: function () {
-                var e = this.rule.props;
-                e.autosize && e.autosize.minRows && $set(e, "rows", e.autosize.minRows || 2)
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "render", value: function () {
+                    return []
+                }
+            }]), t
+        }(), hidden = {parser: parser$1, name: name$3}, Parser$2 = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }]), t
-    }(), name$4 = "input", input = {parser: Parser$2, name: name$4}, Parser$3 = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "toFormValue", value: function (e) {
-                return this.rule.options.filter(function (t) {
-                    return t.value === e
-                }).reduce(function (e, t) {
-                    return t.label
-                }, "")
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "init", value: function () {
+                    var e = this.rule.props;
+                    e.autosize && e.autosize.minRows && $set(e, "rows", e.autosize.minRows || 2)
+                }
+            }]), t
+        }(), name$4 = "input", input = {parser: Parser$2, name: name$4}, Parser$3 = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }, {
-            key: "toValue", value: function (e) {
-                return this.rule.options.filter(function (t) {
-                    return t.label === e
-                }).reduce(function (e, t) {
-                    return t.value
-                }, "")
-            }
-        }, {
-            key: "render", value: function (e) {
-                return this.vNode.radio(this.$render.inputVData(this).props({options: this.rule.options}), e)
-            }
-        }]), t
-    }(), name$5 = "radio", radio$1 = {parser: Parser$3, name: name$5}, Parser$4 = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "render", value: function (e) {
-                return this.vNode.select(this.$render.inputVData(this).props("options", this.rule.options), e)
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "toFormValue", value: function (e) {
+                    return this.rule.options.filter(function (t) {
+                        return t.value === e
+                    }).reduce(function (e, t) {
+                        return t.label
+                    }, "")
+                }
+            }, {
+                key: "toValue", value: function (e) {
+                    return this.rule.options.filter(function (t) {
+                        return t.label === e
+                    }).reduce(function (e, t) {
+                        return t.value
+                    }, "")
+                }
+            }, {
+                key: "render", value: function (e) {
+                    return this.vNode.radio(this.$render.inputVData(this).props({options: this.rule.options}), e)
+                }
+            }]), t
+        }(), name$5 = "radio", radio$1 = {parser: Parser$3, name: name$5}, Parser$4 = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }]), t
-    }(), name$6 = "select", select$1 = {parser: Parser$4, name: name$6}, Parser$5 = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "toFormValue", value: function (e) {
-                var t = this.rule, r = Array.isArray(e), n = t.props, i = n.min || 0;
-                return !0 === n.range ? r ? e : [i, parseFloat(e) || i] : r ? parseFloat(e[0]) || i : parseFloat(e)
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "render", value: function (e) {
+                    return this.vNode.select(this.$render.inputVData(this).props("options", this.rule.options), e)
+                }
+            }]), t
+        }(), name$6 = "select", select$1 = {parser: Parser$4, name: name$6}, Parser$5 = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }]), t
-    }(), name$7 = "slider", slider = {parser: Parser$5, name: name$7}, parser$2 = function (e) {
-        function t() {
-            return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
-        }
 
-        return _inherits(t, BaseParser), _createClass(t, [{
-            key: "render", value: function (e) {
-                return this.vNode.switch(this.$render.inputVData(this).get(), e)
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "toFormValue", value: function (e) {
+                    var t = this.rule, r = Array.isArray(e), n = t.props, i = n.min || 0;
+                    return !0 === n.range ? r ? e : [i, parseFloat(e) || i] : r ? parseFloat(e[0]) || i : parseFloat(e)
+                }
+            }]), t
+        }(), name$7 = "slider", slider = {parser: Parser$5, name: name$7}, parser$2 = function (e) {
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
-        }]), t
-    }(), name$8 = "switch", iswitch = {parser: parser$2, name: name$8};
+
+            return _inherits(t, BaseParser), _createClass(t, [{
+                key: "render", value: function (e) {
+                    return this.vNode.switch(this.$render.inputVData(this).get(), e)
+                }
+            }]), t
+        }(), name$8 = "switch", iswitch = {parser: parser$2, name: name$8};
 
     function getTime(e) {
         return isDate(e) ? dateFormat("hh:mm:ss", e) : e
@@ -1965,7 +2310,8 @@
                     }
                 }
             }]), t
-        }(), name$9 = "timePicker", timePicker = {parser: Parser$6, name: name$9}, Parser$7 = function (e) {
+        }(), name$9 = "timePicker", timePicker = {parser: Parser$6, name: name$9},
+        Parser$7 = function (e) {
             function t() {
                 return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
@@ -1999,9 +2345,10 @@
 
             return _inherits(t, BaseParser), _createClass(t, [{
                 key: "render", value: function (e) {
-                    var t = this, r = this.$render.parserToData(this).get(), n = this.key, i = this.refName;
+                    var t = this, r = this.$render.parserToData(this).get(), n = this.key,
+                        i = this.refName;
                     delete r.props.fileList;
-                    var o = {
+                    var a = {
                         uploadType: r.props.uploadType,
                         maxLength: r.props.limit,
                         modalTitle: r.props.modalTitle,
@@ -2013,7 +2360,7 @@
                         children: e
                     };
                     return this.vNode.upload({
-                        props: o, key: n, ref: i, on: {
+                        props: a, key: n, ref: i, on: {
                             input: function (e) {
                                 t.$render.onInput(t, e)
                             }
@@ -2040,7 +2387,12 @@
                 size: void 0
             },
             row: {gutter: 0, type: void 0, align: void 0, justify: void 0, tag: "div"},
-            info: {type: "popover", trigger: "hover", placement: "top-start", icon: "el-icon-warning"},
+            info: {
+                type: "popover",
+                trigger: "hover",
+                placement: "top-start",
+                icon: "el-icon-warning"
+            },
             submitBtn: {
                 type: "primary",
                 size: "medium",
@@ -2078,70 +2430,6 @@
         }
     }
 
-    function getGlobalApi(e, t) {
-        function r(t) {
-            var r = arguments.length > 1 && void 0 !== arguments[1] && arguments[1];
-            return t ? Array.isArray(t) || (t = [t]) : t = r ? Object.keys(e.fieldList) : e.fields(), t
-        }
-
-        return _objectSpread2({}, t, {
-            validate: function (t) {
-                e.$form.getFormRef().validate(function (e) {
-                    t && t(e)
-                })
-            }, validateField: function (t, r) {
-                e.fieldList[t] && e.$form.getFormRef().validateField(t, r)
-            }, resetFields: function (t) {
-                var n = e.fieldList;
-                r(t, !0).forEach(function (t) {
-                    var r = n[t];
-                    r && "hidden" !== r.type && (e.vm.$refs[r.formItemRefName].resetField(), e.$render.clearCache(r, !0))
-                })
-            }, submit: function (t, r) {
-                var n = this;
-                this.validate(function (i) {
-                    if (i) {
-                        var o = n.formData();
-                        isFunction(t) ? t(o, n) : (e.options.onSubmit && e.options.onSubmit(o, n), e.fc.$emit("on-submit", o, n))
-                    } else r && r(n)
-                })
-            }, clearValidateState: function (t) {
-                r(t).forEach(function (t) {
-                    var r = e.fieldList[t];
-                    if (r) {
-                        var n = e.vm.$refs[r.formItemRefName];
-                        n && (n.validateMessage = "", n.validateState = "")
-                    }
-                })
-            }, btn: {
-                loading: function () {
-                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
-                    e.vm._buttonProps({loading: !!t})
-                }, disabled: function () {
-                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
-                    e.vm._buttonProps({disabled: !!t})
-                }, show: function () {
-                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
-                    e.vm._buttonProps({show: !!t})
-                }
-            }, resetBtn: {
-                loading: function () {
-                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
-                    e.vm._resetProps({loading: !!t})
-                }, disabled: function () {
-                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
-                    e.vm._resetProps({disabled: !!t})
-                }, show: function () {
-                    var t = !(arguments.length > 0 && void 0 !== arguments[0]) || arguments[0];
-                    e.vm._resetProps({show: !!t})
-                }
-            }, closeModal: function (t) {
-                var r = e.fieldList[t];
-                r && r.closeModel && r.closeModel()
-            }
-        })
-    }
-
     var nodes = {
         modal: "el-dialog",
         button: "el-button",
@@ -2165,7 +2453,8 @@
         col: "el-col",
         row: "el-row",
         tree: "fc-elm-tree",
-        autoComplete: "el-autocomplete"
+        autoComplete: "el-autocomplete",
+        group: "fc-elm-group"
     }, upperCaseReg = /[A-Z]/;
 
     function isAttr(e, t) {
@@ -2179,7 +2468,7 @@
     var Form = function (e) {
             function t(e) {
                 var r;
-                return _classCallCheck(this, t), (r = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this, e))).refName = "cForm".concat(r.id), r.hidden = [], r.visibility = [], r
+                return _classCallCheck(this, t), (r = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this, e))).refName = "cForm".concat(r.id), r
             }
 
             return _inherits(t, BaseForm), _createClass(t, [{
@@ -2192,6 +2481,16 @@
             }, {
                 key: "getFormRef", value: function () {
                     return this.vm.$refs[this.refName]
+                }
+            }, {
+                key: "validate", value: function (e) {
+                    this.getFormRef().validate(function (t) {
+                        e && e(t)
+                    })
+                }
+            }, {
+                key: "validateField", value: function (e, t) {
+                    this.getFormRef().validateField(e, t)
                 }
             }, {
                 key: "beforeRender", value: function () {
@@ -2215,15 +2514,17 @@
                 }
             }, {
                 key: "makeFormItem", value: function (e, t) {
-                    var r = "fItem".concat(e.key).concat(this.unique), n = e.rule, i = e.field, o = e.formItemRefName,
-                        a = this.getGetCol(e), s = a.labelWidth || n.title ? a.labelWidth : 0, u = n.className,
+                    var r = "fItem".concat(e.key).concat(this.unique), n = e.rule, i = e.field,
+                        a = e.formItemRefName, o = this.getGetCol(e),
+                        s = o.labelWidth || n.title ? o.labelWidth : 0, u = n.className,
                         l = this.vData.props({
                             prop: i,
                             rules: n.validate,
-                            labelWidth: toString(s),
+                            labelWidth: toString$1(s),
                             required: n.props.required
-                        }).key(r).ref(o).class(u).get(), c = this.vNode.formItem(l, [t, this.makeFormPop(e, r)]);
-                    return !0 === this.propsData.props.inline ? c : this.makeCol(a, e, r, [c])
+                        }).key(r).ref(a).class(u).get(),
+                        c = this.vNode.formItem(l, [t, this.makeFormPop(e, r)]);
+                    return !0 === this.propsData.props.inline ? c : this.makeCol(o, e, r, [c])
                 }
             }, {
                 key: "makeFormPop", value: function (e, t) {
@@ -2244,7 +2545,7 @@
                     var i;
                     return void 0 === e.span && (e.span = 24), this.vNode.col({
                         props: e,
-                        class: (i = {}, _defineProperty(i, style.__fc_h, -1 !== this.hidden.indexOf(t)), _defineProperty(i, style.__fc_v, -1 !== this.visibility.indexOf(t)), i),
+                        class: (i = {}, _defineProperty(i, style.__fc_h, !!t.rule.hidden), _defineProperty(i, style.__fc_v, !!t.rule.visibility), i),
                         key: "".concat(r, "col1")
                     }, n)
                 }
@@ -2264,12 +2565,15 @@
                         props: n,
                         key: "".concat(this.unique, "col3")
                     }, [this.vNode.button({
-                        key: "frsbtn".concat(this.unique), props: r, on: {
+                        key: "frsbtn".concat(this.unique),
+                        props: r,
+                        on: {
                             click: function () {
                                 var e = t.$handle.fCreateApi;
                                 isFunction(r.click) ? r.click(e) : e.resetFields()
                             }
-                        }, style: {width: r.width}
+                        },
+                        style: {width: r.width}
                     }, [r.innerText])])
                 }
             }, {
@@ -2279,12 +2583,15 @@
                         props: n,
                         key: "".concat(this.unique, "col4")
                     }, [this.vNode.button({
-                        key: "fbtn".concat(this.unique), props: r, on: {
+                        key: "fbtn".concat(this.unique),
+                        props: r,
+                        on: {
                             click: function () {
                                 var e = t.$handle.fCreateApi;
                                 isFunction(r.click) ? r.click(e) : e.submit()
                             }
-                        }, style: {width: r.width}
+                        },
+                        style: {width: r.width}
                     }, [r.innerText])])
                 }
             }]), t
@@ -2304,15 +2611,16 @@
             }), e
         }, {});
     maker.frameInput = maker.frameInputs, maker.frameFile = maker.frameFiles, maker.frameImage = maker.frameImages;
-    var name$e = "input", maker$1 = ["password", "url", "email", "text", "textarea"].reduce(function (e, t) {
-        return e[t] = creatorTypeFactory(name$e, t), e
-    }, {});
+    var name$e = "input",
+        maker$1 = ["password", "url", "email", "text", "textarea"].reduce(function (e, t) {
+            return e[t] = creatorTypeFactory(name$e, t), e
+        }, {});
     maker$1.idate = creatorTypeFactory(name$e, "date");
     var name$f = "select", select$2 = {
             selectMultiple: creatorTypeFactory(name$f, !0, "multiple"),
             selectOne: creatorTypeFactory(name$f, !1, "multiple")
-        }, name$g = "slider", slider$1 = {sliderRange: creatorTypeFactory(name$g, !0, "range")}, name$h = "timePicker",
-        timePicker$1 = {
+        }, name$g = "slider", slider$1 = {sliderRange: creatorTypeFactory(name$g, !0, "range")},
+        name$h = "timePicker", timePicker$1 = {
             time: creatorTypeFactory(name$h, function (e) {
                 return e.props.isRange = !1
             }), timeRange: creatorTypeFactory(name$h, function (e) {
@@ -2321,9 +2629,12 @@
         }, name$i = "tree", types$1 = {treeSelected: "selected", treeChecked: "checked"},
         tree$2 = Object.keys(types$1).reduce(function (e, t) {
             return e[t] = creatorTypeFactory(name$i, types$1[t]), e
-        }, {}), name$j = "upload",
-        types$2 = {image: ["image", 0], file: ["file", 0], uploadFileOne: ["file", 1], uploadImageOne: ["image", 1]},
-        maker$2 = Object.keys(types$2).reduce(function (e, t) {
+        }, {}), name$j = "upload", types$2 = {
+            image: ["image", 0],
+            file: ["file", 0],
+            uploadFileOne: ["file", 1],
+            uploadImageOne: ["image", 1]
+        }, maker$2 = Object.keys(types$2).reduce(function (e, t) {
             return e[t] = creatorTypeFactory(name$j, function (e) {
                 return e.props({uploadType: types$2[t][0], maxLength: types$2[t][1]})
             }), e
@@ -2338,12 +2649,11 @@
     }, VNode.use(nodes);
     var drive = {
             ui: "element-ui",
-            version: "".concat("1.0.4"),
+            version: "".concat("1.0.7"),
             formRender: Form,
             components: components,
             parsers: parsers,
             makers: maker$3,
-            getGlobalApi: getGlobalApi,
             getConfig: getConfig
         }, _createFormCreate = createFormCreate(drive), FormCreate = _createFormCreate.FormCreate,
         install = _createFormCreate.install;
@@ -2351,4 +2661,3 @@
     var maker$4 = FormCreate.maker;
     exports.default = FormCreate, exports.maker = maker$4, Object.defineProperty(exports, "__esModule", {value: !0})
 });
-//# sourceMappingURL=form-create.min.js.map

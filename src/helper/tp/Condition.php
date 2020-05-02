@@ -6,6 +6,18 @@ namespace surface\helper\tp;
 
 trait Condition
 {
+
+    private $match = [
+        'EQ'        => '=',
+        'NEQ'       => '!=',
+        'EQUAL'     => '=',
+        'NOTEQUAL'  => '!=',
+        'GT'        => '>',
+        'EGT'       => '>=',
+        'LT'        => '<',
+        'ELT'       => '<=',
+    ];
+
     /**
      * table搜索规则
      *
@@ -13,11 +25,12 @@ trait Condition
      * @param $key
      * @param $val
      * @return array
-     * Author: zsw zswemail@qq.com
      */
     protected function condition($condition, $key, $val) {
         $where = [];
-        switch (strtoupper($condition)) {
+        $condition = strtoupper($condition);
+        $condition = $this->match[$condition] ?? $condition;
+        switch ($condition) {
             case '=':
             case '!=':
             case 'EQ':
@@ -71,6 +84,7 @@ trait Condition
                 if (date('Y-m-d H:i:s', strtotime($arr[0])) == $arr[0] || date('Y-m-d', strtotime($arr[0])) == $arr[0]) {
                     $arr[0] = strtotime($arr[0]);
                 }
+                $arr[1] = $arr[1] ?? '';
                 if (date('Y-m-d H:i:s', strtotime($arr[1])) == $arr[1] || date('Y-m-d', strtotime($arr[1])) == $arr[1]) {
                     $arr[1] = strtotime($arr[1]);
                 }

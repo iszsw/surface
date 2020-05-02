@@ -24,7 +24,6 @@ class Switcher extends FormTypeBase
      * @param string $inactiveValue 关
      * @param string $activeValue 开
      * @return $this
-     * Author: zsw zswemail@qq.com
      */
     public function addOptions($inactiveValue = '', $activeValue = null)
     {

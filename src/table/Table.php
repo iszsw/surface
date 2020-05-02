@@ -32,7 +32,7 @@ class Table extends Base
     use \surface\table\traits\Search;
 
     protected $style = [
-        '<link href="/static/surface/table/main.css" rel="stylesheet">',
+        '<link href="/static/surface/table/table.css" rel="stylesheet">',
         '<link href="//cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">',
     ];
 

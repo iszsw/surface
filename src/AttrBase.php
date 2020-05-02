@@ -17,11 +17,11 @@ abstract class AttrBase implements \ArrayAccess, \JsonSerializable , \IteratorAg
 {
     protected $attr = [];
 
-    public function __construct($config = [])
+    public function __construct($default = [])
     {
         $this->attr = $this->attr();
-        if (is_array($config) && count($config) > 0) {
-            foreach ($config as $name => $val) {
+        if (is_array($default) && count($default) > 0) {
+            foreach ($default as $name => $val) {
                 $this->attr[$name] = $val;
             }
         }
@@ -75,7 +75,6 @@ abstract class AttrBase implements \ArrayAccess, \JsonSerializable , \IteratorAg
 
     /**
      * 获取修改过的值
-     * Author: zsw zswemail@qq.com
      */
     public function getEdited()
     {

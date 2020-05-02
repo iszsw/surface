@@ -27,7 +27,6 @@ class Radio extends FormTypeBase
      * @param string $val
      * @param bool $disabled
      * @return $this
-     * Author: zsw zswemail@qq.com
      */
     public function addOptions($key, $val = '', $disabled = false)
     {

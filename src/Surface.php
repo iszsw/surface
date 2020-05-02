@@ -35,7 +35,6 @@ class Surface
      *
      * @return object
      * @throws SurfaceException
-     * Author: zsw zswemail@qq.com
      */
     public static function __callStatic($name, $arguments)
     {

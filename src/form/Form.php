@@ -29,7 +29,7 @@ use surface\form\type\Button;
  * @method type\Cascader cascader($field = '', $title = '', $value = [], $rule = []) static
  * @method type\City city($field = '', $title = '', $value = [], $rule = []) static
  * @method type\Area area($field = '', $title = '', $value = [], $rule = []) static
- * @method type\DatePicker Date($field = '', $title = '', $value = [], $rule = []) static
+ * @method type\DatePicker date($field = '', $title = '', $value = [], $rule = []) static
  * @method type\TimePicker time($field = '', $title = '', $value = [], $rule = []) static
  * @method type\Datetime datetime($field = '', $title = '', $value = [], $rule = []) static
  * @method type\ColorPicker color($field = '', $title = '', $value = [], $rule = []) static

@@ -30,7 +30,6 @@ trait Rule
      *
      * @param null $rules
      * @return $this|null
-     * Author: zsw zswemail@qq.com
      */
     public function rule($rules = null)
     {
@@ -57,7 +56,6 @@ trait Rule
      * @param $self
      * @param bool $getData 获取Data
      * @return mixed
-     * Author: zsw zswemail@qq.com
      */
     public static function createFormItem($data, $self, $getData = true)
     {

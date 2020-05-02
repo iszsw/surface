@@ -13,7 +13,7 @@ trait Update
 
     protected function createForm(FormInterface $model)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (request()->method() === 'POST') {
             return call_user_func([$model, 'save']);
         }
 
@@ -23,6 +23,10 @@ trait Update
         return Surface::form(
             function (Form $form) use ($model)
             {
+                if (method_exists($model, 'init')) {
+                    call_user_func([$model, 'init'], $form);
+                }
+
                 $form->rule($model->column());
                 ($config = $model->defaults()) && $form->setConfig($config);
             }

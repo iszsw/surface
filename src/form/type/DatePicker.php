@@ -29,7 +29,6 @@ class DatePicker extends FormTypeBase
     /**
      * year/month/date/dates/week/datetime/datetimerange/daterange
      *
-     * Author: zsw zswemail@qq.com
      */
     protected function getPropsType()
     {

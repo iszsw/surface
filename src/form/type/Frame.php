@@ -15,6 +15,7 @@ class Frame extends FormTypeBase
     public function __construct($field, $title, $value = [], $rule = null)
     {
         parent::__construct();
+        $this->props('handleIcon', true);
         $this->rule = $this->createRule($field, $title, $value, $rule);
     }
 

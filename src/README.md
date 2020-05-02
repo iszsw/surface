@@ -41,7 +41,7 @@
     ])
 
 ### tab 标签页
-    1.对象方式
+#####1.对象方式
     $form::tab('pic', 'tab', '', ['children' => [
         'alioss' => [
             'name' => 'alioss01',
@@ -59,8 +59,8 @@
             ]
         ],
     ]])
-
-    2.config方式
+    
+#####2.config方式
     正常tab格式
     ['type' => 'tab', 'field' => 'aaa01', 'title' => 'hello01', 'props'=>[
         'activeValue' => true   // 在tabs下提交选中的tab的值 默认false
@@ -89,7 +89,7 @@
         ],
     ]]
 
-    无限级
+    无限级递归
     ['type' => 'tab', 'field' => 'aaa', 'title' => 'hello', 'props'=>['activeValue' => true], 'children' => [
         [
             'name' => 'alioss',
@@ -202,6 +202,12 @@
         'editorUploadUrl'=>url('index'),    富文本异步文件上传位置 如果为空以base64方式存入内容 成功返回['code'=>0,'data'=['url'=>'']]
     ]),
     
+### selects 多选
+    Form::selects("tag", BlogPostModel::$labels["tag"], $current_tags)->props([
+    'filterable'=>true,
+    'allowCreate'=>true // 允许创建
+    ])->addOptions($tags),
+    
 ### frame 弹出层
     选取图片
     $form::frame('frame1', '页面1')->props([
@@ -209,6 +215,7 @@
         'src'=>config('manage_url'),               // 文件地址
         'height'=>'500px',
         'width'=>'1000px',
+        'unique'=>'true',                          // 默认为true 允许重复选择
         'icon' => 'el-icon-folder',                // 默认图标
         'maxLength' => 3,                          // 选取长度
         'title' => "图库",                          // 说明

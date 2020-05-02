@@ -29,7 +29,6 @@ class TimePicker extends FormTypeBase
      * year/month/date/dates/ week/datetime/datetimerange/daterange
      *
      * @param $type
-     * Author: zsw zswemail@qq.com
      */
     public function setType($type)
     {

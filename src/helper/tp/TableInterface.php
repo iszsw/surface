@@ -18,7 +18,6 @@ interface TableInterface
      * 返回搜索参数
      *
      * @return array 返回''不搜索
-     * Author: zsw zswemail@qq.com
      */
     public function rules(): array;
 
@@ -26,7 +25,6 @@ interface TableInterface
      * 默认配置
      *
      * @return array
-     * Author: zsw zswemail@qq.com
      */
     public function defaults():array;
 
@@ -34,7 +32,6 @@ interface TableInterface
      * 列信息
      *
      * @return array
-     * Author: zsw zswemail@qq.com
      */
     public function column():array;
 
@@ -46,7 +43,6 @@ interface TableInterface
      * @param int $page
      * @param int $row_num
      * @return array 返回['count'=>总数量, 'list'=>当前页列表]
-     * Author: zsw zswemail@qq.com
      */
     public function search($where = [], $order = '', $page = 1, $row_num = 15):array;
 

@@ -39,6 +39,9 @@ class Helper
             } elseif (is_numeric($v) && $v < PHP_INT_MAX)
             {
                 $array[$k] = (float)$v;
+            } elseif (is_string($v) && in_array(strtolower($v), ['false', "true"]))
+            {
+                $array[$k] = (strtolower($v) == 'true');
             }
         }
         return $array;

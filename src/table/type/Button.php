@@ -36,7 +36,6 @@ class Button implements DataTypeInterface
      * 返回格式化数组
      *
      * @return mixed
-     * Author: zsw zswemail@qq.com
      */
     public function getData()
     {

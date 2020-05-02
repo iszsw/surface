@@ -29,7 +29,6 @@ trait Validate
      * @param bool $required
      * @param string $type
      * @return $this
-     * Author: zsw zswemail@qq.com
      */
     public function validate($message = null, $required = true, $type = 'string')
     {

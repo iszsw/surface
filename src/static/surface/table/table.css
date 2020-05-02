@@ -1,7 +1,9 @@
 body {
-    font-size: 14px;
+    font-size: 13px;
     font-family: helvetica neue;
     color: #333;
+    padding: 20px;
+    background-color: white;
 }
 
 p, ul {
@@ -14,7 +16,7 @@ p, ul {
     border: 0;
     border-collapse: collapse;
     border-spacing: 0;
-    font-size: 14px;
+    font-size: 13px;
     /*table-layout: fixed;*/
     text-align: center;
 }
@@ -66,7 +68,8 @@ p, ul {
 }
 .dataTable th {
     /*text-transform: uppercase;*/
-    font-size: 14px;
+    font-size: 13px;
+    color: rgb(50,50,50);
     letter-spacing: 1px;
 }
 .dataTable .tableEmpty{
@@ -95,8 +98,8 @@ p, ul {
     box-shadow: 0px 0px 3px #16a085;
 }
 .nav-top{
-    background: #f8f9fa;
-    border-color: #E8EDF0;
+    /*background: #f8f9fa;*/
+    /*border-color: #E8EDF0;*/
     padding: 10px 5px;
 }
 .panel .panel-title{
@@ -105,7 +108,7 @@ p, ul {
     color: #5e5e5e;
 }
 .panel .panel-content{
-    margin:5px auto;
+    margin:15px auto;
     color: #7b7b7b;
 }
 .nav-operation{
@@ -388,7 +391,7 @@ span.tablePageDisabled{
 .tablePageInput,.tablePageListCount{
     /*width: 40px;*/
     height: 40px;
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
     box-sizing: border-box;
     border: 1px solid #E6E6E6;
@@ -414,7 +417,7 @@ input::-webkit-inner-spin-button.tablePageInput,input::-webkit-inner-spin-button
 /* modal start*/
 .surface-table-frame{
     width:100%;
-    height:550px;
+    height:575px;
     border:0px;
 }
 .surface-table-html{
@@ -425,18 +428,28 @@ input::-webkit-inner-spin-button.tablePageInput,input::-webkit-inner-spin-button
     text-align: left;
 }
 .table-modal{
-    width: 900px;
+    width: 1024px;
 }
 
 .table-modal.swal-modal {
     border-radius: 0px;
 }
-@media screen and (max-width: 940px) {
+@media screen and (max-width: 1024px) {
     .table-modal.swal-modal {
         width: calc(100% - 20px);
     }
     .surface-table-frame{
         height: calc(100vh - 150px);
+    }
+}
+@media screen and (min-width: 1024px) {
+    .table-modal{
+        position:absolute;
+        left:0;
+        right:0;
+    }
+    .table-modal>.swal-title{
+        cursor:move;
     }
 }
 
@@ -465,4 +478,12 @@ input::-webkit-inner-spin-button.tablePageInput,input::-webkit-inner-spin-button
 }
 .table-modal>.swal-content:last-child{
     margin-bottom: 0;
+}
+
+/*屏蔽罩相关配置*/
+.swal-overlay{
+    background: rgba(241,243,246, .5);
+}
+.table-modal.swal-modal {
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);
 }

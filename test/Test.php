@@ -18,7 +18,7 @@ class Test
             return self::data();
         }
 
-        $data = Surface::table(
+        return Surface::table(
             function (Table $table)
             {
                 $table->search(
@@ -72,7 +72,6 @@ class Test
             }
         );
 
-        return $data->view();
     }
 
     private static function data()
@@ -108,7 +107,6 @@ class Test
      * @param string $data
      *
      * @return string
-     * Author: zsw zswemail@qq.com
      */
     private static function show($code, $msg, $data = '')
     {
@@ -122,7 +120,7 @@ class Test
 
     public static function form()
     {
-        $data = Surface::form(
+        return Surface::form(
             function (Form $form)
             {
                 // 在实例化之前注册全局默认配置
@@ -148,11 +146,11 @@ class Test
                         'editor'  => [
                             'theme'           => 'black', // 主题 primary|black|grey|blue
                             'items'           => null,    // 菜单内容
-                            'editorUploadUrl' => $upload_url,
-                            'editorManageUrl' => $manage_url,
-                            'editorMediaUrl'  => $upload_url,
-                            'editorFlashUrl'  => $upload_url,
-                            'editorFileUrl'   => $upload_url,
+                            'editorUploadUrl' => '',
+                            'editorManageUrl' => '',
+                            'editorMediaUrl'  => '',
+                            'editorFlashUrl'  => '',
+                            'editorFileUrl'   => '',
                         ],
                     ]
                 );
@@ -250,7 +248,6 @@ class Test
                 $form->setSubmitBtn(['innerText' => '提交']);
             }
         );
-        return $data->view();
     }
 
 }
