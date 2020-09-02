@@ -8,7 +8,7 @@ use surface\form\attribute\Row as RowAttr;
 
 /**
  * Class Input
- * @package surface\form\type
+ * @package surface\form\components
  * Author: zsw zswemail@qq.com
  */
 trait Row

@@ -1,5 +1,5 @@
 /*!
- * @form-create/element-ui v1.0.7
+ * @form-create/element-ui v1.0.16
  * (c) 2018-2020 xaboy
  * Github https://github.com/xaboy/form-create
  * Released under the MIT License.
@@ -131,11 +131,11 @@
                     var n = e[r] instanceof Array ? e[r] : [e[r]],
                         i = t[r] instanceof Array ? t[r] : [t[r]];
                     e[r] = n.concat(i)
-                } else if (-1 !== functionalMerge.indexOf(r)) for (var a in t[r]) if (e[r][a]) {
-                    var o = e[r][a] instanceof Array ? e[r][a] : [e[r][a]],
-                        s = t[r][a] instanceof Array ? t[r][a] : [t[r][a]];
-                    e[r][a] = o.concat(s)
-                } else e[r][a] = t[r][a]; else if ("hook" == r) for (var u in t[r]) e[r][u] = e[r][u] ? mergeFn(e[r][u], t[r][u]) : t[r][u]; else e[r] = t[r]; else e[r] = t[r];
+                } else if (-1 !== functionalMerge.indexOf(r)) for (var o in t[r]) if (e[r][o]) {
+                    var a = e[r][o] instanceof Array ? e[r][o] : [e[r][o]],
+                        s = t[r][o] instanceof Array ? t[r][o] : [t[r][o]];
+                    e[r][o] = a.concat(s)
+                } else e[r][o] = t[r][o]; else if ("hook" == r) for (var u in t[r]) e[r][u] = e[r][u] ? mergeFn(e[r][u], t[r][u]) : t[r][u]; else e[r] = t[r]; else e[r] = t[r];
                 return e
             }, {})
         }, mergeFn = function (e, t) {
@@ -174,7 +174,7 @@
     function debounce(e, t) {
         var r = null;
         return function () {
-            for (var n = arguments.length, i = new Array(n), a = 0; a < n; a++) i[a] = arguments[a];
+            for (var n = arguments.length, i = new Array(n), o = 0; o < n; o++) i[o] = arguments[o];
             null !== r && clearTimeout(r), r = setTimeout(function () {
                 return e.apply(void 0, i)
             }, t)
@@ -219,13 +219,21 @@
     }
 
     function deepExtend(e) {
-        var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}, r = !1;
-        for (var n in t) if (Object.prototype.hasOwnProperty.call(t, n)) {
-            var i = t[n];
-            if ((r = Array.isArray(i)) || isPlainObject(i)) {
-                var a = void 0 === e[n];
-                r ? (r = !1, a && $set(e, n, [])) : a && $set(e, n, {}), deepExtend(e[n], i)
-            } else $set(e, n, i)
+        var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+            r = arguments.length > 2 ? arguments[2] : void 0, n = !1;
+        for (var i in t) if (Object.prototype.hasOwnProperty.call(t, i)) {
+            var o = t[i];
+            if ((n = Array.isArray(o)) || isPlainObject(o)) {
+                var a = void 0 === e[i];
+                if (n) n = !1, a && $set(e, i, []); else if (o._clone) {
+                    if (o = o._clone(), !r) {
+                        $set(e, i, o);
+                        continue
+                    }
+                    o = o.getRule(), a && $set(e, i, {})
+                } else a && $set(e, i, {});
+                deepExtend(e[i], o, r)
+            } else $set(e, i, o)
         }
         return e
     }
@@ -318,11 +326,11 @@
                 }))
             }, update: function () {
                 var e = this;
-                this.trueValue = this.options.filter(function (t) {
+                this.trueValue = this.value ? this.options.filter(function (t) {
                     return -1 !== e.value.indexOf(t.value)
                 }).map(function (e) {
                     return e.label
-                })
+                }) : []
             }
         }, created: function () {
             this.update()
@@ -337,12 +345,526 @@
                 }
             }]), [this.options.map(function (r, n) {
                 var i = _objectSpread2({}, r),
-                    a = "button" === e.type ? "ElCheckboxButton" : "ElCheckbox";
-                return delete i.value, t(a, {
+                    o = "button" === e.type ? "ElCheckboxButton" : "ElCheckbox";
+                return delete i.value, t(o, {
                     props: _objectSpread2({}, i),
-                    key: NAME + a + n + e.unique
+                    key: NAME + o + n + e.unique
                 })
             }).concat(this.chlidren)])
+        }
+    };
+
+    function styleInject(e, t) {
+        void 0 === t && (t = {});
+        var r = t.insertAt;
+        if (e && "undefined" != typeof document) {
+            var n = document.head || document.getElementsByTagName("head")[0],
+                i = document.createElement("style");
+            i.type = "text/css", "top" === r && n.firstChild ? n.insertBefore(i, n.firstChild) : n.appendChild(i), i.styleSheet ? i.styleSheet.cssText = e : i.appendChild(document.createTextNode(e))
+        }
+    }
+
+    var css = ".fc-upload-btn, .fc-files {\n    display: inline-block;\n    width: 58px;\n    height: 58px;\n    text-align: center;\n    line-height: 58px;\n    border: 1px solid #c0ccda;\n    border-radius: 4px;\n    overflow: hidden;\n    background: #fff;\n    position: relative;\n    -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, .1);\n    box-shadow: 2px 2px 5px rgba(0, 0, 0, .1);\n    margin-right: 4px;\n    -webkit-box-sizing: border-box;\n    box-sizing: border-box;\n}\n\n.form-create .form-create .el-form-item {\n    margin-bottom: 22px;\n}\n\n.form-create .form-create .el-form-item .el-form-item {\n    margin-bottom: 0px;\n}\n\n.__fc_h {\n    display: none;\n}\n\n.__fc_v {\n    visibility: hidden;\n}\n\n.fc-files img {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    vertical-align: top;\n}\n\n.fc-upload-btn {\n    border: 1px dashed #c0ccda;\n    cursor: pointer;\n}\n\n.fc-upload .fc-upload-cover {\n    opacity: 0;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    background: rgba(0, 0, 0, .6);\n    -webkit-transition: opacity .3s;\n    -o-transition: opacity .3s;\n    transition: opacity .3s;\n}\n\n.fc-upload .fc-upload-cover i {\n    color: #fff;\n    font-size: 20px;\n    cursor: pointer;\n    margin: 0 2px;\n}\n\n.fc-files:hover .fc-upload-cover {\n    opacity: 1;\n}\n\n.fc-upload .el-upload {\n    display: block;\n}\n\n\n.form-create .el-form-item .el-rate {\n    margin-top: 10px;\n}\n\n.form-create .el-form-item .el-tree {\n    margin-top: 7px;\n}\n\n.fc-hide-btn .el-upload {\n    display: none;\n}\n",
+        style = {
+            "fc-upload-btn": "fc-upload-btn",
+            "fc-files": "fc-files",
+            "form-create": "form-create",
+            "el-form-item": "el-form-item",
+            __fc_h: "__fc_h",
+            __fc_v: "__fc_v",
+            "fc-upload": "fc-upload",
+            "fc-upload-cover": "fc-upload-cover",
+            "el-upload": "el-upload",
+            "el-rate": "el-rate",
+            "el-tree": "el-tree",
+            "fc-hide-btn": "fc-hide-btn"
+        };
+    styleInject(css);
+    var NAME$1 = "fc-elm-frame", frame = {
+        name: NAME$1,
+        props: {
+            type: {type: String, default: "input"},
+            field: {type: String, default: ""},
+            helper: {type: Boolean, default: !0},
+            disabled: {type: Boolean, default: !1},
+            src: {type: String, required: !0},
+            icon: {type: String, default: "el-icon-upload2"},
+            width: {type: String, default: "500px"},
+            height: {type: String, default: "370px"},
+            maxLength: {type: Number, default: 0},
+            okBtnText: {type: String, default: "确定"},
+            closeBtnText: {type: String, default: "关闭"},
+            modalTitle: String,
+            handleIcon: {type: [String, Boolean], default: void 0},
+            title: String,
+            allowRemove: {type: Boolean, default: !0},
+            onOpen: {
+                type: Function, default: function () {
+                }
+            },
+            onOk: {
+                type: Function, default: function () {
+                }
+            },
+            onCancel: {
+                type: Function, default: function () {
+                }
+            },
+            onLoad: {
+                type: Function, default: function () {
+                }
+            },
+            onBeforeRemove: {
+                type: Function, default: function () {
+                }
+            },
+            onRemove: {
+                type: Function, default: function () {
+                }
+            },
+            onHandle: {
+                type: Function, default: function (e) {
+                    this.previewImage = this.getSrc(e), this.previewVisible = !0
+                }
+            },
+            modal: {
+                type: Object, default: function () {
+                    return {}
+                }
+            },
+            srcKey: {type: [String, Number]},
+            value: [Array, String, Number, Object],
+            footer: {type: Boolean, default: !0},
+            reload: {type: Boolean, default: !0},
+            closeBtn: {type: Boolean, default: !0},
+            okBtn: {type: Boolean, default: !0}
+        },
+        data: function () {
+            return {
+                fileList: toArray(this.value),
+                unique: uniqueId(),
+                previewVisible: !1,
+                frameVisible: !1,
+                previewImage: ""
+            }
+        },
+        watch: {
+            value: function (e) {
+                this.fileList = toArray(e)
+            }, fileList: function (e) {
+                var t = 1 === this.maxLength ? e[0] || "" : e;
+                this.$emit("input", t), this.$emit("change", t)
+            }, src: function (e) {
+                this.modalVm && (this.modalVm.src = e)
+            }
+        },
+        methods: {
+            key: function (e) {
+                return NAME$1 + e + this.unique
+            }, closeModel: function (e) {
+                this.$emit(e ? "$close" : "$ok"), this.reload && (this.$off("$ok"), this.$off("$close")), this.frameVisible = !1
+            }, handleCancel: function () {
+                this.previewVisible = !1
+            }, showModel: function () {
+                this.disabled || !1 === this.onOpen() || (this.frameVisible = !0)
+            }, makeInput: function () {
+                var e = this, t = this.$createElement, r = {
+                    type: "text", value: this.fileList.map(function (t) {
+                        return e.getSrc(t)
+                    }).toString(), readonly: !0
+                };
+                return t("ElInput", helper([{}, {props: r}, {key: this.key("input")}]), [this.fileList.length ? t("i", {
+                    slot: "suffix",
+                    class: "el-input__icon el-icon-circle-close",
+                    on: {
+                        click: function () {
+                            return e.fileList = []
+                        }
+                    }
+                }) : null, t("ElButton", helper([{attrs: {icon: this.icon}}, {
+                    on: {
+                        click: function () {
+                            return e.showModel()
+                        }
+                    }
+                }, {slot: "append"}]))])
+            }, makeGroup: function (e) {
+                var t = this.$createElement;
+                return (!this.maxLength || this.fileList.length < this.maxLength) && e.push(this.makeBtn()), t("div", {
+                    class: style["fc-upload"],
+                    key: this.key("group")
+                }, _toConsumableArray(e))
+            }, makeItem: function (e, t) {
+                return (0, this.$createElement)("div", {
+                    class: style["fc-files"],
+                    key: this.key("file" + e)
+                }, _toConsumableArray(t))
+            }, valid: function (e) {
+                if (e !== this.field) throw new Error("frame 无效的字段值")
+            }, makeIcons: function (e, t) {
+                var r = this.$createElement;
+                if (!1 !== this.handleIcon || !0 === this.allowRemove) {
+                    var n = [];
+                    return ("file" !== this.type && !1 !== this.handleIcon || "file" === this.type && this.handleIcon) && n.push(this.makeHandleIcon(e, t)), this.allowRemove && n.push(this.makeRemoveIcon(e, t)), r("div", {
+                        class: style["fc-upload-cover"],
+                        key: this.key("uc")
+                    }, [n])
+                }
+            }, makeHandleIcon: function (e, t) {
+                var r = this;
+                return (0, this.$createElement)("i", {
+                    class: !0 === this.handleIcon || void 0 === this.handleIcon ? "el-icon-view" : this.handleIcon,
+                    on: {
+                        click: function () {
+                            return r.handleClick(e)
+                        }
+                    },
+                    key: this.key("hi" + t)
+                })
+            }, makeRemoveIcon: function (e, t) {
+                var r = this;
+                return (0, this.$createElement)("i", {
+                    class: "el-icon-delete",
+                    on: {
+                        click: function () {
+                            return r.handleRemove(e)
+                        }
+                    },
+                    key: this.key("ri" + t)
+                })
+            }, makeFiles: function () {
+                var e = this, t = this.$createElement;
+                return this.makeGroup(this.fileList.map(function (r, n) {
+                    return e.makeItem(n, [t("i", {
+                        class: "el-icon-tickets",
+                        on: {
+                            click: function () {
+                                return e.handleClick(r)
+                            }
+                        }
+                    }), e.makeIcons(r, n)])
+                }))
+            }, makeImages: function () {
+                var e = this, t = this.$createElement;
+                return this.makeGroup(this.fileList.map(function (r, n) {
+                    return e.makeItem(n, [t("img", {attrs: {src: e.getSrc(r)}}), e.makeIcons(r, n)])
+                }))
+            }, makeBtn: function () {
+                var e = this, t = this.$createElement;
+                return t("div", {
+                    class: style["fc-upload-btn"], on: {
+                        click: function () {
+                            return e.showModel()
+                        }
+                    }, key: this.key("btn")
+                }, [t("i", {class: this.icon})])
+            }, handleClick: function (e) {
+                if (!this.disabled) return this.onHandle(e)
+            }, handleRemove: function (e) {
+                this.disabled || !1 !== this.onBeforeRemove(e) && (this.fileList.splice(this.fileList.indexOf(e), 1), this.onRemove(e))
+            }, getSrc: function (e) {
+                return isUndef(this.srcKey) ? e : e[this.srcKey]
+            }, frameLoad: function (e) {
+                var t = this;
+                this.onLoad(e);
+                try {
+                    if (!0 === this.helper) e.currentTarget.contentWindow.form_create_helper = {
+                        close: function (e) {
+                            t.valid(e), t.closeModel()
+                        }, set: function (e, r) {
+                            t.valid(e), t.disabled || t.$emit("input", r)
+                        }, get: function (e) {
+                            return t.valid(e), t.value
+                        }, onOk: function (e) {
+                            return t.$on("$ok", e)
+                        }, onClose: function (e) {
+                            return t.$on("$close", e)
+                        }
+                    }
+                } catch (e) {
+                    console.log(e)
+                }
+            }, makeFooter: function () {
+                var e = this, t = this.$createElement, r = this.$props, n = r.okBtnText,
+                    i = r.closeBtnText, o = r.closeBtn, a = r.okBtn;
+                if (r.footer) return t("div", {slot: "footer"}, [o ? t("ElButton", {
+                    on: {
+                        click: function () {
+                            return !1 !== e.onCancel() && e.closeModel(!0)
+                        }
+                    }
+                }, [i]) : null, a ? t("ElButton", {
+                    attrs: {type: "primary"},
+                    on: {
+                        click: function () {
+                            return !1 !== e.onOk() && e.closeModel()
+                        }
+                    }
+                }, [n]) : null])
+            }
+        },
+        render: function () {
+            var e, t = this, r = arguments[0], n = this.type;
+            e = "input" === n ? this.makeInput() : "image" === n ? this.makeImages() : this.makeFiles();
+            var i = this.$props, o = i.width, a = void 0 === o ? "30%" : o, s = i.height, u = i.src,
+                l = i.title;
+            return r("div", [e, r("el-dialog", {
+                attrs: {
+                    title: i.modalTitle,
+                    visible: this.previewVisible
+                }, on: {close: this.handleCancel}
+            }, [r("img", {
+                attrs: {alt: "example", src: this.previewImage},
+                style: "width: 100%"
+            })]), r("el-dialog", helper([{}, {
+                props: _objectSpread2({
+                    width: a,
+                    title: l
+                }, this.modal)
+            }, {
+                attrs: {visible: this.frameVisible}, on: {
+                    close: function () {
+                        return t.closeModel(!0)
+                    }
+                }
+            }]), [this.frameVisible || !this.reload ? r("iframe", {
+                attrs: {
+                    src: u,
+                    frameBorder: "0"
+                }, style: {height: s, border: "0 none", width: "100%"}, on: {load: this.frameLoad}
+            }) : null, this.makeFooter()])])
+        }
+    }, NAME$2 = "fc-elm-radio", radio = {
+        name: NAME$2, functional: !0, props: {
+            options: {
+                type: Array, default: function () {
+                    return []
+                }
+            }, type: String, unique: {
+                default: function () {
+                    return uniqueId()
+                }
+            }
+        }, render: function (e, t) {
+            return e("ElRadioGroup", helper([{}, t.data]), [t.props.options.map(function (r, n) {
+                var i = _objectSpread2({}, r),
+                    o = "button" === t.props.type ? "ElRadioButton" : "ElRadio";
+                return delete i.value, e(o, {
+                    props: _objectSpread2({}, i),
+                    key: NAME$2 + o + n + t.unique
+                })
+            }).concat(t.chlidren)])
+        }
+    }, NAME$3 = "fc-elm-select", select = {
+        name: NAME$3,
+        functional: !0,
+        props: {
+            options: {
+                type: Array, default: function () {
+                    return []
+                }
+            }, unique: {
+                default: function () {
+                    return uniqueId()
+                }
+            }
+        },
+        render: function (e, t) {
+            return e("ElSelect", helper([{}, t.data]), [t.props.options.map(function (r, n) {
+                var i = r.slot ? toDefSlot(r.slot, e) : [];
+                return e("ElOption", {
+                    props: _objectSpread2({}, r),
+                    key: NAME$3 + n + t.props.unique
+                }, [i])
+            }).concat(t.chlidren)])
+        }
+    }, tree = {
+        name: "fc-elm-tree", props: {
+            ctx: {
+                type: Object, default: function () {
+                    return {props: {}}
+                }
+            },
+            children: {
+                type: Array, default: function () {
+                    return []
+                }
+            },
+            type: {type: String, default: "checked"},
+            value: {
+                type: [Array, String, Number], default: function () {
+                    return []
+                }
+            }
+        }, watch: {
+            value: function () {
+                this.setValue()
+            }
+        }, methods: {
+            makeTree: function () {
+                var e = this;
+                return (0, this.$createElement)("ElTree", helper([{
+                    ref: "tree",
+                    on: {
+                        "check-change": function () {
+                            return e.updateValue()
+                        }, "node-click": function () {
+                            return e.updateValue()
+                        }
+                    }
+                }, this.ctx]), [this.children])
+            }, onChange: function () {
+                this.updateValue()
+            }, updateValue: function () {
+                var e;
+                e = "selected" === this.type.toLocaleLowerCase() ? this.$refs.tree.getCurrentKey() : this.$refs.tree.getCheckedKeys(), this.$emit("input", e)
+            }, setValue: function () {
+                "selected" === this.type.toLocaleLowerCase() ? this.$refs.tree.setCurrentKey(this.value) : this.$refs.tree.setCheckedKeys(toArray(this.value))
+            }
+        }, render: function () {
+            return this.makeTree()
+        }, mounted: function () {
+            this.setValue(), this.updateValue()
+        }
+    };
+
+    function parseFile(e) {
+        return {url: e, name: getFileName(e)}
+    }
+
+    function getFileName(e) {
+        return toString$1(e).split("/").pop()
+    }
+
+    var NAME$4 = "fc-elm-upload", upload = {
+        name: NAME$4, props: {
+            ctx: {
+                type: Object, default: function () {
+                    return {props: {}}
+                }
+            },
+            children: {
+                type: Array, default: function () {
+                    return []
+                }
+            },
+            onHandle: {
+                type: Function, default: function (e) {
+                    this.previewImage = e.url, this.previewVisible = !0
+                }
+            },
+            uploadType: {type: String, default: "file"},
+            maxLength: {type: Number, default: 0},
+            allowRemove: {type: Boolean, default: !0},
+            modalTitle: String,
+            handleIcon: [String, Boolean],
+            value: [Array, String]
+        }, data: function () {
+            return {uploadList: [], unique: uniqueId(), previewVisible: !1, previewImage: ""}
+        }, created: function () {
+            void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = !1), this.ctx.props.fileList = toArray(this.value).map(parseFile)
+        }, watch: {
+            value: function (e) {
+                this.$refs.upload.uploadFiles.every(function (e) {
+                    return !e.status || "success" === e.status
+                }) && (this.$refs.upload.uploadFiles = toArray(e).map(parseFile), this.uploadList = this.$refs.upload.uploadFiles)
+            }, maxLength: function (e, t) {
+                1 !== t && 1 !== e || this.update()
+            }
+        }, methods: {
+            key: function (e) {
+                return NAME$4 + e + this.unique
+            }, isDisabled: function () {
+                return !0 === this.ctx.props.disabled
+            }, onRemove: function (e) {
+                this.isDisabled() || this.$refs.upload.handleRemove(e)
+            }, handleClick: function (e) {
+                this.isDisabled() || this.onHandle(e)
+            }, makeDefaultBtn: function () {
+                var e = this.$createElement;
+                return e("div", {class: style["fc-upload-btn"]}, [e("i", {class: "el-icon-upload2"})])
+            }, makeItem: function (e, t) {
+                var r = this.$createElement;
+                return "image" === this.uploadType ? r("img", {
+                    attrs: {src: e.url},
+                    key: this.key("img" + t)
+                }) : r("i", {class: "el-icon-tickets", key: this.key("i" + t)})
+            }, makeRemoveIcon: function (e, t) {
+                var r = this;
+                return (0, this.$createElement)("i", {
+                    class: "el-icon-delete",
+                    on: {
+                        click: function () {
+                            return r.onRemove(e)
+                        }
+                    },
+                    key: this.key("ri" + t)
+                })
+            }, makeHandleIcon: function (e, t) {
+                var r = this;
+                return (0, this.$createElement)("i", {
+                    class: !0 === this.handleIcon || void 0 === this.handleIcon ? "el-icon-view" : this.handleIcon,
+                    on: {
+                        click: function () {
+                            return r.handleClick(e)
+                        }
+                    },
+                    key: this.key("hi" + t)
+                })
+            }, makeProgress: function (e, t) {
+                return (0, this.$createElement)("ElProgress", helper([{}, {
+                    props: {
+                        percentage: e.percentage,
+                        type: "circle",
+                        width: 52
+                    }
+                }, {style: "margin-top:2px;", key: this.key("pg" + t)}]))
+            }, makeIcons: function (e, t) {
+                var r = this.$createElement, n = [];
+                if (this.allowRemove || !1 !== this.handleIcon) return ("file" !== this.uploadType && !1 !== this.handleIcon || "file" === this.uploadType && this.handleIcon) && n.push(this.makeHandleIcon(e, t)), this.allowRemove && n.push(this.makeRemoveIcon(e, t)), r("div", {class: style["fc-upload-cover"]}, [n])
+            }, makeFiles: function () {
+                var e = this, t = this.$createElement;
+                return this.uploadList.map(function (r, n) {
+                    return t("div", {
+                        key: e.key(n),
+                        class: style["fc-files"]
+                    }, [void 0 !== r.percentage && "success" !== r.status ? e.makeProgress(r, n) : [e.makeItem(r, n), e.makeIcons(r, n)]])
+                })
+            }, makeUpload: function () {
+                return (0, this.$createElement)("ElUpload", helper([{
+                    ref: "upload",
+                    style: {display: "inline-block"}
+                }, this.ctx, {key: this.key("upload")}]), [this.children])
+            }, initChildren: function () {
+                hasSlot(this.children, "default") || this.children.push(this.makeDefaultBtn())
+            }, update: function () {
+                var e = this.$refs.upload.uploadFiles.map(function (e) {
+                    return e.url
+                }).filter(function (e) {
+                    return void 0 !== e
+                });
+                this.$emit("input", 1 === this.maxLength ? e[0] || "" : e)
+            }, handleCancel: function () {
+                this.previewVisible = !1
+            }
+        }, render: function () {
+            var e, t = arguments[0], r = !this.maxLength || this.maxLength > this.uploadList.length;
+            return this.$refs.upload && (void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = this.$refs.upload.showFileList), this.ctx.props.fileList = this.$refs.upload.fileList), this.initChildren(), t("div", {class: (e = {}, _defineProperty(e, style["fc-upload"], !0), _defineProperty(e, style["fc-hide-btn"], !r), e)}, [[this.ctx.props.showFileList ? [] : this.makeFiles(), this.makeUpload()], t("el-dialog", {
+                attrs: {
+                    title: this.modalTitle,
+                    visible: this.previewVisible
+                }, on: {close: this.handleCancel}
+            }, [t("img", {
+                attrs: {alt: "example", src: this.previewImage},
+                style: "width: 100%"
+            })])])
+        }, mounted: function () {
+            var e = this;
+            this.uploadList = this.$refs.upload.uploadFiles, this.$watch(function () {
+                return e.$refs.upload.uploadFiles
+            }, function () {
+                e.update()
+            }, {deep: !0})
         }
     }, formCreateName = "FormCreate";
 
@@ -351,11 +873,7 @@
             name: formCreateName,
             componentName: formCreateName,
             props: {
-                rule: {
-                    type: Array, required: !0, default: function () {
-                        return {}
-                    }
-                }, option: {
+                rule: {type: Array, required: !0}, option: {
                     type: Object, default: function () {
                         return {}
                     }, required: !1
@@ -381,7 +899,7 @@
                 }, _resetProps: function (e) {
                     this.$set(this, "resetProps", deepExtend(this.resetProps, e))
                 }, _refresh: function () {
-                    this.unique += 1
+                    ++this.unique
                 }
             },
             watch: {
@@ -405,21 +923,29 @@
         }
     }
 
+    var normalMerge$1 = ["attrs", "props", "domProps"],
+        toArrayMerge$1 = ["class", "style", "directives"], functionalMerge$1 = ["on", "nativeOn"],
+        mergeJsxProps$1 = function (e, t) {
+            return e.reduce(function (e, t) {
+                for (var r in t) if (e[r]) if (-1 !== normalMerge$1.indexOf(r)) e[r] = _objectSpread2({}, e[r], {}, t[r]); else if (-1 !== toArrayMerge$1.indexOf(r)) {
+                    var n = e[r] instanceof Array ? e[r] : [e[r]],
+                        i = t[r] instanceof Array ? t[r] : [t[r]];
+                    e[r] = [].concat(_toConsumableArray(n), _toConsumableArray(i))
+                } else if (-1 !== functionalMerge$1.indexOf(r)) for (var o in t[r]) if (e[r][o]) {
+                    var a = e[r][o] instanceof Array ? e[r][o] : [e[r][o]],
+                        s = t[r][o] instanceof Array ? t[r][o] : [t[r][o]];
+                    e[r][o] = [].concat(_toConsumableArray(a), _toConsumableArray(s))
+                } else e[r][o] = t[r][o]; else if ("hook" === r) for (var u in t[r]) e[r][u] ? e[r][u] = mergeFn$1(e[r][u], t[r][u]) : e[r][u] = t[r][u]; else e[r] = t[r]; else e[r] = t[r];
+                return e
+            }, t)
+        }, mergeFn$1 = function (e, t) {
+            return function () {
+                e && e.apply(this, arguments), t && t.apply(this, arguments)
+            }
+        };
+
     function defVData() {
-        return {
-            class: {},
-            style: {},
-            attrs: {},
-            props: {},
-            domProps: {},
-            on: {},
-            nativeOn: {},
-            directives: [],
-            scopedSlots: {},
-            slot: void 0,
-            key: void 0,
-            ref: void 0
-        }
+        return {props: {}, on: {}}
     }
 
     var VData = function () {
@@ -428,16 +954,13 @@
             }
 
             return _createClass(e, [{
-                key: "class", value: function (e) {
-                    var t = this,
-                        r = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
-                    return isUndef(e) ? this : (Array.isArray(e) ? e.forEach(function (e) {
-                        $set(t._data.class, toString$1(e), !0)
-                    }) : isPlainObject(e) ? $set(this._data, "class", extend(this._data.class, e)) : $set(this._data.class, toString$1(e), void 0 === r || r), this)
+                key: "merge", value: function (e) {
+                    return mergeJsxProps$1([e], this._data), this
                 }
             }, {
-                key: "directives", value: function (e) {
-                    return isUndef(e) ? this : ($set(this._data, "directives", this._data.directives.concat(toArray(e))), this)
+                key: "class", value: function (e) {
+                    var t = !(arguments.length > 1 && void 0 !== arguments[1]) || arguments[1];
+                    return isUndef(e) ? this : (Array.isArray(e) ? this.merge({class: e}) : isPlainObject(e) ? this.merge(e) : this.merge({class: _defineProperty({}, toString$1(e), !!t)}), this)
                 }
             }, {
                 key: "init", value: function () {
@@ -447,13 +970,23 @@
                 key: "get", value: function () {
                     var e = this, t = Object.keys(this._data).reduce(function (t, r) {
                         var n = e._data[r];
-                        return void 0 === n ? t : Array.isArray(n) && !n.length ? t : Object.keys(n).length || "props" === r ? (t[r] = n, t) : t
+                        return void 0 === n ? t : Array.isArray(n) && !n.length ? t : isPlainObject(n) && !Object.keys(n).length && "props" !== r ? t : (t[r] = n, t)
                     }, {});
                     return this.init(), t
                 }
             }]), e
         }(), keyList = ["ref", "key", "slot"],
-        objList = ["scopedSlots", "nativeOn", "on", "domProps", "props", "attrs", "style"];
+        objList = ["scopedSlots", "nativeOn", "on", "domProps", "props", "attrs", "style", "directives"];
+    keyList.forEach(function (e) {
+        VData.prototype[e] = function (t) {
+            return this.merge(_defineProperty({}, e, t)), this
+        }
+    }), objList.forEach(function (e) {
+        VData.prototype[e] = function (t, r) {
+            return isUndef(t) ? this : (isPlainObject(t) ? this.merge(_defineProperty({}, e, t)) : this.merge(_defineProperty({}, e, _defineProperty({}, toString$1(t), r))), this)
+        }
+    });
+    var vdataField = objList.concat(keyList, "class");
 
     function baseRule() {
         return {
@@ -461,6 +994,7 @@
             options: [],
             col: {},
             children: [],
+            control: [],
             emit: [],
             template: void 0,
             emitPrefix: void 0,
@@ -478,36 +1012,32 @@
 
     function creatorTypeFactory(e, t) {
         var r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : "type";
-        return function (n, i, a) {
-            var o = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {},
-                s = new Creator(e, n, i, a, o);
+        return function (n, i, o) {
+            var a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : {},
+                s = new Creator(e, n, i, o, a);
             return isFunction(t) ? t(s) : s.props(r, t), s
         }
     }
 
-    keyList.forEach(function (e) {
-        VData.prototype[e] = function (t) {
-            return $set(this._data, e, t), this
-        }
-    }), objList.forEach(function (e) {
-        VData.prototype[e] = function (t, r) {
-            return isUndef(t) ? this : (isPlainObject(t) ? $set(this._data, e, extend(this._data[e], t)) : $set(this._data[e], toString$1(t), r), this)
-        }
-    });
     var Creator = function (e) {
             function t(e, r, n, i) {
-                var a, o = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : {};
-                return _classCallCheck(this, t), extend((a = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this)))._data, baseRule()), extend(a._data, {
+                var o, a = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : {};
+                return _classCallCheck(this, t), extend((o = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this)))._data, baseRule()), extend(o._data, {
                     type: e,
                     title: r,
                     field: n,
                     value: i
-                }), isPlainObject(o) && a.props(o), a
+                }), isPlainObject(a) && o.props(a), o
             }
 
             return _inherits(t, VData), _createClass(t, [{
                 key: "type", value: function (e) {
                     return this.props("type", e), this
+                }
+            }, {
+                key: "_clone", value: function () {
+                    var e = new this.constructor;
+                    return e._data = deepExtend({}, this._data), e
                 }
             }, {
                 key: "getRule", value: function () {
@@ -519,7 +1049,7 @@
                 }
             }]), t
         }(),
-        keyAttrs = ["emitPrefix", "className", "value", "name", "title", "native", "info", "hidden", "visibility"];
+        keyAttrs = ["emitPrefix", "className", "value", "name", "title", "native", "info", "hidden", "visibility", "inject", "model"];
     keyAttrs.forEach(function (e) {
         Creator.prototype[e] = function (t) {
             return $set(this._data, e, t), this
@@ -531,26 +1061,37 @@
             return $set(this._data, e, extend(this._data[e], t)), this
         }
     });
-    var arrAttrs = ["validate", "options", "children", "emit"];
+    var arrAttrs = ["validate", "options", "children", "emit", "control"];
+    arrAttrs.forEach(function (e) {
+        Creator.prototype[e] = function (t) {
+            return Array.isArray(t) || (t = [t]), $set(this._data, e, this._data[e].concat(t)), this
+        }
+    });
+    var PREFIX = "[[FORM-CREATE-PREFIX-", SUFFIX = "-FORM-CREATE-SUFFIX]]";
 
     function toJson(e) {
-        return JSON.stringify(e, function (e, t) {
-            if (t instanceof Creator) return t.getRule();
+        return JSON.stringify(deepExtend([], e, !0), function (e, t) {
             if (!t || !0 !== t._isVue) {
                 if ("function" != typeof t) return t;
-                if (t.__inject && (t = t.__origin), !t.__emit) return "" + t
+                if (t.__inject && (t = t.__origin), !t.__emit) return PREFIX + t + SUFFIX
             }
         })
     }
 
-    function parseJson(json) {
-        return JSON.parse(json, function (k, v) {
-            if (v.indexOf && v.indexOf("function") > -1) try {
-                return eval("(function(){return " + v + " })()")
+    function makeFn(fn) {
+        return eval("(function(){return " + fn + " })()")
+    }
+
+    function parseJson(e, t) {
+        return JSON.parse(e, function (e, r) {
+            if (isUndef(r) || !r.indexOf) return r;
+            try {
+                if (r.indexOf(SUFFIX) > 0 && 0 === r.indexOf(PREFIX)) return makeFn(-1 === (r = r.replace(SUFFIX, "").replace(PREFIX, "")).indexOf("function") && 0 !== r.indexOf("(") ? "function " + r : r);
+                if (!t && r.indexOf("function") > -1) return makeFn(r)
             } catch (e) {
-                return void console.error("[form-create]解析失败:".concat(v))
+                return void console.error("[form-create]解析失败:".concat(r))
             }
-            return v
+            return r
         })
     }
 
@@ -558,22 +1099,14 @@
         return {value: e, enumerable: !1, configurable: !1}
     }
 
-    function copyRule(e) {
-        return copyRules([e])[0]
+    function copyRule(e, t) {
+        return copyRules([e], t)[0]
     }
 
-    function copyRules(e) {
-        return e.map(function (e) {
-            return isString(e) ? e : (isFunction(e.getRule) ? ((t = new Creator)._data = _objectSpread2({}, e._data), t._data.field && void 0 === t._data.value && t.value(null), isValidChildren(t._data.children) && (t._data.children = copyRules(t._data.children))) : ((t = _objectSpread2({}, e)).field && void 0 === t.value && (t.value = null), isValidChildren(t.children) && (t.children = copyRules(t.children))), t);
-            var t
-        })
+    function copyRules(e, t) {
+        return deepExtend([], e, t)
     }
 
-    arrAttrs.forEach(function (e) {
-        Creator.prototype[e] = function (t) {
-            return Array.isArray(t) || (t = [t]), $set(this._data, e, this._data[e].concat(t)), this
-        }
-    });
     var commonMaker = creatorFactory("");
 
     function create(e, t, r) {
@@ -669,9 +1202,11 @@
                 })
             }
         }]), e
-    }(), BaseParser = function () {
+    }();
+    VNode.use({fragment: "fcFragment"});
+    var BaseParser = function () {
         function e(t, r, n) {
-            _classCallCheck(this, e), this.rule = r, this.vData = new VData, this.vNode = new VNode, this.id = n, this.watch = [], this.originType = r.type, this.type = toString$1(r.type).toLocaleLowerCase(), this.isDef = !0, this.el = void 0, r.field ? this.field = r.field : (this.field = "_def_" + uniqueId(), this.isDef = !1), this.name = r.name, this.unique = "fc_" + n, this.key = "key_" + n, this.refName = "__" + this.field + this.id, this.formItemRefName = "fi" + this.refName, this.update(t), this.init()
+            _classCallCheck(this, e), this.rule = r, this.vData = new VData, this.vNode = new VNode, this.id = n, this.watch = [], this.originType = r.type, this.type = toString$1(r.type).toLocaleLowerCase(), this.isDef = !0, this.el = void 0, r.field ? this.field = r.field : (this.field = "_def_" + uniqueId(), this.isDef = !1), this.name = r.name, this.key = "key_" + n, this.refName = "__" + this.field + this.id, this.formItemRefName = "fi" + this.refName, this.root = [], this.ctrlRule = null, this.modelEvent = "input", this.update(t), this.init()
         }
 
         return _createClass(e, [{
@@ -737,8 +1272,7 @@
                 if (this.vm.isShow) {
                     this.$form.beforeRender();
                     var t = this.$handle.sortList.map(function (t) {
-                        var r = e.$handle.parsers[t];
-                        if ("hidden" !== r.type) return e.renderParser(r)
+                        return e.renderParser(e.$handle.parsers[t])
                     }).filter(function (e) {
                         return void 0 !== e
                     });
@@ -757,13 +1291,13 @@
                 var t = this, r = e.id, n = e.rule, i = e.key;
                 if (isUndef(_vue.compile)) return console.error("使用的 Vue 版本不支持 compile" + errMsg()), [];
                 if (!this.renderList[r]) {
-                    var a = n.vm;
-                    isUndef(n.vm) ? a = new _vue : isFunction(n.vm) && (a = n.vm(this.$handle.getInjectData(n))), this.renderList[r] = {
-                        vm: a,
+                    var o = n.vm;
+                    isUndef(n.vm) ? o = new _vue : isFunction(n.vm) && (o = n.vm(this.$handle.getInjectData(n))), this.renderList[r] = {
+                        vm: o,
                         template: _vue.compile(n.template)
                     }
                 }
-                var o = this.renderList[r], s = o.vm, u = o.template;
+                var a = this.renderList[r], s = a.vm, u = a.template;
                 setTemplateProps(s, e, this.$handle.fCreateApi), s.$off("input"), s.$on("input", function (r) {
                     t.onInput(e, r)
                 });
@@ -772,23 +1306,26 @@
             }
         }, {
             key: "renderParser", value: function (e, t) {
-                if (e.vData.get(), this.setGlobalConfig(e), !this.cache[e.id] || "template" === e.type) {
-                    var r, n = e.type, i = e.rule, a = this.$form;
-                    if ("template" === n && i.template) {
-                        if (r = this.renderTemplate(e), t && isUndef(i.native)) return this.setCache(e, r, t), r
-                    } else if (this.$handle.isNoVal(e)) {
-                        if (r = this.defaultRender(e, this.renderChildren(e)), t && isUndef(i.native)) return this.setCache(e, r, t), r
-                    } else {
-                        var o = this.renderChildren(e);
-                        r = e.render ? e.render(o) : this.defaultRender(e, o)
+                if ("hidden" !== e.type) {
+                    if (!this.cache[e.id] || "template" === e.type) {
+                        e.vData.get(), this.setGlobalConfig(e);
+                        var r, n = e.type, i = e.rule, o = this.$form;
+                        if ("template" === n && i.template) {
+                            if (r = this.renderTemplate(e), t && isUndef(i.native)) return this.setCache(e, r, t), r
+                        } else if (this.$handle.isNoVal(e)) {
+                            if (r = this.defaultRender(e, this.renderChildren(e)), t && isUndef(i.native)) return this.setCache(e, r, t), r
+                        } else {
+                            var a = this.renderChildren(e);
+                            r = e.render ? e.render(a) : this.defaultRender(e, a)
+                        }
+                        return !0 !== i.native && (r = o.container(r, e)), this.setCache(e, r, t), r
                     }
-                    return !0 !== i.native && (r = a.container(r, e)), this.setCache(e, r, t), r
+                    return this.getCache(e)
                 }
-                return this.getCache(e)
             }
         }, {
             key: "toData", value: function (e, t) {
-                return Object.keys(e.vData._data).forEach(function (r) {
+                return vdataField.forEach(function (r) {
                     void 0 !== t[r] && e.vData[r](t[r])
                 }), e.vData
             }
@@ -800,12 +1337,12 @@
             key: "inputVData", value: function (e, t) {
                 var r = this, n = e.refName, i = e.key;
                 this.parserToData(e);
-                var a = e.vData.ref(n).key("fc_item" + i).props("formCreate", this.$handle.fCreateApi).on("fc.subForm", function (t) {
+                var o = e.vData.ref(n).key("fc_item" + i).props("formCreate", this.$handle.fCreateApi).on("fc.subForm", function (t) {
                     return r.$handle.addSubForm(e, t)
-                });
-                return t || a.on("input", function (t) {
+                }), a = this.$handle.modelEvent(e);
+                return t || o.on(a.event || a, function (t) {
                     r.onInput(e, t)
-                }).props("value", this.$handle.getFormData(e)), this.$form.inputVData && this.$form.inputVData(e, t), a
+                }).props(a.prop || "value", this.$handle.getFormData(e)), this.$form.inputVData && this.$form.inputVData(e, t), o
             }
         }, {
             key: "onInput", value: function (e, t) {
@@ -817,7 +1354,7 @@
                 return isValidChildren(r) ? (this.orgChildren[e.id].forEach(function (e) {
                     -1 === r.indexOf(e) && !isString(e) && e.__fc__ && t.$handle.removeField(e.__fc__)
                 }), r.map(function (r) {
-                    return isString(r) ? r : r.__fc__ ? t.renderParser(r.__fc__, e) : void(r.type && $de(function () {
+                    return isString(r) ? r : r.__fc__ ? t.renderParser(r.__fc__, e) : void(!t.$handle.isset(r) && r.type && $de(function () {
                         return t.$handle.reloadRule()
                     }))
                 })) : (n.forEach(function (e) {
@@ -826,7 +1363,8 @@
             }
         }, {
             key: "defaultRender", value: function (e, t) {
-                return this.vNode[e.type] ? this.vNode[e.type](this.inputVData(e), t) : this.vNode[e.originType] ? this.vNode[e.originType](this.inputVData(e), t) : this.vNode.make(e.originType, this.inputVData(e), t)
+                var r = this.inputVData(e);
+                return this.vNode[e.type] ? this.vNode[e.type](r, t) : this.vNode[e.originType] ? this.vNode[e.originType](r, t) : this.vNode.make(e.originType, r, t)
             }
         }]), e
     }();
@@ -869,9 +1407,7 @@
             }, removeField: function (t) {
                 var r = e.getParser(t);
                 if (r) {
-                    var n = r.root.map(function (e) {
-                        return e.__field__
-                    }).indexOf(t);
+                    var n = r.root.indexOf(r.rule.__origin__);
                     if (-1 !== n) return r.root.splice(n, 1), -1 === e.sortList.indexOf(r.id) && this.reload(), r.rule.__origin__
                 }
             }, destroy: function () {
@@ -879,15 +1415,15 @@
             }, fields: function () {
                 return e.fields()
             }, append: function (t, r, n) {
-                var i = Object.keys(e.fieldList), a = e.sortList.length, o = e.rules;
-                if (t.field && -1 !== i.indexOf(t.field)) return console.error("".concat(t.field, " 字段已存在") + errMsg());
+                var i, o = Object.keys(e.fieldList), a = e.sortList.length;
+                if (t.field && -1 !== o.indexOf(t.field)) return console.error("".concat(t.field, " 字段已存在") + errMsg());
                 var s = e.getParser(r);
-                s && (n ? (o = s.rule.children, a = s.rule.children.length) : a = s.root.indexOf(s.rule.__origin__)), o.splice(a + 1, 0, t)
+                s ? n ? (i = s.rule.children, a = s.rule.children.length) : (a = s.root.indexOf(s.rule.__origin__), i = s.root) : i = e.rules, i.splice(a + 1, 0, t)
             }, prepend: function (t, r, n) {
-                var i = Object.keys(e.fieldList), a = 0, o = e.rules;
-                if (t.field && -1 !== i.indexOf(t.field)) return console.error("".concat(t.field, " 字段已存在") + errMsg());
+                var i, o = Object.keys(e.fieldList), a = 0;
+                if (t.field && -1 !== o.indexOf(t.field)) return console.error("".concat(t.field, " 字段已存在") + errMsg());
                 var s = e.getParser(r);
-                s && (n ? o = s.rule.children : a = s.root.indexOf(s.rule.__origin__)), o.splice(a, 0, t)
+                s ? n ? i = s.rule.children : (a = s.root.indexOf(s.rule.__origin__), i = s.root) : i = e.rules, i.splice(a, 0, t)
             }, hidden: function (r, n) {
                 t(n, !0).forEach(function (t) {
                     var n = e.getParser(t);
@@ -942,7 +1478,7 @@
             }, updateOptions: function (t) {
                 deepExtend(e.options, t), this.refresh(!0)
             }, onSubmit: function (e) {
-                this.options({onSubmit: e})
+                this.updateOptions({onSubmit: e})
             }, sync: function (t) {
                 var r = e.getParser(t);
                 r && (e.$render.clearCache(r, !0), e.refresh())
@@ -979,8 +1515,7 @@
                 var r = this.el(e);
                 if (!r || !r[t]) throw new Error("方法不存在" + errMsg());
                 return function () {
-                    for (var e = arguments.length, n = new Array(e), i = 0; i < e; i++) n[i] = arguments[i];
-                    r[t](n)
+                    return r[t].apply(r, arguments)
                 }
             }, toJson: function () {
                 return toJson(this.rule)
@@ -994,13 +1529,13 @@
                 var t;
                 (t = e.vm).$off.apply(t, arguments)
             }, trigger: function (e, t) {
-                for (var r = this.el(e), n = arguments.length, i = new Array(n > 2 ? n - 2 : 0), a = 2; a < n; a++) i[a - 2] = arguments[a];
+                for (var r = this.el(e), n = arguments.length, i = new Array(n > 2 ? n - 2 : 0), o = 2; o < n; o++) i[o - 2] = arguments[o];
                 r && r.$emit.apply(r, [t].concat(i))
             }, el: function (t) {
                 var r = e.getParser(t);
                 if (r) return r.el
             }, validate: function (t) {
-                var r, n = this, i = !1, a = _objectSpread2({}, {
+                var r, n = this, i = !1, o = _objectSpread2({}, {
                     ___this: {
                         validate: function (t) {
                             e.$form.validate(function (e) {
@@ -1008,11 +1543,14 @@
                             })
                         }
                     }
-                }, {}, e.subForm), o = Object.keys(a), s = o.length, u = function (e, a) {
-                    e ? r > 1 ? r-- : s > 1 ? s-- : t(!0) : (i || (t(!1), i = !0), a && n.clearValidateState(a, !1))
+                }, {}, e.subForm), a = Object.keys(o).filter(function (e) {
+                    var t = o[e];
+                    return Array.isArray(t) ? t.length : !isUndef(t)
+                }), s = a.length, u = function (e, o) {
+                    e ? r > 1 ? r-- : s > 1 ? s-- : t(!0) : (i || (t(!1), i = !0), o && n.clearValidateState(o, !1))
                 };
-                o.forEach(function (e) {
-                    var t = a[e];
+                a.forEach(function (e) {
+                    var t = o[e];
                     Array.isArray(t) ? (r = t.length, t.forEach(function (t) {
                         t.validate(function (t) {
                             return u(t, e)
@@ -1025,14 +1563,14 @@
                 var n = e.fieldList;
                 t(r, !0).forEach(function (t) {
                     var r = n[t];
-                    r && "hidden" !== r.type && (e.vm.$refs[r.formItemRefName].resetField(), e.$render.clearCache(r, !0))
+                    r && "hidden" !== r.type && (e.$form.resetField(r), e.refreshControl(r), e.$render.clearCache(r, !0))
                 })
             }, submit: function (t, r) {
                 var n = this;
                 this.validate(function (i) {
                     if (i) {
-                        var a = n.formData();
-                        isFunction(t) ? t(a, n) : (e.options.onSubmit && e.options.onSubmit(a, n), e.fc.$emit("on-submit", a, n))
+                        var o = n.formData();
+                        isFunction(t) ? t(o, n) : (e.options.onSubmit && e.options.onSubmit(o, n), e.fc.$emit("on-submit", o, n))
                     } else r && r(n)
                 })
             }, clearValidateState: function (r) {
@@ -1041,10 +1579,7 @@
                 t(r).forEach(function (t) {
                     i && n.clearSubValidateState(t);
                     var r = e.fieldList[t];
-                    if (r) {
-                        var a = e.vm.$refs[r.formItemRefName];
-                        a && (a.validateMessage = "", a.validateState = "")
-                    }
+                    r && e.$form.clearValidateState(r)
                 })
             }, clearSubValidateState: function (r) {
                 t(r).forEach(function (t) {
@@ -1091,13 +1626,22 @@
     var Handle = function () {
         function e(t) {
             _classCallCheck(this, e);
-            var r = t.vm, n = t.rules, i = t.options;
-            this.watching = !1, this.vm = r, this.fc = t, this.id = uniqueId(), this.options = i, this.validate = {}, this.formData = {}, this.subForm = {}, this.fCreateApi = void 0, this.__init(n), this.$form = new t.drive.formRender(this, this.id), this.$render = new Render(this), this.loadRule(this.rules, !1), this.$render.initOrgChildren(), this.$form.init()
+            var r = this.fc = t, n = r.vm, i = r.rules, o = r.options;
+            this.watching = !1, this.vm = n, this.options = o, this.validate = {}, this.formData = {}, this.subForm = {}, this.fCreateApi = void 0, this.__init(i), this.$form = new t.drive.formRender(this), this.$render = new Render(this), this.loadRule(this.rules, !1), this.$render.initOrgChildren(), this.$form.init()
         }
 
         return _createClass(e, [{
             key: "__init", value: function (e) {
-                this.fieldList = {}, this.trueData = {}, this.parsers = {}, this.customData = {}, this.sortList = [], this.rules = e, this.origin = _toConsumableArray(this.rules), this.changeStatus = !1
+                this.fieldList = {}, this.trueData = {}, this.parsers = {}, this.customData = {}, this.sortList = [], this.rules = e, this.origin = _toConsumableArray(this.rules), this.changeStatus = !1, this.issetRule = []
+            }
+        }, {
+            key: "modelEvent", value: function (e) {
+                var t = this.fc.modelEvents;
+                return t[e.type] || t[e.originType] || e.rule.model || e.modelEvent
+            }
+        }, {
+            key: "isset", value: function (e) {
+                return this.issetRule.indexOf(e) > -1
             }
         }, {
             key: "loadRule", value: function (e, t) {
@@ -1105,20 +1649,14 @@
                 e.map(function (n, i) {
                     if (!t || !isString(n)) {
                         if (!n.type) return console.error("未定义生成规则的 type 字段" + errMsg());
-                        var a;
-                        if (n.__fc__) if ((a = n.__fc__).vm === r.vm || a.deleted) {
-                            a.update(r);
-                            var o = a.rule;
-                            r.parseOn(o), r.parseProps(o)
-                        } else n = copyRule(n), e[i] = n, a = r.createParser(r.parseRule(n)); else a = r.createParser(r.parseRule(n));
-                        var s = a.rule.children, u = a.rule;
-                        return r.notField(a.field) ? (r.setParser(a), n.__fc__ || bindParser(n, a), isValidChildren(s) && r.loadRule(s, !0), t || r.sortList.push(a.id), r.isNoVal(a) || Object.defineProperty(a.rule, "value", {
-                            get: function () {
-                                return a.toValue(r.getFormData(a))
-                            }, set: function (e) {
-                                r.isChange(a, e) && (r.refresh(), r.$render.clearCache(a, !0), r.setFormData(a, a.toFormValue(e)))
-                            }
-                        }), a) : console.error("".concat(u.field, " 字段已存在") + errMsg())
+                        var o;
+                        if (n.__fc__) if ((o = n.__fc__).deleted || o.vm === r.vm && !r.parsers[o.id]) {
+                            o.update(r);
+                            var a = o.rule;
+                            r.parseOn(a), r.parseProps(a)
+                        } else e[i] = n = copyRule(n), o = r.createParser(r.parseRule(n)); else o = r.createParser(r.parseRule(n));
+                        var s = o.rule.children, u = o.rule;
+                        return r.notField(o.field) ? (r.setParser(o), n.__fc__ || bindParser(n, o), isValidChildren(s) && r.loadRule(s, !0), t || r.sortList.push(o.id), r.isNoVal(o) || Object.defineProperty(o.rule, "value", r.valueHandle(o)), o) : (r.issetRule.push(n), console.error("".concat(u.field, " 字段已存在") + errMsg()))
                     }
                 }).filter(function (e) {
                     return e
@@ -1127,10 +1665,19 @@
                 })
             }
         }, {
+            key: "valueHandle", value: function (e) {
+                var t = this;
+                return {
+                    enumerable: !0, get: function () {
+                        return e.toValue(t.getFormData(e))
+                    }, set: function (r) {
+                        t.isChange(e, r) && (t.$render.clearCache(e, !0), t.setFormData(e, e.toFormValue(r)), t.valueChange(e, r), t.refresh())
+                    }
+                }
+            }
+        }, {
             key: "createParser", value: function (e) {
-                var t = this.id + "" + uniqueId(), r = this.fc.parsers,
-                    n = toString$1(e.type).toLocaleLowerCase();
-                return new (r[n] ? r[n] : BaseParser)(this, e, t)
+                return new (this.fc.parsers[toString$1(e.type).toLocaleLowerCase()] || BaseParser)(this, e, "" + uniqueId())
             }
         }, {
             key: "parseRule", value: function (e) {
@@ -1177,23 +1724,25 @@
                     t = t.__origin
                 }
                 var n = this, i = function () {
-                    for (var i = arguments.length, a = new Array(i), o = 0; o < i; o++) a[o] = arguments[o];
-                    a.unshift(n.getInjectData(e, r)), t.apply(void 0, a)
+                    for (var i = arguments.length, o = new Array(i), a = 0; a < i; a++) o[a] = arguments[a];
+                    return o.unshift(n.getInjectData(e, r)), t.apply(void 0, o)
                 };
                 return i.__inject = !0, i.__origin = t, i
             }
         }, {
             key: "parseEmit", value: function (e) {
-                var t = this, r = {}, n = e.emit, i = e.emitPrefix, a = e.field;
-                return Array.isArray(n) ? (n.forEach(function (n) {
-                    var o, s = n;
-                    if (isPlainObject(n) && (s = n.name, o = n.inject), s) {
-                        var u = toLine("".concat(i || a, "-").concat(s)).replace("_", "-"),
-                            l = function () {
+                var t = this, r = {}, n = e.emit, i = e.emitPrefix, o = e.field, a = e.name;
+                if (!Array.isArray(n)) return r;
+                var s = i || (o || a);
+                return s ? (n.forEach(function (n) {
+                    var i, o = n;
+                    if (isPlainObject(n) && (o = n.name, i = n.inject), o) {
+                        var a = toLine("".concat(s, "-").concat(o)).replace("_", "-"),
+                            u = function () {
                                 for (var e, r = arguments.length, n = new Array(r), i = 0; i < r; i++) n[i] = arguments[i];
-                                (e = t.vm).$emit.apply(e, [u].concat(n))
+                                (e = t.vm).$emit.apply(e, [a].concat(n))
                             };
-                        l.__emit = !0, r[s] = t.options.injectEvent || void 0 !== n.inject ? t.inject(e, l, o) : l
+                        u.__emit = !0, r[o] = t.options.injectEvent || void 0 !== n.inject ? t.inject(e, u, i) : u
                     }
                 }), r) : r
             }
@@ -1212,30 +1761,48 @@
             }
         }, {
             key: "notField", value: function (e) {
-                return void 0 === this.parsers[e]
+                return void 0 === this.fieldList[e]
             }
         }, {
             key: "isChange", value: function (e, t) {
                 return JSON.stringify(e.rule.value) !== JSON.stringify(t)
             }
         }, {
+            key: "valueChange", value: function (e) {
+                this.validateControl(e)
+            }
+        }, {
             key: "onInput", value: function (e, t) {
-                !this.isNoVal(e) && this.isChange(e, e.toValue(t)) && (this.$render.clearCache(e), this.setFormData(e, t), this.changeStatus = !0)
+                var r;
+                !this.isNoVal(e) && this.isChange(e, r = e.toValue(t)) && (this.$render.clearCache(e), this.setFormData(e, t), this.changeStatus = !0, this.valueChange(e), this.vm.$emit("change", e.field, r, this.fCreateApi))
             }
         }, {
             key: "getParser", value: function (e) {
-                return this.fieldList[e] ? this.fieldList[e] : this.customData[e] ? this.customData[e] : this.parsers[e] ? this.parsers[e] : void 0
+                return this.fieldList[e] || this.customData[e] || this.parsers[e]
             }
         }, {
             key: "created", value: function () {
-                var e = this.vm;
-                e.$set(e, "buttonProps", this.options.submitBtn), e.$set(e, "resetProps", this.options.resetBtn), e.$set(e, "formData", this.formData), void 0 === this.fCreateApi && (this.fCreateApi = Api(this)), this.fCreateApi.rule = this.rules, this.fCreateApi.config = this.options
+                var e = this, t = this.vm;
+                if (t.$set(t, "buttonProps", this.options.submitBtn), t.$set(t, "resetProps", this.options.resetBtn), t.$set(t, "formData", this.formData), void 0 === this.fCreateApi && (this.fCreateApi = Api(this)), this.fCreateApi.rule = this.rules, this.fCreateApi.config = this.options, this.fCreateApi.form) {
+                    var r = this.fCreateApi.form;
+                    Object.keys(r).forEach(function (e) {
+                        delete r[e]
+                    })
+                } else Object.defineProperty(this.fCreateApi, "form", {
+                    value: {},
+                    writable: !1,
+                    enumerable: !0
+                });
+                Object.defineProperties(this.fCreateApi.form, Object.keys(this.fCreateApi.formData()).reduce(function (t, r) {
+                    var n = e.getParser(r), i = e.valueHandle(n);
+                    return i.configurable = !0, t[r] = i, t
+                }, {}))
             }
         }, {
             key: "addParserWitch", value: function (e) {
                 var t = this, r = this.vm;
                 Object.keys(e.rule).forEach(function (n) {
-                    if (-1 === ["field", "type", "value", "vm", "template", "name", "config"].indexOf(n) && void 0 !== e.rule[n]) try {
+                    if (-1 === ["field", "type", "value", "vm", "template", "name", "config", "control"].indexOf(n) && void 0 !== e.rule[n]) try {
                         e.watch.push(r.$watch(function () {
                             return e.rule[n]
                         }, function (r, i) {
@@ -1246,11 +1813,38 @@
                 })
             }
         }, {
+            key: "refreshControl", value: function (e) {
+                !this.isNoVal(e) && e.rule.control && this.validateControl(e)
+            }
+        }, {
+            key: "validateControl", value: function (e) {
+                var t = this, r = getControl(e), n = r.length, i = e.ctrlRule;
+                if (n) {
+                    for (var o = function (n) {
+                        var o = r[n];
+                        if ((o.handle || function (e) {
+                                return e === o.value
+                            })(e.rule.value, t.fCreateApi)) {
+                            if (i) {
+                                if (i.children === o.rule) return {v: void 0};
+                                removeControl(e)
+                            }
+                            var a = {type: "fcFragment", native: !0, children: o.rule};
+                            return e.root.splice(e.root.indexOf(e.rule.__origin__) + 1, 0, a), e.ctrlRule = a, t.vm.$emit("control", e.rule.__origin__, t.fCreateApi), t.refresh(), {v: void 0}
+                        }
+                    }, a = 0; a < n; a++) {
+                        var s = o(a);
+                        if ("object" === _typeof(s)) return s.v
+                    }
+                    i && (removeControl(e), this.vm.$emit("control", e.rule.__origin__, this.fCreateApi), this.refresh())
+                }
+            }
+        }, {
             key: "mountedParser", value: function () {
                 var e = this, t = this.vm;
                 Object.keys(this.parsers).forEach(function (r) {
                     var n = e.parsers[r];
-                    0 === n.watch.length && e.addParserWitch(n), n.el = t.$refs[n.refName] || {}, void 0 === n.defaultValue && (n.defaultValue = deepExtend({}, {value: n.rule.value}).value), n.mounted && n.mounted()
+                    0 === n.watch.length && e.addParserWitch(n), e.refreshControl(n), n.el = t.$refs[n.refName] || {}, void 0 === n.defaultValue && (n.defaultValue = deepExtend({}, {value: n.rule.value}).value), n.mounted && n.mounted()
                 })
             }
         }, {
@@ -1266,7 +1860,7 @@
         }, {
             key: "removeField", value: function (e, t) {
                 var r = e.id, n = e.field, i = this.sortList.indexOf(r);
-                delParser(e, t), $del(this.parsers, r), -1 !== i && this.sortList.splice(i, 1), this.fieldList[n] || ($del(this.validate, n), $del(this.formData, n), $del(this.customData, n), $del(this.fieldList, n), $del(this.trueData, n)), this.subForm[e.field] && $del(this.subForm, n)
+                return delParser(e, t), $del(this.parsers, r), -1 !== i && this.sortList.splice(i, 1), this.fieldList[n] || ($del(this.validate, n), $del(this.formData, n), $del(this.customData, n), $del(this.fieldList, n), $del(this.trueData, n)), this.subForm[e.field] && $del(this.subForm, n), e
             }
         }, {
             key: "refresh", value: function () {
@@ -1282,9 +1876,9 @@
                     return void 0 === t.parsers[e]
                 }).forEach(function (e) {
                     return t.removeField(n[e], i[n[e].field])
-                }), this.$render.initOrgChildren(), this.created(), r.$nextTick(function () {
+                }), this.$render.initOrgChildren(), this.formData = _objectSpread2({}, this.formData), this.created(), r.$f = this.fCreateApi, this.$render.clearCacheAll(), this.refresh(), r.$nextTick(function () {
                     t.reload()
-                }), r.$f = this.fCreateApi, this.$render.clearCacheAll(), this.refresh()
+                })
             }
         }, {
             key: "setFormData", value: function (e, t) {
@@ -1306,13 +1900,23 @@
     }();
 
     function delParser(e, t) {
-        e.watch.forEach(function (e) {
+        e.ctrlRule && removeControl(e), e.watch.forEach(function (e) {
             return e()
-        }), e.watch = [], e.deleted = !0, Object.defineProperty(e.rule, "value", {value: t})
+        }), e.watch = [], e.deleted = !0, e.root = [], Object.defineProperty(e.rule, "value", {value: t})
     }
 
     function parseArray(e) {
         return Array.isArray(e) ? e : []
+    }
+
+    function getControl(e) {
+        var t = e.rule.control || [];
+        return isPlainObject(t) ? [t] : t
+    }
+
+    function removeControl(e) {
+        var t = e.root.indexOf(e.ctrlRule);
+        -1 !== t && e.root.splice(t, 1), e.ctrlRule = null
     }
 
     function defRule() {
@@ -1335,16 +1939,24 @@
         Object.defineProperties(e, {__field__: enumerable(t.field), __fc__: enumerable(t)})
     }
 
-    var _vue = "undefined" != typeof window && window.Vue ? window.Vue : Vue;
+    var NAME$5 = "fcFragment", fragment = {
+        name: NAME$5,
+        functional: !0,
+        props: {children: Array},
+        render: function (e, t) {
+            return t.children
+        }
+    }, _vue = "undefined" != typeof window && window.Vue ? window.Vue : Vue;
 
     function createFormCreate(e) {
-        var t = {}, r = {}, n = makerFactory(), i = e.getConfig(), a = {};
+        var t = _defineProperty({}, fragment.name, fragment), r = {}, n = makerFactory(),
+            i = e.getConfig(), o = {}, a = {};
 
-        function o(e, t) {
-            e = toString$1(e), r[e.toLocaleLowerCase()] = t, h.maker[e] = creatorFactory(e)
+        function s(e, t) {
+            e = toString$1(e), r[e.toLocaleLowerCase()] = t, p.maker[e] = creatorFactory(e)
         }
 
-        function s() {
+        function u() {
             return function (e) {
                 function t() {
                     return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
@@ -1354,34 +1966,34 @@
             }()
         }
 
-        function u(e, r) {
+        function l(e, r) {
             var n = (e = toString$1(e)).toLocaleLowerCase();
-            return "form-create" === n || "formcreate" === n ? c() : void 0 === r ? t[e] : void(t[e] = r)
+            return "form-create" === n || "formcreate" === n ? f() : void 0 === r ? t[e] : void(t[e] = r)
         }
 
-        function l(e, t) {
+        function c(e, t) {
             isBool(t.submitBtn) && (t.submitBtn = {show: t.submitBtn}), isBool(t.resetBtn) && (t.resetBtn = {show: t.resetBtn});
             var r = deepExtend(e, t);
             return $set(r, "el", r.el ? isElement(r.el) ? r.el : document.querySelector(r.el) : window.document.body), r
         }
 
-        function c() {
-            return _vue.extend($FormCreate(h, t))
+        function f() {
+            return _vue.extend($FormCreate(p, t))
         }
 
-        function f(t) {
+        function h(t) {
             extend(t, {
                 version: e.version,
                 ui: e.ui,
                 maker: n,
-                component: u,
-                setParser: o,
-                createParser: s,
-                data: a,
+                component: l,
+                setParser: s,
+                createParser: u,
+                data: o,
                 copyRule: copyRule,
                 copyRules: copyRules,
                 $form: function () {
-                    return c()
+                    return f()
                 },
                 parseJson: function (e) {
                     return parseJson(e)
@@ -1400,10 +2012,10 @@
             return r.$mount(), r
         }
 
-        var h = function () {
+        var p = function () {
             function t(n) {
-                var a = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
-                _classCallCheck(this, t), this.fCreateApi = void 0, this.drive = e, this.parsers = r, this.vm = void 0, this.rules = Array.isArray(n) ? n : [], this.options = l(deepExtend({formData: {}}, i), a)
+                var o = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
+                _classCallCheck(this, t), this.fCreateApi = void 0, this.drive = e, this.parsers = r, this.modelEvents = a, this.vm = void 0, this.rules = Array.isArray(n) ? n : [], this.options = c(deepExtend({formData: {}}, i), o)
             }
 
             return _createClass(t, [{
@@ -1428,7 +2040,7 @@
                 }
             }, {
                 key: "$emit", value: function (e) {
-                    for (var t, r, n = arguments.length, i = new Array(n > 1 ? n - 1 : 0), a = 1; a < n; a++) i[a - 1] = arguments[a];
+                    for (var t, r, n = arguments.length, i = new Array(n > 1 ? n - 1 : 0), o = 1; o < n; o++) i[o - 1] = arguments[o];
                     this.$parent && (t = this.$parent).$emit.apply(t, ["fc:".concat(e)].concat(i)), (r = this.vm).$emit.apply(r, [e].concat(i))
                 }
             }], [{
@@ -1439,12 +2051,15 @@
                     return i.parent = r, i.options.el.appendChild(n.$el), i.handle.fCreateApi
                 }
             }, {
-                key: "install", value: function (e) {
-                    var r = function (e) {
-                        var r = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
-                        return t.create(e, r, this)
-                    };
-                    f(r), e.prototype.$formCreate = r, e.component(formCreateName, c()), _vue = e
+                key: "install", value: function (e, r) {
+                    if (r && isPlainObject(r) && c(i, r), !0 !== e._installedFormCreate) {
+                        e._installedFormCreate = !0;
+                        var n = function (e) {
+                            var r = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
+                            return t.create(e, r, this)
+                        };
+                        h(n), e.prototype.$formCreate = n, e.component(formCreateName, f()), e.component(fragment.name, _vue.extend(fragment)), _vue = e
+                    }
                 }
             }, {
                 key: "init", value: function (e) {
@@ -1462,538 +2077,55 @@
                 }
             }]), t
         }();
-        return f(h), e.components.forEach(function (e) {
-            h.component(e.name, e)
+        return h(p), e.components.forEach(function (e) {
+            p.component(e.name, e)
         }), e.parsers.forEach(function (e) {
             var t = e.name, r = e.parser;
-            h.setParser(t, r)
+            p.setParser(t, r)
         }), Object.keys(e.makers).forEach(function (t) {
-            h.maker[t] = e.makers[t]
-        }), {
-            FormCreate: h, install: function (e, t) {
-                !0 !== e._installedFormCreate && (e._installedFormCreate = !0, t && isPlainObject(t) && l(i, t), e.use(h))
-            }
-        }
+            p.maker[t] = e.makers[t]
+        }), e.modelEvents && Object.keys(e.modelEvents).forEach(function (t) {
+            return r = t, n = e.modelEvents[t], void(a[r.toLocaleLowerCase()] = n);
+            var r, n
+        }), {FormCreate: p, install: p.install}
     }
 
     var BaseForm = function () {
-        function e(t) {
-            _classCallCheck(this, e), this.$handle = t, this.vm = t.vm, this.drive = this.$handle.fc.drive, this.options = t.options, this.vNode = new VNode(this.vm), this.vData = new VData, this.unique = t.id
-        }
+            function e(t) {
+                _classCallCheck(this, e), this.$handle = t, this.vm = t.vm, this.drive = this.$handle.fc.drive, this.options = t.options, this.vNode = new VNode(this.vm), this.vData = new VData, this.unique = uniqueId(), this.refName = "cForm".concat(this.unique)
+            }
 
-        return _createClass(e, [{
-            key: "init", value: function () {
-                this.$render = this.$handle.$render
-            }
-        }, {
-            key: "getGetCol", value: function (e) {
-                var t = e.rule.col || {}, r = {}, n = {}, i = this.options.global;
-                return i ? (i["*"] && (r = i["*"].col || {}), (i[e.type] || i[e.originType]) && (n = i[e.type].col || i[e.originType].col || {}), t = deepExtendArgs({}, r, n, t)) : t
-            }
-        }, {
-            key: "beforeRender", value: function () {
-            }
-        }, {
-            key: "render", value: function () {
-            }
-        }, {
-            key: "inputVData", value: function () {
-            }
-        }]), e
-    }(), vNode = new VNode({}), Modal = function (e, t) {
-        return isUndef(e.width) && (e.width = "30%"), {
-            name: "fc-modal", data: function () {
-                return _objectSpread2({visible: !0}, e)
-            }, render: function () {
-                return vNode.setVm(this), vNode.modal({
-                    props: this.$data,
-                    on: {close: this.onClose, closed: this.onClosed}
-                }, [t(vNode, this)])
-            }, methods: {
-                onClose: function () {
-                    this.visible = !1
-                }, onClosed: function () {
-                    this.$el.parentNode.removeChild(this.$el)
+            return _createClass(e, [{
+                key: "getFormRef", value: function () {
+                    return this.vm.$refs[this.refName]
                 }
-            }
-        }
-    };
-
-    function mount(e, t) {
-        var r = (new (_vue.extend(Modal(e, t)))).$mount();
-        window.document.body.appendChild(r.$el)
-    }
-
-    function defaultOnHandle(e, t) {
-        mount({title: t}, function (t) {
-            return t.make("img", {style: {width: "100%"}, attrs: {src: e}})
-        })
-    }
-
-    function styleInject(e, t) {
-        void 0 === t && (t = {});
-        var r = t.insertAt;
-        if (e && "undefined" != typeof document) {
-            var n = document.head || document.getElementsByTagName("head")[0],
-                i = document.createElement("style");
-            i.type = "text/css", "top" === r && n.firstChild ? n.insertBefore(i, n.firstChild) : n.appendChild(i), i.styleSheet ? i.styleSheet.cssText = e : i.appendChild(document.createTextNode(e))
-        }
-    }
-
-    var css = ".fc-upload-btn, .fc-files {\n    display: inline-block;\n    width: 58px;\n    height: 58px;\n    text-align: center;\n    line-height: 58px;\n    border: 1px solid #c0ccda;\n    border-radius: 4px;\n    overflow: hidden;\n    background: #fff;\n    position: relative;\n    box-shadow: 2px 2px 5px rgba(0, 0, 0, .1);\n    margin-right: 4px;\n    box-sizing: border-box;\n}\n\n.form-create .form-create .el-form-item {\n    margin-bottom: 22px;\n}\n\n.form-create .form-create .el-form-item .el-form-item {\n    margin-bottom: 0px;\n}\n\n.__fc_h {\n    display: none;\n}\n\n.__fc_v {\n    visibility: hidden;\n}\n\n.fc-files img {\n    width: 100%;\n    height: 100%;\n    display: inline-block;\n    vertical-align: top;\n}\n\n.fc-upload-btn {\n    border: 1px dashed #c0ccda;\n    cursor: pointer;\n}\n\n.fc-upload .fc-upload-cover {\n    opacity: 0;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    background: rgba(0, 0, 0, .6);\n    transition: opacity .3s;\n}\n\n.fc-upload .fc-upload-cover i {\n    color: #fff;\n    font-size: 20px;\n    cursor: pointer;\n    margin: 0 2px;\n}\n\n.fc-files:hover .fc-upload-cover {\n    opacity: 1;\n}\n\n.fc-upload .el-upload {\n    display: block;\n}\n\n\n.form-create .el-form-item .el-rate {\n    margin-top: 10px;\n}\n\n.form-create .el-form-item .el-tree {\n    margin-top: 7px;\n}\n\n.fc-hide-btn .el-upload {\n    display: none;\n}\n",
-        style = {
-            "fc-upload-btn": "fc-upload-btn",
-            "fc-files": "fc-files",
-            "form-create": "form-create",
-            "el-form-item": "el-form-item",
-            __fc_h: "__fc_h",
-            __fc_v: "__fc_v",
-            "fc-upload": "fc-upload",
-            "fc-upload-cover": "fc-upload-cover",
-            "el-upload": "el-upload",
-            "el-rate": "el-rate",
-            "el-tree": "el-tree",
-            "fc-hide-btn": "fc-hide-btn"
-        };
-    styleInject(css);
-    var NAME$1 = "fc-elm-frame", frame = {
-        name: NAME$1,
-        props: {
-            type: {type: String, default: "input"},
-            field: {type: String, default: ""},
-            helper: {type: Boolean, default: !0},
-            disabled: {type: Boolean, default: !1},
-            src: {type: String, required: !0},
-            icon: {type: String, default: "el-icon-upload2"},
-            width: {type: [Number, String], default: 500},
-            height: {type: [Number, String], default: 370},
-            maxLength: {type: Number, default: 0},
-            okBtnText: {type: String, default: "确定"},
-            closeBtnText: {type: String, default: "关闭"},
-            modalTitle: {type: String, default: "预览"},
-            handleIcon: {type: [String, Boolean], default: void 0},
-            title: String,
-            allowRemove: {type: Boolean, default: !0},
-            onOpen: {
-                type: Function, default: function () {
+            }, {
+                key: "init", value: function () {
+                    this.$render = this.$handle.$render
                 }
-            },
-            onOk: {
-                type: Function, default: function () {
+            }, {
+                key: "getGetCol", value: function (e) {
+                    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : "col",
+                        r = e.rule[t] || {}, n = {}, i = {}, o = this.options.global;
+                    return o ? (o["*"] && (n = o["*"][t] || {}), o[e.type] ? i = o[e.type][t] || {} : o[e.originType] && (i = o[e.originType][t] || {}), r = deepExtendArgs({}, n, i, r)) : r
                 }
-            },
-            onCancel: {
-                type: Function, default: function () {
+            }, {
+                key: "beforeRender", value: function () {
                 }
-            },
-            onLoad: {
-                type: Function, default: function () {
+            }, {
+                key: "render", value: function () {
                 }
-            },
-            onBeforeRemove: {
-                type: Function, default: function () {
+            }, {
+                key: "inputVData", value: function () {
                 }
-            },
-            onRemove: {
-                type: Function, default: function () {
-                }
-            },
-            onHandle: {
-                type: Function, default: function (e) {
-                    defaultOnHandle(e, this.modalTitle)
-                }
-            },
-            modal: {
-                type: Object, default: function () {
-                    return {}
-                }
-            },
-            value: [Array, String, Number]
-        },
-        data: function () {
-            return {modalVm: null, fileList: toArray(this.value), unique: uniqueId()}
-        },
-        watch: {
-            value: function (e) {
-                this.$emit("on-change", e), this.fileList = toArray(e)
-            }, fileList: function (e) {
-                this.$emit("input", 1 === this.maxLength ? e[0] || "" : e)
-            }, src: function (e) {
-                this.modalVm && (this.modalVm.src = e)
-            }
-        },
-        methods: {
-            key: function (e) {
-                return NAME$1 + e + this.unique
-            }, closeModel: function () {
-                this.modalVm && this.modalVm.onClose(), this.modalVm = null
-            }, showModel: function () {
-                var e = this;
-                if (!this.disabled && !1 !== this.onOpen()) {
-                    var t = this.$props, r = t.width, n = t.height, i = t.src, a = t.title,
-                        o = t.okBtnText, s = t.closeBtnText;
-                    mount(_objectSpread2({
-                        width: r,
-                        title: a,
-                        src: i
-                    }, this.modal), function (t, r) {
-                        return e.modalVm = r, [t.make("iframe", {
-                            attrs: {src: r.src},
-                            style: {height: n, border: "0 none", width: "100%"},
-                            on: {
-                                load: function (t) {
-                                    e.onLoad(t);
-                                    try {
-                                        if (!0 === e.helper) t.path[0].contentWindow.form_create_helper = {
-                                            close: function (t) {
-                                                e.valid(t), r.onClose()
-                                            }, set: function (t, r) {
-                                                e.valid(t), e.disabled || e.$emit("input", r)
-                                            }, get: function (t) {
-                                                return e.valid(t), e.value
-                                            }
-                                        }
-                                    } catch (t) {
-                                        console.log(t)
-                                    }
-                                }
-                            }
-                        }), t.make("div", {slot: "footer"}, [t.button({
-                            on: {
-                                click: function () {
-                                    !1 !== e.onCancel() && r.onClose()
-                                }
-                            }
-                        }, [s]), t.button({
-                            props: {type: "primary"}, on: {
-                                click: function () {
-                                    !1 !== e.onOk() && r.onClose()
-                                }
-                            }
-                        }, [o])])]
-                    })
-                }
-            }, makeInput: function () {
-                var e = this, t = this.$createElement, r = {
-                    type: "text",
-                    value: this.fileList.toString(),
-                    readonly: !0,
-                    clearable: !1
-                };
-                return t("ElInput", helper([{}, {props: r}, {key: this.key("input")}]), [t("ElButton", helper([{attrs: {icon: this.icon}}, {
-                    on: {
-                        click: function () {
-                            return e.showModel()
-                        }
-                    }
-                }, {slot: "append"}]))])
-            }, makeGroup: function (e) {
-                var t = this.$createElement;
-                return (!this.maxLength || this.fileList.length < this.maxLength) && e.push(this.makeBtn()), t("div", {
-                    class: style["fc-upload"],
-                    key: this.key("group")
-                }, _toConsumableArray(e))
-            }, makeItem: function (e, t) {
-                return (0, this.$createElement)("div", {
-                    class: style["fc-files"],
-                    key: this.key("file" + e)
-                }, _toConsumableArray(t))
-            }, valid: function (e) {
-                if (e !== this.field) throw new Error("frame 无效的字段值")
-            }, makeIcons: function (e, t) {
-                var r = this.$createElement;
-                if (!1 !== this.handleIcon || !0 === this.allowRemove) {
-                    var n = [];
-                    return ("file" !== this.type && !1 !== this.handleIcon || "file" === this.type && this.handleIcon) && n.push(this.makeHandleIcon(e, t)), this.allowRemove && n.push(this.makeRemoveIcon(e, t)), r("div", {
-                        class: style["fc-upload-cover"],
-                        key: this.key("uc")
-                    }, [n])
-                }
-            }, makeHandleIcon: function (e, t) {
-                var r = this;
-                return (0, this.$createElement)("i", {
-                    class: !0 === this.handleIcon || void 0 === this.handleIcon ? "el-icon-view" : this.handleIcon,
-                    on: {
-                        click: function () {
-                            return r.handleClick(e)
-                        }
-                    },
-                    key: this.key("hi" + t)
-                })
-            }, makeRemoveIcon: function (e, t) {
-                var r = this;
-                return (0, this.$createElement)("i", {
-                    class: "el-icon-delete",
-                    on: {
-                        click: function () {
-                            return r.handleRemove(e)
-                        }
-                    },
-                    key: this.key("ri" + t)
-                })
-            }, makeFiles: function () {
-                var e = this, t = this.$createElement;
-                return this.makeGroup(this.fileList.map(function (r, n) {
-                    return e.makeItem(n, [t("i", {
-                        class: "el-icon-tickets",
-                        on: {
-                            click: function () {
-                                return e.handleClick(r)
-                            }
-                        }
-                    }), e.makeIcons(r, n)])
-                }))
-            }, makeImages: function () {
-                var e = this, t = this.$createElement;
-                return this.makeGroup(this.fileList.map(function (r, n) {
-                    return e.makeItem(n, [t("img", {attrs: {src: r}}), e.makeIcons(r, n)])
-                }))
-            }, makeBtn: function () {
-                var e = this, t = this.$createElement;
-                return t("div", {
-                    class: style["fc-upload-btn"], on: {
-                        click: function () {
-                            return e.showModel()
-                        }
-                    }, key: this.key("btn")
-                }, [t("i", {class: this.icon})])
-            }, handleClick: function (e) {
-                if (!this.disabled) return this.onHandle(e)
-            }, handleRemove: function (e) {
-                this.disabled || !1 !== this.onBeforeRemove(e) && (this.fileList.splice(this.fileList.indexOf(e), 1), this.onRemove(e))
-            }
-        },
-        render: function () {
-            var e = this.type;
-            return "input" === e ? this.makeInput() : "image" === e ? this.makeImages() : this.makeFiles()
-        }
-    }, NAME$2 = "fc-elm-radio", radio = {
-        name: NAME$2, functional: !0, props: {
-            options: {
-                type: Array, default: function () {
-                    return []
-                }
-            }, type: String, unique: {
-                default: function () {
-                    return uniqueId()
-                }
-            }
-        }, render: function (e, t) {
-            return e("ElRadioGroup", helper([{}, t.data]), [t.props.options.map(function (r, n) {
-                var i = _objectSpread2({}, r),
-                    a = "button" === t.props.type ? "ElRadioButton" : "ElRadio";
-                return delete i.value, e(a, {
-                    props: _objectSpread2({}, i),
-                    key: NAME$2 + a + n + t.unique
-                })
-            }).concat(t.chlidren)])
-        }
-    }, NAME$3 = "fc-elm-select", select = {
-        name: NAME$3,
-        functional: !0,
-        props: {
-            options: {
-                type: Array, default: function () {
-                    return []
-                }
-            }, unique: {
-                default: function () {
-                    return uniqueId()
-                }
-            }
-        },
-        render: function (e, t) {
-            return e("ElSelect", helper([{}, t.data]), [t.props.options.map(function (r, n) {
-                var i = r.slot ? toDefSlot(r.slot, e) : [];
-                return e("ElOption", {
-                    props: _objectSpread2({}, r),
-                    key: NAME$3 + n + t.props.unique
-                }, [i])
-            }).concat(t.chlidren)])
-        }
-    }, tree = {
-        name: "fc-elm-tree", props: {
-            ctx: {
-                type: Object, default: function () {
-                    return {props: {}}
-                }
-            },
-            children: {
-                type: Array, default: function () {
-                    return []
-                }
-            },
-            type: {type: String, default: "checked"},
-            value: {
-                type: [Array, String, Number], default: function () {
-                    return []
-                }
-            }
-        }, watch: {
-            value: function () {
-                this.setValue()
-            }
-        }, methods: {
-            makeTree: function () {
-                var e = this;
-                return (0, this.$createElement)("ElTree", helper([{
-                    ref: "tree",
-                    on: {
-                        "check-change": function () {
-                            return e.updateValue()
-                        }, "node-click": function () {
-                            return e.updateValue()
-                        }
-                    }
-                }, this.ctx]), [this.children])
-            }, onChange: function () {
-                this.updateValue()
-            }, updateValue: function () {
-                var e;
-                e = "selected" === this.type.toLocaleLowerCase() ? this.$refs.tree.getCurrentKey() : this.$refs.tree.getCheckedKeys(), this.$emit("input", e)
-            }, setValue: function () {
-                "selected" === this.type.toLocaleLowerCase() ? this.$refs.tree.setCurrentKey(this.value) : this.$refs.tree.setCheckedKeys(toArray(this.value))
-            }
-        }, render: function () {
-            return this.makeTree()
-        }, mounted: function () {
-            this.setValue(), this.updateValue()
-        }
-    };
-
-    function parseFile(e) {
-        return {url: e, name: getFileName(e)}
-    }
-
-    function getFileName(e) {
-        return toString$1(e).split("/").pop()
-    }
-
-    var NAME$4 = "fc-elm-upload", upload = {
-            name: NAME$4, props: {
-                ctx: {
-                    type: Object, default: function () {
-                        return {props: {}}
-                    }
-                },
-                children: {
-                    type: Array, default: function () {
-                        return []
-                    }
-                },
-                onHandle: {
-                    type: Function, default: function (e) {
-                        defaultOnHandle(e.url, this.modalTitle)
-                    }
-                },
-                uploadType: {type: String, default: "file"},
-                maxLength: {type: Number, default: 0},
-                allowRemove: {type: Boolean, default: !0},
-                modalTitle: {type: String, default: "预览"},
-                handleIcon: [String, Boolean],
-                value: [Array, String]
-            }, data: function () {
-                return {uploadList: [], unique: uniqueId()}
-            }, created: function () {
-                void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = !1), this.ctx.props.fileList = toArray(this.value).map(parseFile)
-            }, watch: {
-                value: function (e) {
-                    this.$refs.upload.uploadFiles.every(function (e) {
-                        return !e.status || "success" === e.status
-                    }) && (this.$refs.upload.uploadFiles = toArray(e).map(parseFile), this.uploadList = this.$refs.upload.uploadFiles)
-                }, maxLength: function (e, t) {
-                    1 !== t && 1 !== e || this.update()
-                }
-            }, methods: {
-                key: function (e) {
-                    return NAME$4 + e + this.unique
-                }, isDisabled: function () {
-                    return !0 === this.ctx.props.disabled
-                }, onRemove: function (e) {
-                    this.isDisabled() || this.$refs.upload.handleRemove(e)
-                }, handleClick: function (e) {
-                    this.isDisabled() || this.onHandle(e)
-                }, makeDefaultBtn: function () {
-                    var e = this.$createElement;
-                    return e("div", {class: style["fc-upload-btn"]}, [e("i", {class: "el-icon-upload2"})])
-                }, makeItem: function (e, t) {
-                    var r = this.$createElement;
-                    return "image" === this.uploadType ? r("img", {
-                        attrs: {src: e.url},
-                        key: this.key("img" + t)
-                    }) : r("i", {class: "el-icon-tickets", key: this.key("i" + t)})
-                }, makeRemoveIcon: function (e, t) {
-                    var r = this;
-                    return (0, this.$createElement)("i", {
-                        class: "el-icon-delete",
-                        on: {
-                            click: function () {
-                                return r.onRemove(e)
-                            }
-                        },
-                        key: this.key("ri" + t)
-                    })
-                }, makeHandleIcon: function (e, t) {
-                    var r = this;
-                    return (0, this.$createElement)("i", {
-                        class: !0 === this.handleIcon || void 0 === this.handleIcon ? "el-icon-view" : this.handleIcon,
-                        on: {
-                            click: function () {
-                                return r.handleClick(e)
-                            }
-                        },
-                        key: this.key("hi" + t)
-                    })
-                }, makeProgress: function (e, t) {
-                    return (0, this.$createElement)("ElProgress", helper([{}, {
-                        props: {
-                            percentage: e.percentage,
-                            type: "circle",
-                            width: 52
-                        }
-                    }, {style: "margin-top:2px;", key: this.key("pg" + t)}]))
-                }, makeIcons: function (e, t) {
-                    var r = this.$createElement, n = [];
-                    if (this.allowRemove || !1 !== this.handleIcon) return ("file" !== this.uploadType && !1 !== this.handleIcon || "file" === this.uploadType && this.handleIcon) && n.push(this.makeHandleIcon(e, t)), this.allowRemove && n.push(this.makeRemoveIcon(e, t)), r("div", {class: style["fc-upload-cover"]}, [n])
-                }, makeFiles: function () {
-                    var e = this, t = this.$createElement;
-                    return this.uploadList.map(function (r, n) {
-                        return t("div", {
-                            key: e.key(n),
-                            class: style["fc-files"]
-                        }, [void 0 !== r.percentage && "success" !== r.status ? e.makeProgress(r, n) : [e.makeItem(r, n), e.makeIcons(r, n)]])
-                    })
-                }, makeUpload: function () {
-                    return (0, this.$createElement)("ElUpload", helper([{
-                        ref: "upload",
-                        style: {display: "inline-block"}
-                    }, this.ctx, {key: this.key("upload")}]), [this.children])
-                }, initChildren: function () {
-                    hasSlot(this.children, "default") || this.children.push(this.makeDefaultBtn())
-                }, update: function () {
-                    var e = this.$refs.upload.uploadFiles.map(function (e) {
-                        return e.url
-                    }).filter(function (e) {
-                        return void 0 !== e
-                    });
-                    this.$emit("input", 1 === this.maxLength ? e[0] || "" : e)
-                }
-            }, render: function () {
-                var e, t = arguments[0], r = !this.maxLength || this.maxLength > this.uploadList.length;
-                return this.$refs.upload && (void 0 === this.ctx.props.showFileList && (this.ctx.props.showFileList = this.$refs.upload.showFileList), this.ctx.props.fileList = this.$refs.upload.fileList), this.initChildren(), t("div", {class: (e = {}, _defineProperty(e, style["fc-upload"], !0), _defineProperty(e, style["fc-hide-btn"], !r), e)}, [[this.ctx.props.showFileList ? [] : this.makeFiles(), this.makeUpload()]])
-            }, mounted: function () {
-                var e = this;
-                this.uploadList = this.$refs.upload.uploadFiles, this.$watch(function () {
-                    return e.$refs.upload.uploadFiles
-                }, function () {
-                    e.update()
-                }, {deep: !0})
-            }
-        }, NAME$5 = "fc-elm-group", group = {
-            name: NAME$5,
+            }]), e
+        }(), NAME$6 = "fc-elm-group", group = {
+            name: NAME$6,
             props: {
                 rule: Object,
                 rules: Array,
+                button: {type: Boolean, default: !0},
+                formCreate: Object,
                 max: {type: Number, default: 0},
                 min: {type: Number, default: 0},
                 value: {
@@ -2001,15 +2133,17 @@
                         return []
                     }
                 },
-                disabled: {type: Boolean, default: !1}
+                disabled: {type: Boolean, default: !1},
+                fontSize: {type: Number, default: 28}
             },
             data: function () {
                 return {
-                    config: {submitBtn: !1, resetBtn: !1},
-                    len: 0,
-                    cacheRule: {},
-                    group$f: {},
-                    fieldRule: {}
+                    option: deepExtendArgs({}, this.formCreate.config || {}, {
+                        submitBtn: !1,
+                        resetBtn: !1,
+                        mounted: void 0,
+                        onReload: void 0
+                    }), len: 0, cacheRule: {}, group$f: {}, fieldRule: {}
                 }
             },
             computed: {
@@ -2032,21 +2166,23 @@
                         t[r].disabled(e)
                     })
                 }, formData: function (e) {
-                    this.$emit("input", e)
-                }, value: function (e) {
-                    var t = this, r = Object.keys(this.cacheRule), n = r.length, i = n - e.length;
-                    if (i < 0) {
-                        for (var a = i; a < 0; a++) this.addRule(r[a]);
-                        for (var o = 0; o < n; o++) this.setValue(this.group$f[r[o]], e[o])
-                    } else {
-                        if (i > 0) {
-                            for (var s = 0; s < i; s++) this.removeRule(r[n - s - 1]);
-                            this.subForm()
+                    this.$emit("input", e), this.$emit("change", e)
+                }, value: {
+                    handler: function (e) {
+                        var t = this, r = Object.keys(this.cacheRule), n = r.length, i = n - e.length;
+                        if (i < 0) {
+                            for (var o = i; o < 0; o++) this.addRule();
+                            for (var a = 0; a < n; a++) this.setValue(this.group$f[r[a]], e[a])
+                        } else {
+                            if (i > 0) {
+                                for (var s = 0; s < i; s++) this.removeRule(r[n - s - 1]);
+                                this.subForm()
+                            }
+                            e.forEach(function (n, i) {
+                                t.setValue(t.group$f[r[i]], e[i])
+                            })
                         }
-                        e.forEach(function (n, i) {
-                            t.setValue(t.group$f[r[i]], e[i])
-                        })
-                    }
+                    }, deep: !0, immediate: !0
                 }
             },
             methods: {
@@ -2056,11 +2192,13 @@
                         if (!r[0]) return;
                         e.setValue(r[0], t)
                     } else e.setValue(t)
-                }, addRule: function () {
-                    var e = this.copyRule();
-                    this.$set(this.cacheRule, ++this.len, e), this.$emit("add", e)
+                }, addRule: function (e) {
+                    var t = this, r = this.copyRule();
+                    this.$set(this.cacheRule, ++this.len, r), e && this.$nextTick(function () {
+                        return t.$emit("add", r, Object.keys(t.cacheRule).length - 1)
+                    })
                 }, add$f: function (e, t, r) {
-                    this.group$f[t] = r, this.setValue(r, this.value[e]), this.syncData(t, r), this.subForm(), this.$emit("itemMounted", r)
+                    this.group$f[t] = r, this.setValue(r, this.value[e]), this.syncData(t, r), this.subForm(), this.$emit("itemMounted", r, Object.keys(this.cacheRule).indexOf(t))
                 }, subForm: function () {
                     var e = this;
                     this.$emit("fc.subForm", Object.keys(this.group$f).map(function (t) {
@@ -2071,73 +2209,84 @@
                     this.$set(this.fieldRule, e, {}), t.fields().forEach(function (n) {
                         r.fieldRule[e][n] = t.getRule(n)
                     })
-                }, removeRule: function (e) {
-                    this.$delete(this.cacheRule, e), this.$delete(this.fieldRule, e), delete this.group$f[e], this.$emit("remove")
+                }, removeRule: function (e, t) {
+                    var r = this, n = Object.keys(this.cacheRule).indexOf(e);
+                    this.$delete(this.cacheRule, e), this.$delete(this.fieldRule, e), this.$delete(this.group$f, e), t && this.$nextTick(function () {
+                        return r.$emit("remove", n)
+                    })
                 }, copyRule: function () {
-                    return this.$formCreate.copyRules(this.formRule)
+                    return copyRules(this.formRule)
+                }, add: function () {
+                    !this.disabled && this.addRule(!0)
+                }, del: function (e) {
+                    this.disabled || (this.removeRule(e, !0), this.subForm())
                 }, addIcon: function (e) {
-                    var t = this;
                     return (0, this.$createElement)("i", {
                         key: "a".concat(e),
                         class: "el-icon-circle-plus-outline",
-                        style: "font-size:28px;cursor:".concat(this.disabled ? "not-allowed;color:#c9cdd4" : "pointer", ";"),
-                        on: {
-                            click: function () {
-                                return !t.disabled && t.addRule()
-                            }
-                        }
+                        style: "font-size:".concat(this.fontSize, "px;cursor:").concat(this.disabled ? "not-allowed;color:#c9cdd4" : "pointer", ";"),
+                        on: {click: this.add}
                     })
                 }, delIcon: function (e) {
                     var t = this;
                     return (0, this.$createElement)("i", {
                         key: "d".concat(e),
                         class: "el-icon-remove-outline",
-                        style: "font-size:28px;cursor:".concat(this.disabled ? "not-allowed;color:#c9cdd4" : "pointer;color:#606266", ";"),
+                        style: "font-size:".concat(this.fontSize, "px;cursor:").concat(this.disabled ? "not-allowed;color:#c9cdd4" : "pointer;color:#606266", ";"),
                         on: {
                             click: function () {
-                                t.disabled || (t.removeRule(e), t.subForm())
+                                return t.del(e)
                             }
                         }
                     })
                 }, makeIcon: function (e, t, r) {
-                    return 0 === t ? [0 !== this.max && e >= this.max ? null : this.addIcon(r), 0 === this.min || e > this.min ? this.delIcon(r) : null] : t >= this.min ? this.delIcon(r) : void 0
+                    var n = this;
+                    return this.$scopedSlots.button ? this.$scopedSlots.button({
+                        total: e,
+                        index: t,
+                        vm: this,
+                        key: r,
+                        del: function () {
+                            return n.del(r)
+                        },
+                        add: this.add
+                    }) : 0 === t ? [0 !== this.max && e >= this.max ? null : this.addIcon(r), 0 === this.min || e > this.min ? this.delIcon(r) : null] : t >= this.min ? this.delIcon(r) : void 0
                 }
             },
             created: function () {
                 for (var e = 0; e < this.value.length; e++) this.addRule()
             },
             render: function () {
-                var e = this, t = arguments[0], r = Object.keys(this.cacheRule);
-                return 0 === r.length ? t("i", {
+                var e = this, t = arguments[0], r = Object.keys(this.cacheRule), n = this.button;
+                return 0 === r.length ? this.$scopedSlots.default ? this.$scopedSlots.default({
+                    vm: this,
+                    add: this.add
+                }) : t("i", {
                     key: "a_def",
                     class: "el-icon-circle-plus-outline",
-                    style: "font-size:28px;vertical-align:middle;color:".concat(this.disabled ? "#c9cdd4;cursor: not-allowed" : "#606266;cursor:pointer", ";"),
-                    on: {
-                        click: function () {
-                            return !e.disabled && e.addRule()
-                        }
-                    }
-                }) : t("div", {key: "con"}, [r.map(function (n, i) {
-                    var a = e.cacheRule[n];
+                    style: "font-size:".concat(this.fontSize, "px;vertical-align:middle;color:").concat(this.disabled ? "#c9cdd4;cursor: not-allowed" : "#606266;cursor:pointer", ";"),
+                    on: {click: this.add}
+                }) : t("div", {key: "con"}, [r.map(function (i, o) {
+                    var a = e.cacheRule[i];
                     return t("ElRow", {
                         attrs: {align: "middle", type: "flex"},
-                        key: n,
+                        key: i,
                         style: "background-color:#f5f7fa;padding:10px;border-radius:5px;margin-bottom:10px;"
-                    }, [t("ElCol", {attrs: {span: 20}}, [t("ElFormItem", [t("FormCreate", {
+                    }, [t("ElCol", {attrs: {span: n ? 20 : 24}}, [t("ElFormItem", [t("FormCreate", {
                         on: {
                             mounted: function (t) {
-                                return e.add$f(i, n, t)
+                                return e.add$f(o, i, t)
                             }, "on-reload": function (t) {
-                                return e.syncData(n, t)
+                                return e.syncData(i, t)
                             }
-                        }, attrs: {rule: a, option: e.config}
-                    })])]), t("ElCol", {
+                        }, attrs: {rule: a, option: e.option}
+                    })])]), n ? t("ElCol", {
                         attrs: {
                             span: 2,
                             pull: 1,
                             push: 1
                         }
-                    }, [e.makeIcon(r.length, i, n)])])
+                    }, [e.makeIcon(r.length, o, i)]) : null])
                 })])
             }
         }, components = [checkbox, frame, radio, select, tree, upload, group], parser = function (e) {
@@ -2179,7 +2328,7 @@
                 key: "mounted", value: function () {
                     var e = this;
                     this.toValue = function (t) {
-                        return e.el.formatToString(t)
+                        return e.el.formatToString(t) || ""
                     }, this.toFormValue = function (t) {
                         return e.el.parseString(t)
                     }
@@ -2298,9 +2447,11 @@
             return _inherits(t, BaseParser), _createClass(t, [{
                 key: "toFormValue", value: function (e) {
                     var t, r = Array.isArray(e);
-                    return !0 === this.rule.props.isRange ? t = r ? e.map(function (e) {
+                    return !0 === this.rule.props.isRange ? r ? 2 !== (t = e.map(function (e) {
                         return e ? toDate(getTime(timeStampToDate(e))) : ""
-                    }) : null : (r && (e = e[0]), t = e ? toDate(getTime(timeStampToDate(e))) : null), t
+                    }).filter(function (e) {
+                        return !!e
+                    })).length && (t = null) : t = null : (r && (e = e[0]), t = e ? toDate(getTime(timeStampToDate(e))) : null), t
                 }
             }, {
                 key: "mounted", value: function () {
@@ -2348,7 +2499,7 @@
                     var t = this, r = this.$render.parserToData(this).get(), n = this.key,
                         i = this.refName;
                     delete r.props.fileList;
-                    var a = {
+                    var o = {
                         uploadType: r.props.uploadType,
                         maxLength: r.props.limit,
                         modalTitle: r.props.modalTitle,
@@ -2360,7 +2511,7 @@
                         children: e
                     };
                     return this.vNode.upload({
-                        props: a, key: n, ref: i, on: {
+                        props: o, key: n, ref: i, on: {
                             input: function (e) {
                                 t.$render.onInput(t, e)
                             }
@@ -2431,7 +2582,6 @@
     }
 
     var nodes = {
-        modal: "el-dialog",
         button: "el-button",
         icon: "i",
         slider: "el-slider",
@@ -2466,9 +2616,8 @@
     }
 
     var Form = function (e) {
-            function t(e) {
-                var r;
-                return _classCallCheck(this, t), (r = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this, e))).refName = "cForm".concat(r.id), r
+            function t() {
+                return _classCallCheck(this, t), _possibleConstructorReturn(this, _getPrototypeOf(t).apply(this, arguments))
             }
 
             return _inherits(t, BaseForm), _createClass(t, [{
@@ -2477,10 +2626,6 @@
                     e.vData.attrs(Object.keys(t).reduce(function (e, r) {
                         return isAttr(r, t[r]) && (e[r] = t[r]), e
                     }, {})), !t.size && this.options.form.size && e.vData.props("size", this.options.form.size)
-                }
-            }, {
-                key: "getFormRef", value: function () {
-                    return this.vm.$refs[this.refName]
                 }
             }, {
                 key: "validate", value: function (e) {
@@ -2493,20 +2638,34 @@
                     this.getFormRef().validateField(e, t)
                 }
             }, {
+                key: "resetField", value: function (e) {
+                    this.vm.$refs[e.formItemRefName].resetField()
+                }
+            }, {
+                key: "clearValidateState", value: function (e) {
+                    var t = this.vm.$refs[e.formItemRefName];
+                    t && (t.validateMessage = "", t.validateState = "")
+                }
+            }, {
                 key: "beforeRender", value: function () {
                     this.propsData = this.vData.props(this.options.form).props({
                         model: this.$handle.formData,
                         rules: this.$handle.validate,
                         key: "form" + this.unique
-                    }).ref(this.refName).nativeOn({submit: preventDefault}).class("form-create", !0).key(this.unique).get()
+                    }).ref(this.refName).nativeOn({submit: preventDefault}).class(this.options.form.className).class("form-create", !0).key(this.unique).get()
                 }
             }, {
                 key: "render", value: function (e) {
-                    return e.length > 0 && e.push(this.makeFormBtn()), this.vNode.form(this.propsData, [this.makeRow(e)])
+                    return e.length > 0 && e.push(this.makeFormBtn()), this.vNode.form(this.propsData, [!1 === this.options.row ? e : this.makeRow(e)])
                 }
             }, {
                 key: "makeRow", value: function (e) {
-                    return this.vNode.row({props: this.options.row || {}, key: "fr" + this.unique}, e)
+                    var t = {}, r = this.options.row || {};
+                    return r.class && (t[r.class] = !0), this.vNode.row({
+                        props: r || {},
+                        key: "fr" + this.unique,
+                        class: t
+                    }, e)
                 }
             }, {
                 key: "container", value: function (e, t) {
@@ -2515,16 +2674,16 @@
             }, {
                 key: "makeFormItem", value: function (e, t) {
                     var r = "fItem".concat(e.key).concat(this.unique), n = e.rule, i = e.field,
-                        a = e.formItemRefName, o = this.getGetCol(e),
-                        s = o.labelWidth || n.title ? o.labelWidth : 0, u = n.className,
-                        l = this.vData.props({
+                        o = e.formItemRefName, a = this.getGetCol(e),
+                        s = a.labelWidth || n.title ? a.labelWidth : 0, u = this.propsData.props,
+                        l = u.inline, c = u.col, f = this.vData.props({
                             prop: i,
                             rules: n.validate,
                             labelWidth: toString$1(s),
                             required: n.props.required
-                        }).key(r).ref(a).class(u).get(),
-                        c = this.vNode.formItem(l, [t, this.makeFormPop(e, r)]);
-                    return !0 === this.propsData.props.inline ? c : this.makeCol(o, e, r, [c])
+                        }).key(r).ref(o).class(n.className).get(),
+                        h = this.vNode.formItem(f, [t, this.makeFormPop(e, r)]);
+                    return !0 === l || !1 === c ? h : this.makeCol(a, e, r, [h])
                 }
             }, {
                 key: "makeFormPop", value: function (e, t) {
@@ -2543,9 +2702,11 @@
             }, {
                 key: "makeCol", value: function (e, t, r, n) {
                     var i;
-                    return void 0 === e.span && (e.span = 24), this.vNode.col({
+                    void 0 === e.span && (e.span = 24);
+                    var o = (_defineProperty(i = {}, style.__fc_h, !!t.rule.hidden), _defineProperty(i, style.__fc_v, !!t.rule.visibility), i);
+                    return e.class && (o[e.class] = !0), this.vNode.col({
                         props: e,
-                        class: (i = {}, _defineProperty(i, style.__fc_h, !!t.rule.hidden), _defineProperty(i, style.__fc_v, !!t.rule.visibility), i),
+                        class: o,
                         key: "".concat(r, "col1")
                     }, n)
                 }
@@ -2649,7 +2810,7 @@
     }, VNode.use(nodes);
     var drive = {
             ui: "element-ui",
-            version: "".concat("1.0.7"),
+            version: "".concat("1.0.16"),
             formRender: Form,
             components: components,
             parsers: parsers,

@@ -51,6 +51,7 @@ trait Read
      * @param TableInterface $table
      *
      * @return array
+     * Author: zsw zswemail@qq.com
      */
     protected function getSearchConditions(TableInterface $table):array
     {

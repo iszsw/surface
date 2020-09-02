@@ -24,19 +24,43 @@ abstract class Base
 
     protected $style = [];
 
+    /**
+     * 延迟执行
+     * 传入闭包时 可以延迟执行
+     * @var bool
+     */
+    protected $delay = false;
+
+    private $closure;
+
     public function __construct($closure = null)
     {
         if (!empty($closure) && $closure instanceof \Closure) {
-            call_user_func($closure, $this);
+            $this->closure = $closure;
+            $this->delay && $this->resolveClosure();
         }
+    }
+
+    public function delay()
+    {
+        $this->delay = true;
+        return $this;
+    }
+
+    protected function resolveClosure()
+    {
+        if (!is_null($this->closure)) {
+            static::dispose($this->closure, [$this]);
+            $this->closure = null;
+        }
+        return $this;
     }
 
     public static function make($name, $arguments)
     {
         $server = static::$servers[$name] ?? null;
-        if (!$server) {
-            return null;
-        }
+
+        if (!$server) {return null;}
 
         return static::dispose($server, $arguments);
     }
@@ -57,9 +81,9 @@ abstract class Base
         }
     }
 
-    public function bind($name, $call)
+    public static function bind($name, $call)
     {
-        self::$servers[$name] = $call;
+        static::$servers[$name] = $call;
     }
 
     public static function __callStatic($name, $arguments)
@@ -136,9 +160,24 @@ abstract class Base
 
     public function __toString()
     {
-        return $this->view();
+        try {
+            return $this->view();
+        }catch (\Throwable $t) {
+            exit('['.$t->getFile() . ':' . $t->getLine().']' . $t->getMessage());
+        }
     }
 
-    abstract public function view();
+    public function view():string
+    {
+        $this->resolveClosure();
+        return $this->page();
+    }
+
+    /**
+     * 获取页面
+     * @return mixed
+     * Author: zsw zswemail@qq.com
+     */
+    abstract protected function page():string ;
 
 }

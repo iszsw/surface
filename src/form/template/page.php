@@ -35,7 +35,7 @@
 
 <script>
     (function () {
-        window.$f = new FormSurface('#<?= $this->getId(); ?>', <?=json_encode($this->getConstitute())?>, <?=json_encode($this->getRules())?>, {global: <?=json_encode($this->globals())?>})
+        window.$f = FormSurface.render('#<?= $this->getId(); ?>', <?=json_encode($this->getConstitute())?>, <?=json_encode($this->getRules())?>, {global: <?=json_encode($this->globals())?>})
     }());
 </script>
 </body>

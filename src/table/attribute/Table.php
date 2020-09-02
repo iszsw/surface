@@ -26,7 +26,7 @@ class Table extends AttrBase
             "description"  => '',                            // string 描述
             "method" =>  'post',                             // 请求方式
             "defaultParams" => [],                           // 默认提交参数
-            "tableCardView" =>  true,                        // 是否显示详细视图
+            "tableCardView" =>  true,                        // 小屏幕响应式详细视图
             "refreshBtnShow" =>  true,                       // 刷新按钮
             "columns" =>  [],                                // 列
             "topBtn" => [],                                  // 顶部按钮

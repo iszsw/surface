@@ -75,6 +75,7 @@ abstract class AttrBase implements \ArrayAccess, \JsonSerializable , \IteratorAg
 
     /**
      * 获取修改过的值
+     * Author: zsw zswemail@qq.com
      */
     public function getEdited()
     {

@@ -23,6 +23,7 @@ trait Search
     /**
      * @param array|\Closure $search
      * @return self
+     * Author: zsw zswemail@qq.com
      */
     public function search($search):self
     {
@@ -50,7 +51,7 @@ trait Search
                         $search_rule[] = $v[1];
                     } else {
                         array_shift($v); // 移除匹配规则
-                        $rule = $v[4] ?? null;
+                        $rule = $v[4] ?? [];
                         $options = [];
                         if ($rule && isset($rule['options'])) {
                             $options = $rule['options'];
@@ -60,13 +61,13 @@ trait Search
                             'type' => $v[0],
                             'field' => $v[1],
                             'title' => $v[2] ?? '',
-                            'value' => $v[3] ?? '',
-                            'rule'  => $rule,
+                            'value' => $v[3] ?? ''
                         ];
+
                         if ($options) {
                             $formData['options'] = $options;
                         }
-                        $search_rule[] = $form->createFormItem($formData, $form, false);
+                        $search_rule[] = $form->createFormItem(array_merge($formData, $rule), $form, false);
                     }
                 }
                 $form->rule($search_rule);

@@ -18,6 +18,7 @@ interface FormInterface
      * 默认配置
      *
      * @return array
+     * Author: zsw zswemail@qq.com
      */
     public function defaults():array;
 
@@ -25,6 +26,7 @@ interface FormInterface
      * 列信息
      *
      * @return array
+     * Author: zsw zswemail@qq.com
      */
     public function column():array;
 
@@ -32,6 +34,7 @@ interface FormInterface
      * 数据提交接收方法
      *
      * @return array ['code' => 1, 'data' => [], 'msg' => '']; code = 0成功|1失败
+     * Author: zsw zswemail@qq.com
      */
     public function save() ;
 

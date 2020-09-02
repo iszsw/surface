@@ -15,6 +15,8 @@ namespace surface\helper\tp;
  */
 trait Curd
 {
+
     use Read;
     use Update;
+
 }

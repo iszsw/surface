@@ -6,20 +6,20 @@
 namespace surface\table;
 
 use surface\Base;
-use surface\DataTypeInterface;
+use surface\table\components;
 
 
 /**
  * Class Build
  *
- * @method type\Text text($field, $title = null, $column = null) static
- * @method type\LongText longText($field, $title = null, $column = null) static
- * @method type\TextEdit textEdit($field, $title = null, $column = null) static
- * @method type\Html html($field, $title = null, $column = null) static
- * @method type\SwitchEdit switchEdit($field, $title = null, $column = null) static
- * @method type\SelectEdit selectEdit($field, $title = null, $column = null) static
- * @method type\In in($field, $title = null, $column = null) static
- * @method type\Button button($type = '', $title = '', $params = [], $faClass = '') static
+ * @method components\Text text($field, $title = null, $column = null) static
+ * @method components\LongText longText($field, $title = null, $column = null) static
+ * @method components\TextEdit textEdit($field, $title = null, $column = null) static
+ * @method components\Html html($field, $title = null, $column = null) static
+ * @method components\SwitchEdit switchEdit($field, $title = null, $column = null) static
+ * @method components\SelectEdit selectEdit($field, $title = null, $column = null) static
+ * @method components\In in($field, $title = null, $column = null) static
+ * @method components\Button button($type = '', $title = '', $params = [], $faClass = '') static
  *
  * @package surface\table
  * Author: zsw zswemail@qq.com
@@ -45,14 +45,14 @@ class Table extends Base
 
 
     protected static $servers = [
-        'text'       => type\Text::class,
-        'longText'   => type\LongText::class,
-        'textEdit'   => type\TextEdit::class,
-        'html'       => type\Html::class,
-        'switchEdit' => type\SwitchEdit::class,
-        'selectEdit' => type\SelectEdit::class,
-        'in'         => type\In::class,
-        'button'     => type\Button::class,
+        'text'       => components\Text::class,
+        'longText'   => components\LongText::class,
+        'textEdit'   => components\TextEdit::class,
+        'html'       => components\Html::class,
+        'switchEdit' => components\SwitchEdit::class,
+        'selectEdit' => components\SelectEdit::class,
+        'in'         => components\In::class,
+        'button'     => components\Button::class,
     ];
 
     public function __construct($closure = null, $config = [])
@@ -61,10 +61,10 @@ class Table extends Base
         parent::__construct($closure);
     }
 
-    public function view()
+    public function page(): string
     {
         ob_start();
-        require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'template' .DIRECTORY_SEPARATOR.'page.php';
+        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template' .DIRECTORY_SEPARATOR.'page.php';
         $html = ob_get_clean();
         return $html;
     }

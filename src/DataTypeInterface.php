@@ -21,6 +21,7 @@ interface DataTypeInterface
 
     /**
      * @return mixed
+     * Author: zsw zswemail@qq.com
      */
     public function getData();
 
@@ -28,6 +29,7 @@ interface DataTypeInterface
      * 数据创建时触发
      *
      * @param $self Form|Table 当前实例
+     * Author: zsw zswemail@qq.com
      */
     public function init($self):void ;
 

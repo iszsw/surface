@@ -1,15 +1,19 @@
-## 基本功能
-surface根据PHP代码配置创建Table、Form页面 
 
-如果使用ThinkPHP的同学使用内置助手类，对tp更友好，可以查看/vender/iszsw/test/ThinkPhp.php中示例
+surface根据PHP代码快速构建出表单、表格组件页面。
 
-项目演示地址   [http://demo.surface.zsw.ink/login/index.html](http://demo.surface.zsw.ink/login/index.html)
+不同组件的静态资源依赖按需加载，减少页面内容。
+
+组件不够用？还可以注入自定义的组件。
+
+有疑问或者查看更多功能采访问[作者主页](https://www.zsw.ink)
+
+主页  [https://www.zsw.ink](https://www.zsw.ink)
 
 github  [https://github.com/iszsw/surface](https://github.com/iszsw/surface)
 
 gitee   [https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
->  Form组件
 
+>  Form组件
 - upload
 - frame
 - text
@@ -29,9 +33,8 @@ gitee   [https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
 - date
 - time
 
-![](https://ftp.bmp.ovh/imgs/2019/12/e19b95c4cb3fa40c.png)
-
 >  Table组件
+
 - text
 - textEdit
 - html
@@ -40,27 +43,29 @@ gitee   [https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
 - in
 - longText
 
+![](https://ftp.bmp.ovh/imgs/2019/12/e19b95c4cb3fa40c.png)
+
 ![](https://ftp.bmp.ovh/imgs/2019/12/24a42113b67f28f5.png)
 
 ## 环境需求
 >  PHP >= 7.1.3
 
 ## 安装
-
-[composer](http://getcomposer.org/)安装
 ```shell
 $ composer require iszsw/surface
 ```
 
 ## 使用说明
 
-- 1、因为文件涉及到前端样式 需要复制/src/static 目录到项目入口 
+（如果使用ThinkPHP的同学使用内置助手类，对tp更友好，可以查看/vender/iszsw/test/ThinkPhp.php中示例
+）
+> 1、因为文件涉及到前端样式 需要复制/src/static 目录到项目入口 
 
-- 2、注册全局配置
+> 2、注册全局配置
 
-使用了thinkPHP框架可以直接在config目录添加surface.php配置文件
 
 ```shell
+// 使用了thinkPHP框架可以直接在config目录添加surface.php配置文件
 return [
         'upload' => [
             'manageShow' => true,    // 图片管理
@@ -71,10 +76,8 @@ return [
             'limit'      => 1,
         ]
 ];
-```
 
 // 方式二
-```shell
 Form::global([
             'upload' => [
                 'manageShow' => true,    // 图片管理
@@ -87,7 +90,7 @@ Form::global([
      ]);
 ```
     
-- 3、创建控制器 引入测试文件
+> 3、创建控制器 引入测试文件
     
     
 ```shell
@@ -108,17 +111,17 @@ echo Test::form();
 
 [/src/README.md](/src/README.md)
 
->  注意
-
- * 返回格式
+###  注意
+ * 提交后返回格式
 ```shell
 code === 0 成功  code > 0 失败
 
 json_encode（['code' => 0, 'msg'=> '成功', 'data' => []]）
 ```
+
  * 文件上传
 ```shell
-json_encode（['code' => 0, 'msg'=> '成功', 'data' => ['url' => '....']]）
+json_encode（['code' => 0, 'msg'=> '成功', 'data' => ['url' => '图片地址']]）
 ```
 
  * editor 富文本中文件上传
@@ -144,4 +147,4 @@ json_encode（['code' => '000', 'count'=> 100, 'data' => [[
 作者：zsw  
 邮箱：zswemail@qq.com
 
-感谢form-create作者xaboy提供方便优秀的vue工具
+感谢xaboy提供优秀的form-create工具

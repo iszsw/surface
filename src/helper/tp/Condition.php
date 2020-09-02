@@ -25,6 +25,7 @@ trait Condition
      * @param $key
      * @param $val
      * @return array
+     * Author: zsw zswemail@qq.com
      */
     protected function condition($condition, $key, $val) {
         $where = [];

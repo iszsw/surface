@@ -2,6 +2,7 @@
 /*
  * Author: zsw zswemail@qq.com
  */
+
 namespace surface\form\traits;
 
 use surface\AttrBase;
@@ -10,7 +11,7 @@ use surface\DataTypeInterface;
 /**
  *
  * Class Input
- * @package surface\form\type
+ * @package surface\form\components
  * Author: zsw zswemail@qq.com
  */
 trait Rule
@@ -30,6 +31,7 @@ trait Rule
      *
      * @param null $rules
      * @return $this|null
+     * Author: zsw zswemail@qq.com
      */
     public function rule($rules = null)
     {
@@ -40,7 +42,6 @@ trait Rule
             foreach ($rules as $k => $rule) {
                 if (is_array($rule)) {
                     $rule['field'] = $rule['field'] ?? $k;
-                    $rule['name'] = $rule['name'] ?? $rule['field'];
                 }
                 $rule = $this->createFormItem($rule, $this);
                 call_user_func([$this, 'rule'], $rule);
@@ -56,6 +57,7 @@ trait Rule
      * @param $self
      * @param bool $getData 获取Data
      * @return mixed
+     * Author: zsw zswemail@qq.com
      */
     public static function createFormItem($data, $self, $getData = true)
     {
@@ -69,14 +71,14 @@ trait Rule
             unset($data['type'], $data['field'], $data['title'], $data['value'], $data['options'], $data['children']);
             switch ($type) {
                 case 'uploads':
-                    $value = array_filter(explode(';', $value));
+                    $value = json_decode($value, true);
                     break;
             }
             $item = static::$type($field, $title, $value, $data);
-            if ($options) {
+            if ($options && method_exists($item, 'addOptions')) {
                 $item->addOptions($options);
             }
-        }else{
+        } else {
             $item = $data;
             $children = $item->rule('children');
         }
@@ -92,8 +94,10 @@ trait Rule
             $children = $children_values;
             $item->rule('children', $children);
         }
-        $item->init($self);
-        return $getData?$item->getData():$item;
+        if ($item && method_exists($item, 'init')) {
+            $item->init($self);
+        }
+        return ($item && $getData) ? $item->getData() : $item;
     }
 
     public function getRules()

@@ -10,7 +10,7 @@ use surface\form\attribute\Validate as ValidateAttr;
  * input基类
  *
  * Class Input
- * @package surface\form\type
+ * @package surface\form\components
  * Author: zsw zswemail@qq.com
  */
 trait Validate
@@ -29,6 +29,7 @@ trait Validate
      * @param bool $required
      * @param string $type
      * @return $this
+     * Author: zsw zswemail@qq.com
      */
     public function validate($message = null, $required = true, $type = 'string')
     {

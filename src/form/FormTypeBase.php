@@ -50,6 +50,7 @@ abstract class FormTypeBase implements DataTypeInterface, \JsonSerializable
      * @param null   $rule
      *
      * @return $this
+     * Author: zsw zswemail@qq.com
      */
     protected function createRule($field, $title, $value = '', $rule = null)
     {
@@ -75,6 +76,7 @@ abstract class FormTypeBase implements DataTypeInterface, \JsonSerializable
      * 返回格式化数组
      *
      * @return mixed
+     * Author: zsw zswemail@qq.com
      */
     public function getData()
     {
@@ -100,6 +102,7 @@ abstract class FormTypeBase implements DataTypeInterface, \JsonSerializable
 
     /**
      * 设置Props默认值
+     * Author: zsw zswemail@qq.com
      */
     protected function setPropsDefault(array $data)
     {

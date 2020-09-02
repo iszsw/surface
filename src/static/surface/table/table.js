@@ -73,7 +73,7 @@
                                     
                                     <span v-else-if="c.type == 'in'" v-text="c.options[getVal(c.field, r)] || ''" :class="c.class"></span>
                                     
-                                    <div v-else-if="c.type == 'longText'" @click.stop="modal(getVal(c.field, r), 'html')" v-text="getVal(c.field, r).toString().substring(0,10)+'···'" :class="c.class" class="long-text"></div>
+                                    <div v-else-if="c.type == 'longText'" @click.stop="modal(getVal(c.field, r), 'html')" v-text="cutStr(getVal(c.field, r).toString(), c.length)" :class="c.class" class="long-text"></div>
                     
                                     <span v-else v-text="getVal(c.field, r)" :class="c.class"></span>
                                 </td>
@@ -454,6 +454,9 @@
                                 this.$swal(param);
                         }
                     },
+                    cutStr(str, len = 10, f = '...'){
+                        return str.length > len ? str.substring(0,len) + f : str;
+                    },
                     getVal(f, r){
                         try {
                             f = ''.toString() + f // 强制转字符串
@@ -713,6 +716,7 @@
         d(s) {
             let searchNode = document.createElement('div')
             searchNode.id = s.id
+            searchNode.style.minHeight = 'auto'
             document.querySelector('.nav-search').appendChild(searchNode)
             let globals = {
                 onSubmit: (formData) => {
@@ -721,7 +725,7 @@
                 }
             }
             globals.global = s.global
-            return new FormSurface('#'+searchNode.id, s.constitute, s.rule, globals)
+            return w.$f || (w.$f = new FormSurface('#'+searchNode.id, s.constitute, s.rule, globals))
         }
     }
 

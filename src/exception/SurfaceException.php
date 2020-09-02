@@ -7,33 +7,28 @@ namespace surface\exception;
 
 class SurfaceException extends \Exception
 {
-
-    /**
-     * 调试信息
-     *
-     * @var null
-     */
-    protected $debug;
-
-    /**
-     * 数据
-     * @var array
-     */
+    /** @var array 数据 */
     protected $data = [];
 
-    public function __construct($msg = "", int $code = 1, $data = [], $debug = null)
+    public function __construct($msg = "", int $code = 1,array $data = [])
     {
         if (is_numeric($msg)) {
             $code = $msg;
         }
 
         $this->code = $code;
-
         $this->message = $msg;
-
         $this->data = $data;
+    }
 
-        $this->debug = $debug;
+    public static function success($msg, array $data = []) : self
+    {
+        return new self($msg, 0, $data);
+    }
+
+    public static function fail($msg, array $data = []) : self
+    {
+        return new self($msg, 0, $data);
     }
 
     /**
@@ -57,18 +52,11 @@ class SurfaceException extends \Exception
             return $this->$key ?? '';
         }
 
-        $data = [
+        return [
             'code' => $this->code,
             'msg'  => $this->message,
             'data' => $this->data,
-            'debug' => $this->debug
         ];
-
-        if ($this->debug === null) {
-            unset($data['debug']);
-        }
-
-        return $data;
     }
 
     public function __toString()

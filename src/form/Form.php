@@ -7,41 +7,42 @@ namespace surface\form;
 
 use surface\Base;
 use surface\DataTypeInterface;
-use surface\form\type\Button;
+use surface\form\components;
+use surface\form\attribute\Button;
 
 
 /**
  * Class Build
  *
- * @method type\Input input($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Text text($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Json json($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Textarea textarea($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Password password($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Hidden hidden($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Button button($title = '', $rule = []) static
- * @method type\Radio radio($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Checkbox checkbox($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Number number($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Select select($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Selects selects($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Switcher switcher ($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Cascader cascader($field = '', $title = '', $value = [], $rule = []) static
- * @method type\City city($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Area area($field = '', $title = '', $value = [], $rule = []) static
- * @method type\DatePicker date($field = '', $title = '', $value = [], $rule = []) static
- * @method type\TimePicker time($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Datetime datetime($field = '', $title = '', $value = [], $rule = []) static
- * @method type\ColorPicker color($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Rate rate($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Slider slider($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Range range($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Tree tree($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Frame frame($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Upload upload($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Uploads uploads($field = '', $title = '', $value = [], $rule = []) static
- * @method type\Editor editor($field = '', $title = '', $value = '', $rule = []) static
- * @method type\Tab tab($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Input input($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Text text($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Json json($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Textarea textarea($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Password password($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Hidden hidden($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Button button($title = '', $rule = []) static
+ * @method components\Radio radio($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Checkbox checkbox($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Number number($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Select select($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Selects selects($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Switcher switcher ($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Cascader cascader($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\City city($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Area area($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\DatePicker date($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\TimePicker time($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Datetime datetime($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\ColorPicker color($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Rate rate($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Slider slider($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Range range($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Tree tree($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Frame frame($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Upload upload($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Uploads uploads($field = '', $title = '', $value = [], $rule = []) static
+ * @method components\Editor editor($field = '', $title = '', $value = '', $rule = []) static
+ * @method components\Tab tab($field = '', $title = '', $value = '', $rule = []) static
  *
  * @package surface\form
  * Author: zsw zswemail@qq.com
@@ -78,24 +79,14 @@ class Form extends Base
         = [
             '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
             '<script src="//cdn.staticfile.org/vue/2.6.10/vue.js"></script>',
-            '<script src="/static/surface/form/form.js"></script>',
+            '<script src="/static/surface/form/form.js"></script>'
         ];
 
     protected $style = [];
 
     protected $theme = 'element';
 
-    protected $themes
-        = [
-            'iview'   => [ //TODO iView兼容性待调试
-                'style'  => [
-                    '<link href="//cdn.staticfile.org/iview/3.4.2-rc.1/styles/iview.css" rel="stylesheet">',
-                ],
-                'script' => [
-                    '<script src="//cdn.staticfile.org/iview/3.4.2-rc.1/iview.min.js"></script>',
-                    '<script src="/static/surface/form/form-create.iview.min.js"></script>',
-                ],
-            ],
+    protected $themes = [
             'element' => [
                 'style'  => [
                     '<link rel="stylesheet" href="//cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css">',
@@ -110,36 +101,36 @@ class Form extends Base
 
     protected static $servers
         = [
-            'input'     => type\Input::class,
-            'text'     => type\Text::class,
-            'json'     => type\Json::class,
-            'textarea' => type\Textarea::class,
-            'password' => type\Password::class,
-            'button'   => type\Button::class,
-            'hidden'   => type\Hidden::class,
-            'radio'    => type\Radio::class,
-            'number'   => type\Number::class,
-            'checkbox' => type\Checkbox::class,
-            'select'   => type\Select::class,
-            'selects'   => type\Selects::class,
-            'switcher' => type\Switcher::class,
-            'cascader' => type\Cascader::class,
-            'city'     => type\City::class,
-            'area'     => type\Area::class,
-            'colorPicker' => type\ColorPicker::class,
-            'datetime'    => type\Datetime::class,
-            'date'  => type\DatePicker::class,
-            'time'     => type\TimePicker::class,
-            'color'    => type\ColorPicker::class,
-            'rate'     => type\Rate::class,
-            'slider'   => type\Slider::class,
-            'range'   => type\Range::class,
-            'tree'     => type\Tree::class,
-            'frame'    => type\Frame::class,
-            'upload'   => type\Upload::class,
-            'uploads'   => type\Uploads::class,
-            'editor'   => type\Editor::class,
-            'tab'   => type\Tab::class,
+            'input'     => components\Input::class,
+            'text'     => components\Text::class,
+            'json'     => components\Json::class,
+            'textarea' => components\Textarea::class,
+            'password' => components\Password::class,
+            'button'   => components\Button::class,
+            'hidden'   => components\Hidden::class,
+            'radio'    => components\Radio::class,
+            'number'   => components\Number::class,
+            'checkbox' => components\Checkbox::class,
+            'select'   => components\Select::class,
+            'selects'   => components\Selects::class,
+            'switcher' => components\Switcher::class,
+            'cascader' => components\Cascader::class,
+            'city'     => components\City::class,
+            'area'     => components\Area::class,
+            'colorPicker' => components\ColorPicker::class,
+            'datetime'    => components\Datetime::class,
+            'date'  => components\DatePicker::class,
+            'time'     => components\TimePicker::class,
+            'color'    => components\ColorPicker::class,
+            'rate'     => components\Rate::class,
+            'slider'   => components\Slider::class,
+            'range'   => components\Range::class,
+            'tree'     => components\Tree::class,
+            'frame'    => components\Frame::class,
+            'upload'   => components\Upload::class,
+            'uploads'   => components\Uploads::class,
+            'editor'   => components\Editor::class,
+            'tab'   => components\Tab::class,
         ];
 
 
@@ -250,10 +241,10 @@ class Form extends Base
      *
      * @return string
      */
-    public function view()
+    public function page(): string
     {
         ob_start();
-        require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'template'
+        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'
             .DIRECTORY_SEPARATOR.'page.php';
         $html = ob_get_clean();
         return $html;

@@ -20,6 +20,7 @@ trait Column
      * @param null $columns
      * @return $this|array
      * @throws SurfaceException
+     * Author: zsw zswemail@qq.com
      */
     public function column($columns = null)
     {
@@ -44,6 +45,7 @@ trait Column
      * @param array $columns
      *
      * @return array
+     * Author: zsw zswemail@qq.com
      */
     public function checkTableColumn(array $columns): array
     {
@@ -73,12 +75,7 @@ trait Column
                 $type = $v['type'];
                 unset($v['type']);
             }
-
-            $type = preg_replace_callback('/_([a-zA-Z])/', function ($match) {
-                return strtoupper($match[1]);
-            }, $type);
-
-            $type = lcfirst($type);
+            $type = preg_replace_callback('/_([a-zA-Z])/', function ($match) {return strtoupper($match[1]);}, $type);
             $columns[$k] = self::$type($field, $title, $v);
         }
         return $columns;

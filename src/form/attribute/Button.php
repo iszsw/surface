@@ -5,7 +5,6 @@
 namespace surface\form\attribute;
 
 use surface\AttrBase;
-use surface\form\Type;
 
 class Button extends AttrBase
 {
