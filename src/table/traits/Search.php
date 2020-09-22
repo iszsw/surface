@@ -20,6 +20,22 @@ trait Search
      */
     protected $searchModel;
 
+    private $buildSearchView = false;
+
+    /**
+     * 搜索
+     *
+     * @return $this
+     * Author: zsw zswemail@qq.com
+     */
+    protected function buildSearchView()
+    {
+        if (!$this->buildSearchView && $this->searchModel) {
+            $this->searchModel->view();
+        }
+        return $this;
+    }
+
     /**
      * @param array|\Closure $search
      * @return self

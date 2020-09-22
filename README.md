@@ -1,3 +1,4 @@
+# PHP页面构建器，使用php代码生成表单表格页面
 
 surface根据PHP代码快速构建出表单、表格组件页面。
 
@@ -7,13 +8,15 @@ surface根据PHP代码快速构建出表单、表格组件页面。
 
 有疑问或者查看更多功能采访问[作者主页](https://www.zsw.ink)
 
-主页  [https://www.zsw.ink](https://www.zsw.ink)
+> zsw zswemail@qqcom
 
-github  [https://github.com/iszsw/surface](https://github.com/iszsw/surface)
+> 主页  [https://www.zsw.ink](https://www.zsw.ink) 提供更多示例和文档
 
-gitee   [https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
+> github  [https://github.com/iszsw/surface](https://github.com/iszsw/surface)
 
->  Form组件
+> gitee   [https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
+
+##  Form 组件
 - upload
 - frame
 - text
@@ -57,14 +60,13 @@ $ composer require iszsw/surface
 
 ## 使用说明
 
-（如果使用ThinkPHP的同学使用内置助手类，对tp更友好，可以查看/vender/iszsw/test/ThinkPhp.php中示例
-）
-> 1、因为文件涉及到前端样式 需要复制/src/static 目录到项目入口 
+（如果使用TP的同学使用内置助手类，对tp更友好，可以查看/vender/iszsw/test/ThinkPhp.php中示例）
+> 静态资源文件以上CDN 如需自行部署请通过URL自行下载或联系作者 并通过 setStaticDomain 方法注册自定义的域名地址
 
-> 2、注册全局配置
-
+#### 1、注册全局配置,所有组件可以自定义全局默认参数配置，配置参考 [elementUI](https://element.eleme.cn/#/zh-CN/component/input) 的Attributes参数
 
 ```shell
+// 方式一 配置文件
 // 使用了thinkPHP框架可以直接在config目录添加surface.php配置文件
 return [
         'upload' => [
@@ -77,7 +79,7 @@ return [
         ]
 ];
 
-// 方式二
+// 方式二 全局注册
 Form::global([
             'upload' => [
                 'manageShow' => true,    // 图片管理
@@ -90,19 +92,23 @@ Form::global([
      ]);
 ```
     
-> 3、创建控制器 引入测试文件
-    
+#### 2、创建控制器 引入测试文件
     
 ```shell
-use surface\test\Test;
 
-$type = $_GET['type'] ?? null;
-if ($type) {
-    if ($type == 'file') {
-        echo Test::table();die;
-    }
+<?php
+
+require '../vendor/autoload.php';
+
+if (isset($_GET['type'])) {
+    echo \surface\test\Test::table();die;
 }
-echo Test::form();
+
+if (isset($_GET['from'])) {
+    echo \surface\test\Test::images();die;
+}
+echo \surface\test\Test::form();
+
 ```
 
 参考
@@ -143,8 +149,5 @@ json_encode（['code' => '000', 'count'=> 100, 'data' => [[
 ```
 
 
-## 关于
-作者：zsw  
-邮箱：zswemail@qq.com
 
-感谢xaboy提供优秀的form-create工具
+感谢xaboy提供优秀的表单工具 [前往form-create](http://www.form-create.com/v2/element-ui/) 

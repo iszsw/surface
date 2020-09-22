@@ -68,37 +68,6 @@ class Form extends Base
             'globals' => null,
         ];
 
-    /**
-     * 重置按钮配置
-     *
-     * @var bool
-     */
-    protected $resetBtn = false;
-
-    protected $script
-        = [
-            '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
-            '<script src="//cdn.staticfile.org/vue/2.6.10/vue.js"></script>',
-            '<script src="/static/surface/form/form.js"></script>'
-        ];
-
-    protected $style = [];
-
-    protected $theme = 'element';
-
-    protected $themes = [
-            'element' => [
-                'style'  => [
-                    '<link rel="stylesheet" href="//cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css">',
-                ],
-                'script' => [
-                    '<script src="//cdn.staticfile.org/element-ui/2.8.2/index.js"></script>',
-//                    '<script src="//unpkg.com/@form-create/element-ui/dist/form-create.min.js"></script>',
-                    '<script src="/static/surface/form/form-create.elm.min.js"></script>',
-                ],
-            ],
-        ];
-
     protected static $servers
         = [
             'input'     => components\Input::class,
@@ -139,6 +108,20 @@ class Form extends Base
      * @var array
      */
     protected static $global_config = [];
+
+    protected function init()
+    {
+        $this->addStyle('<link rel="stylesheet" href="//cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css">');
+        $this->addStyle([
+            '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
+            '<script src="//cdn.staticfile.org/vue/2.6.10/vue.js"></script>',
+            '<script src="'.$this->getStaticDomain().'/surface/form/form.js"></script>',
+
+            '<script src="//cdn.staticfile.org/element-ui/2.8.2/index.js"></script>',
+//            '<script src="//unpkg.com/@form-create/element-ui/dist/form-create.min.js"></script>',
+            '<script src="'.$this->getStaticDomain().'/surface/form/form-create.elm.min.js"></script>',
+        ]);
+    }
 
     public static function global($data = null)
     {
@@ -201,27 +184,6 @@ class Form extends Base
             $this->config[$key] = $val;
         }
         return $this;
-    }
-
-    public function setTheme($theme)
-    {
-        $this->theme = $theme;
-
-        return $this;
-    }
-
-    public function getStyle()
-    {
-        $theme_style = $this->themes[$this->theme]['style'];
-
-        return array_merge($this->style, $theme_style);
-    }
-
-    public function getScript()
-    {
-        $theme_script = $this->themes[$this->theme]['script'];
-
-        return array_merge($this->script, $theme_script);
     }
 
     public function getSubmitBtn()

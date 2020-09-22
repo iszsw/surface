@@ -20,26 +20,43 @@ abstract class Base
     /**
      * @var array
      */
-    protected $script = [];
+    private $script = [];
 
-    protected $style = [];
+    private $style = [];
 
     /**
      * 延迟执行
      * 传入闭包时 可以延迟执行
      * @var bool
      */
-    protected $delay = false;
+    private $delay = false;
 
+    /**
+     * 静态资源地址
+     *
+     * 提供免费的CDN
+     * @var string
+     */
+    private $staticDomain = '//s.zsw.ink';
+
+    /**
+     * 待处理闭包
+     *
+     * @var \Closure|null
+     */
     private $closure;
 
     public function __construct($closure = null)
     {
-        if (!empty($closure) && $closure instanceof \Closure) {
+        if ($closure instanceof \Closure) {
             $this->closure = $closure;
             $this->delay && $this->resolveClosure();
         }
+
+        $this->init();
     }
+
+    protected function init(){}
 
     public function delay()
     {
@@ -156,6 +173,17 @@ abstract class Base
     public function getScript()
     {
         return $this->script;
+    }
+
+    public function setStaticDomain($domain)
+    {
+        $this->staticDomain = $domain;
+        return $this;
+    }
+
+    public function getStaticDomain()
+    {
+        return $this->staticDomain;
     }
 
     public function __toString()
