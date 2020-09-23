@@ -2,9 +2,8 @@
     "name": "iszsw/surface",
     "description": "PHP表单、表格页面生成器",
     "license": "MIT",
-    "keywords": ["table", "form", "form-create", "element-ui"],
-    "homepage": "https://github.com/iszsw/surface",
-    "minimum-stability": "stable",
+    "keywords": ["table", "form", "form-create", "php"],
+    "homepage": "https://zsw.ink/",
     "authors": [
         {
             "name": "zsw",
@@ -26,6 +25,13 @@
     "autoload-dev": {
         "psr-4": {
             "surface\\test\\": "test"
+        }
+    },
+    "extra": {
+        "think":{
+            "config":{
+                "surface": "src/config.php"
+            }
         }
     }
 }
