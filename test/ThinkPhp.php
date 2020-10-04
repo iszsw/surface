@@ -48,13 +48,13 @@ class ThinkPhp
                             'page', 'create', [
                             'title' => "添加",
                             'refresh' => true,
-                            'url' => 'index/create',
+                            'url' => (string)url('create'),
                         ], 'fa fa-plus')
                     ],
                     'operations'    => [
                         Table::button('page', '', [
                             'title' => '编辑',
-                            'url' => 'index/create',
+                            'url' => (string)url('edit'),
                             'method' => 'get',
                             'refresh' => true,
                             'params' => ['pk'], // 当前列需要提交的字段名
@@ -137,20 +137,19 @@ class ThinkPhp
                     Form::text('name', '姓名', '')->validate(['required' => 'true', 'message' => '用户名不能为空', 'trigger' => 'blur']),
                     Form::radio('sex', '性别', '1')->addOptions(['1' => '男', '2' => '女', '3' => '其他']),
                     Form::number('age', '年龄', '18'),
-                    Form::select('hobby', '爱好')->addOptions(['1' => '唱歌', '2' => '跳舞', '3' => 'rap', '4' => '篮球']),
-                    Form::switcher('status', '状态', 1)->addOptions(0, 1),
                     Form::json('json', 'json', json_encode(['a' => 'aa', 'b' => 'bb'])),
                     Form::select('hobby', '爱好')->addOptions(['1' => '唱歌', '2' => '跳舞', '3' => 'rap', '4' => '篮球']),
                     Form::switcher('status', '状态', 1)->addOptions(0, 1),
                     Form::editor('editor', 'editor', "<h2>Hello</h2>"),
+                    Form::city('city', 'city'),
                     Form::area('area', 'area'),
                     Form::datetime('datetime', 'datetime', ''),
                     Form::color('color', 'color', ''),
                     Form::slider('slider', 'slider', ''),
                     Form::range('range', 'range',123 ),
-                    Form::rate('range', 'range'),
+                    Form::rate('range1', 'range1'),
                     Form::tab(
-                        'pic', 'tab', 'upyun', [
+                        'pic', 'tab', 'qiniu', [
                         'children' => [
                             'ali'   => [
                                 'name'     => 'ali',
@@ -163,7 +162,7 @@ class ThinkPhp
                                 'name'     => 'upyun',
                                 'title'    => 'upyun',
                                 'children' => [
-                                    Form::text('appid', 'appId', 'upyun')->props(['disabled' => true]),
+                                    Form::text('appid1', 'appId1', 'upyun')->props(['disabled' => true]),
                                 ],
                             ],
                             'qiniu' => [
@@ -176,21 +175,21 @@ class ThinkPhp
                                                                 'name'     => 'ali1',
                                                                 'title'    => 'ali1',
                                                                 'children' => [
-                                                                    Form::text('appid1', 'appId1', 'ali'),
+                                                                    Form::text('appid11', 'appId11', 'ali'),
                                                                 ],
                                                             ],
                                                             'upyun1' => [
                                                                 'name'     => 'upyun1',
                                                                 'title'    => 'upyun1',
                                                                 'children' => [
-                                                                    Form::text('appid1', 'appId1', 'upyun')->props(['disabled' => true]),
+                                                                    Form::text('appid111', 'appId111', 'upyun')->props(['disabled' => true]),
                                                                 ],
                                                             ],
                                                             'qiniu1' => [
                                                                 'name'     => 'qiniu1',
                                                                 'title'    => 'qiniu1',
                                                                 'children' => [
-                                                                    Form::text('appid1', 'appId1', 'qiniu'),
+                                                                    Form::text('appid1111', 'appId1111', 'qiniu'),
                                                                 ],
                                                             ],
                                                         ]]

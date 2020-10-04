@@ -4,7 +4,6 @@
  */
 namespace surface\form\components;
 
-
 class Area extends Cascader
 {
 
@@ -16,6 +15,7 @@ class Area extends Cascader
 
     public function init($self):void
     {
+        parent::init($self);
         $self->addScript('<script src="https://unpkg.com/form-create@1.6.1/district/province_city_area.js"></script>');
     }
 

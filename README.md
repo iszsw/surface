@@ -21,7 +21,6 @@ surface根据PHP代码快速构建出表单、表格组件页面。
 
 
 
-
 #### 安装
 
 
@@ -31,36 +30,40 @@ $ composer require iszsw/surface
 #### 使用
 
 （如果使用TP的同学使用内置助手类，对tp更友好，可以查看/vender/iszsw/test/ThinkPhp.php中示例）
-> 静态资源文件以上CDN 如需自行部署请通过URL自行下载或联系作者 并通过 setStaticDomain 方法注册自定义的域名地址
+> 静态资源文件已上CDN 如需自行部署请通过URL自行下载或联系作者 并修改配置文件中static_url自定义的域名地址
 
 1. 注册全局配置,所有组件可以自定义全局默认参数配置，配置参考 [elementUI](https://element.eleme.cn/#/zh-CN/component/input) 的Attributes参数
 
 ```shell
 // 方式一 TP框架配置 在config目录下添加surface.php配置文件
 return [
+    'static_url' => '//s.zsw.ink',
+    'form'       => [ // 表单配置
         'upload' => [
-            'manageShow' => true,    // 图片管理
-            'manageUrl'  => '',    // 文件管理地址
             'action'     => '',    // 文件上传地址
             'uploadType' => 'image', // 文件类型 支持image|file
             'multiple'   => false,
             'limit'      => 1,
         ]
+    ]
 ];
 
 // 方式二 全局注册
 Form::global([
-            'upload' => [
-                'manageShow' => true,    // 图片管理
-                'manageUrl'  => '',    // 文件管理地址
-                'action'     => '',    // 文件上传地址
-                'uploadType' => 'image', // 文件类型 支持image|file
-                'multiple'   => false,
-                'limit'      => 1,
-            ]
-     ]);
+    'static_url' => '//s.zsw.ink',
+    'form'       => [ // 表单配置
+        'upload' => [
+            'action'     => '',    // 文件上传地址
+            'uploadType' => 'image', // 文件类型 支持image|file
+            'multiple'   => false,
+            'limit'      => 1,
+        ]
+    ]
+]);
 ```
 2. 创建控制器 引入测试文件
+[PHP方式](/test/Test.php)
+[ThinkPhp方式](/test/ThinkPhp.php)
     
 ```shell
 
@@ -79,9 +82,7 @@ echo \surface\test\Test::form();
 
 ```
 
-3. 参考
-
-[/test/test.php](/test/test.php)
+3. 组件参考
 
 [/src/README.md](/src/README.md)
 
@@ -121,11 +122,12 @@ echo \surface\test\Test::form();
 
 
 ####  返回说明
+ 
+ > code === 0 成功, code>0 失败
 
  * 提交后返回格式
+ 
 ```shell
-code === 0 成功  code > 0 失败
-
 json_encode（['code' => 0, 'msg'=> '成功', 'data' => []]）
 ```
 

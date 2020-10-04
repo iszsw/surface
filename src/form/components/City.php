@@ -15,6 +15,7 @@ class City extends Cascader
 
     public function init($self):void
     {
+        parent::init($self);
         $self->addScript('<script src="https://unpkg.com/form-create@1.6.1/district/province_city.js"></script>');
     }
 
