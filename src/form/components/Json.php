@@ -4,6 +4,7 @@
  */
 namespace surface\form\components;
 
+use surface\form\Form;
 use surface\form\FormTypeBase;
 use surface\form\Type;
 
@@ -18,4 +19,17 @@ class Json extends FormTypeBase
         $this->rule = $this->createRule($field, $title, $value, $rule);
     }
 
+    /**
+     *
+     * @param $self Form
+     * Author: zsw zswemail@qq.com
+     */
+    public function init($self):void
+    {
+        $self->addScript(
+            [
+                '<script src="'.$self->getStaticUrl().'/surface/form/components/json.js"></script>',
+            ]
+        );
+    }
 }

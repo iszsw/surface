@@ -20,6 +20,11 @@ class Cascader extends FormTypeBase
 
     public function init($self): void
     {
+        $self->addScript(
+            [
+                '<script src="'.$self->getStaticUrl().'/surface/form/components/cascader.js"></script>',
+            ]
+        );
         // 值初始化
         $this->rule->value || $this->rule->value = [''];
     }

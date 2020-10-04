@@ -128,7 +128,7 @@ abstract class FormTypeBase implements DataTypeInterface, \JsonSerializable
      */
     protected function config():array
     {
-        $global = Form::global();
+        $global = Form::global('form');
         $called = get_called_class();
         $config = $global[strtolower(basename(str_replace('\\', '/', $called)))] ?? [];
         $current = get_class();

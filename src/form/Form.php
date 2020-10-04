@@ -102,44 +102,18 @@ class Form extends Base
             'tab'   => components\Tab::class,
         ];
 
-
-    /**
-     * 全局配置
-     * @var array
-     */
-    protected static $global_config = [];
-
     protected function init()
     {
         $this->addStyle('<link rel="stylesheet" href="//cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css">');
         $this->addStyle([
             '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
             '<script src="//cdn.staticfile.org/vue/2.6.10/vue.js"></script>',
-            '<script src="'.$this->getStaticDomain().'/surface/form/form.js"></script>',
+            '<script src="'.$this->getStaticUrl().'/surface/form/form.js"></script>',
 
             '<script src="//cdn.staticfile.org/element-ui/2.8.2/index.js"></script>',
 //            '<script src="//unpkg.com/@form-create/element-ui/dist/form-create.min.js"></script>',
-            '<script src="'.$this->getStaticDomain().'/surface/form/form-create.elm.min.js"></script>',
+            '<script src="'.$this->getStaticUrl().'/surface/form/form-create.elm.min.js"></script>',
         ]);
-    }
-
-    public static function global($data = null)
-    {
-        if (is_null($data)) {
-            return self::$global_config;
-        }elseif (is_string($data)) {
-            return self::$global_config[$data] ?? [];
-        }elseif (is_array($data)) {
-            foreach ($data as $key => $val) {
-                if (is_array($val)) {
-                    if (!isset(self::$global_config[$key])) {
-                        self::$global_config[$key] = $val;
-                    }else{
-                        self::$global_config[$key] = array_merge(self::$global_config[$key], $val);
-                    }
-                }
-            }
-        }
     }
 
     public function setSubmitBtn($config = [])

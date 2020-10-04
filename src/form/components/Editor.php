@@ -28,8 +28,9 @@ class Editor extends FormTypeBase
     {
         $self->addScript(
             [
-                '<script src="'.$self->getStaticDomain().'/surface/form/NKeditor/NKeditor-all.js"></script>',
-                '<script src="'.$self->getStaticDomain().'/surface/form/NKeditor/jquery.min.js"></script>',
+                '<script src="'.$self->getStaticUrl().'/surface/form/components/editor.js"></script>',
+                '<script src="'.$self->getStaticUrl().'/surface/form/NKeditor/NKeditor-all.js"></script>',
+                '<script src="'.$self->getStaticUrl().'/surface/form/NKeditor/jquery.min.js"></script>',
             ]
         );
     }

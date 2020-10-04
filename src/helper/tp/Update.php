@@ -17,8 +17,7 @@ trait Update
             return call_user_func([$model, 'save']);
         }
 
-        //注册配置
-        Form::global(config(version_compare(\think\App::VERSION,'6.0.0','ge') ? 'surface' : 'surface.'));
+        self::registerConfig();
 
         return Surface::form(
             function (Form $form) use ($model)

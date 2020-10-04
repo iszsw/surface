@@ -51,14 +51,14 @@ class Table extends Base
     protected function init()
     {
         $this->addStyle([
-            '<link href="'.$this->getStaticDomain().'/surface/table/table.css" rel="stylesheet">',
+            '<link href="'.$this->getStaticUrl().'/surface/table/table.css" rel="stylesheet">',
             '<link href="//cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">',
         ]);
         $this->addStyle([
             '<script src="//cdn.staticfile.org/vue/2.6.10/vue.js"></script>',
             '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
             '<script src="//cdn.staticfile.org/sweetalert/2.1.2/sweetalert.min.js"></script>',
-            '<script src="'.$this->getStaticDomain().'/surface/table/table.js"></script>',
+            '<script src="'.$this->getStaticUrl().'/surface/table/table.js"></script>',
         ]);
     }
 

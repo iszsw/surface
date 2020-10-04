@@ -21,6 +21,12 @@ class Upload extends FormTypeBase
         if( !$this->props('action') ){
             $this->props('action', ''); // 配置默认值
         }
+
+        $self->addScript(
+            [
+                '<script src="'.$self->getStaticUrl().'/surface/form/components/upload.js"></script>',
+            ]
+        );
     }
 
 }

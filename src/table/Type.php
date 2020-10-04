@@ -8,12 +8,13 @@ namespace surface\table;
 class Type
 {
 
-    const TEXT = 'text';
-    const LONG_TEXT = 'longText';
-    const TEXT_EDIT = 'textEdit';
-    const SELECT_EDIT = 'selectEdit';
-    const SWITCH_EDIT = 'switchEdit';
-    const HTML = 'html';
-    const IN = 'in';
+    // 关键字增加前缀防止冲突
+    const TEXT = 'z-text';
+    const LONG_TEXT = 'z-longText';
+    const TEXT_EDIT = 'z-textEdit';
+    const SELECT_EDIT = 'z-selectEdit';
+    const SWITCH_EDIT = 'z-switchEdit';
+    const HTML = 'z-html';
+    const IN = 'z-in';
 
 }

@@ -5,7 +5,6 @@
 
 namespace surface\helper\tp;
 use surface\exception\SurfaceException;
-use surface\form\Form;
 use surface\Surface;
 use surface\table\Table;
 use surface\DataTypeInterface;
@@ -24,6 +23,7 @@ trait Read
                 return $e();
             }
         }
+        self::registerConfig();
         return Surface::table(
             function (Table $table) use ($model)
             {
@@ -32,7 +32,6 @@ trait Read
                 }
 
                 if($rule = $model->rules()){
-                    Form::global(config(version_compare(\think\App::VERSION,'6.0.0','ge') ? 'surface' : 'surface.'));
                     $table->search($rule);
                 }
                 $table->table($model->defaults());

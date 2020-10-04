@@ -14,6 +14,14 @@ trait Globals
 
     protected $globals;
 
+    /**
+     * 表单公共样式配置
+     *
+     * @param string $key
+     * @param string $val
+     * @return $this
+     * Author: zsw zswemail@qq.com
+     */
     public function globals($key = '', $val = '')
     {
         if ($val === '') {

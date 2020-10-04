@@ -31,13 +31,13 @@ abstract class Base
      */
     private $delay = false;
 
+
     /**
-     * 静态资源地址
-     *
-     * 提供免费的CDN
-     * @var string
+     * 全局配置
+     * @var array
      */
-    private $staticDomain = '//s.zsw.ink';
+    protected static $global_config = [];
+
 
     /**
      * 待处理闭包
@@ -71,6 +71,34 @@ abstract class Base
             $this->closure = null;
         }
         return $this;
+    }
+
+    /**
+     * 通用配置
+     *
+     * @param null $data
+     * @return array|mixed
+     * Author: zsw zswemail@qq.com
+     */
+    public static function global($data = null)
+    {
+        if (is_null($data)) {
+            return self::$global_config;
+        }elseif (is_string($data)) {
+            return self::$global_config[$data] ?? [];
+        }elseif (is_array($data)) {
+            foreach ($data as $key => $val) {
+                if (is_array($val)) {
+                    if (!isset(self::$global_config[$key])) {
+                        self::$global_config[$key] = $val;
+                    }else{
+                        self::$global_config[$key] = array_merge(self::$global_config[$key], $val);
+                    }
+                } else {
+                    self::$global_config[$key] = $val;
+                }
+            }
+        }
     }
 
     public static function make($name, $arguments)
@@ -175,15 +203,9 @@ abstract class Base
         return $this->script;
     }
 
-    public function setStaticDomain($domain)
+    public function getStaticUrl()
     {
-        $this->staticDomain = $domain;
-        return $this;
-    }
-
-    public function getStaticDomain()
-    {
-        return $this->staticDomain;
+        return self::$global_config['static_url'] ?? '';
     }
 
     public function __toString()

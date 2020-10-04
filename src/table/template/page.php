@@ -33,7 +33,7 @@
 <?= implode("\r\n", $this->getScript()) ?>
 <script>
     (function () {
-        window.$t = new TableSurface('#<?=$this->getId();?>', <?= json_encode($this->table(), JSON_UNESCAPED_UNICODE) ?>, {
+        window.$t = TableSurface.render('#<?=$this->getId();?>', <?= json_encode($this->table(), JSON_UNESCAPED_UNICODE) ?>, {
             id: '<?=$this->getId();?>_search',
             constitute : <?=json_encode($this->getSearchParam('constitute'))?>,
             rule : <?=json_encode($this->getSearchParam('rule'))?>,
