@@ -1,46 +1,227 @@
 <?php
-/*
- * Author: zsw zswemail@qq.com
- */
 
 namespace surface;
 
 use surface\exception\SurfaceException;
 
 /**
+ *
+ * surface 公共类
+ *
  * Class Surface
  *
- * @method static \surface\form\Form   form()
- * @method static \surface\table\Table  table()
- *
+ * @package surface
  * Author: zsw zswemail@qq.com
  */
-class Surface
+abstract class Surface
 {
+    use ModelTrait;
+    use ColumnTrait;
 
-    public static function make($name, $param = [])
+    /**
+     * 唯一标识
+     *
+     * @var string
+     */
+    protected $id;
+
+    protected $script = [];
+
+    protected $style = [];
+
+    /**
+     * 组件
+     *
+     * @var array
+     */
+    protected static $components = [];
+
+    /**
+     * 组件配置
+     * @var Config
+     */
+    protected $config = [];
+
+    /**
+     * 延迟执行 传入闭包时延迟执行
+     * 只能通过继承覆盖
+     * 如果需要立即执行设置false
+     *
+     * @var bool
+     */
+    protected $delay = true;
+
+    /**
+     * 待处理闭包
+     *
+     * @var \Closure|null
+     */
+    protected $closure;
+
+    public function __construct($closure = null, array $config = [])
     {
-        $path = strtolower($name);
-        $build = "\\surface\\{$path}\\" . ucfirst($path);
-        if (class_exists($build)) {
-            return (new \ReflectionClass($build))->newInstanceArgs($param);
-        }
+        $this->config = $config;
 
-        throw new SurfaceException("Method:{$name} is not found");
+        $this->init();
+
+        if ($closure instanceof \Closure)
+        {
+            $this->closure = $closure;
+            $this->delay || $this->execute();
+        }
     }
 
     /**
-     * @param $name
-     * @param $arguments
+     * 立即执行
      *
-     * @return object
+     * @return $this
      * @throws SurfaceException
-     * Author: zsw zswemail@qq.com
      */
-    public static function __callStatic($name, $arguments)
+    protected function execute()
     {
-        return self::make($name, $arguments);
+        if ( ! is_null($this->closure) )
+        {
+            static::dispose($this->closure, [$this]);
+            $this->closure = null;
+        }
+
+        return $this;
     }
 
+    public static function __callStatic($name, $arguments)
+    {
+        return static::make($name, $arguments);
+    }
+
+    public function __call($name, $arguments)
+    {
+        return $this->make($name, $arguments);
+    }
+
+    public static function make($name, $arguments)
+    {
+        $component = static::$components[$name] ?? null;
+
+        if ( !$component )
+        {
+            throw new SurfaceException("Component:{$name}  is not founded!");
+        }
+
+        return static::dispose($component, $arguments);
+    }
+
+    public static function getServers()
+    {
+        return static::$components;
+    }
+
+    protected static function dispose($server, $ages = [])
+    {
+        try{
+            if ($server instanceof \Closure || is_array($server))
+            {
+                return call_user_func_array($server, $ages);
+            } elseif (class_exists($server))
+            {
+                return (new \ReflectionClass($server))->newInstanceArgs($ages);
+            } else
+            {
+                return $server;
+            }
+        }catch (\Exception $e){
+            throw new SurfaceException($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public static function bind($name, $call)
+    {
+        static::$components[$name] = $call;
+    }
+
+    public function addScript($script)
+    {
+        if (is_array($script))
+        {
+            foreach ($script as $v)
+            {
+                $this->addResources($v);
+            }
+        } else
+        {
+            $this->addResources($script);
+        }
+
+        return $this;
+    }
+
+    public function addStyle($style)
+    {
+        if (is_array($style))
+        {
+            foreach ($style as $v)
+            {
+                $this->addResources($v, 'style');
+            }
+        } else
+        {
+            $this->addResources($style, 'style');
+        }
+
+        return $this;
+    }
+
+    private function addResources($resource, $type = 'script')
+    {
+        if ($type === 'script')
+        {
+            if ( ! in_array($resource, $this->script))
+            {
+                $this->script[] = $resource;
+            }
+        } else
+        {
+            if ( ! in_array($resource, $this->style))
+            {
+                $this->style[] = $resource;
+            }
+        }
+
+        return $this;
+    }
+
+    public function getId()
+    {
+        if (empty($this->id))
+        {
+            $this->id = uniqid('z');
+        }
+
+        return $this->id;
+    }
+
+    public function getStyle()
+    {
+        return $this->style;
+    }
+
+    public function getScript()
+    {
+        return $this->script;
+    }
+
+    public function view(): string
+    {
+        return $this->execute()->page();
+    }
+
+    protected function init(){}
+
+    /**
+     * 获取页面
+     *
+     * @return mixed
+     * Author: zsw zswemail@qq.com
+     */
+    abstract protected function page(): string;
 
 }

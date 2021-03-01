@@ -13,11 +13,26 @@ namespace surface\helper;
 class Helper
 {
 
+    public static function isPost(): bool
+    {
+        return isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST';
+    }
+
+    public static function isGet(): bool
+    {
+        return isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) == 'GET';
+    }
+
+    public static function isAjax(): bool
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtoupper($_SERVER['HTTP_X_REQUESTED_WITH']) == 'XMLHTTPREQUEST';
+    }
+
     /**
      *
      * 去空值&类型转换
      *
-     * @param $array 多层数组|迭代
+     * @param $array array
      *
      * @return string
      * Author: zsw
@@ -44,6 +59,7 @@ class Helper
                 $array[$k] = (strtolower($v) == 'true');
             }
         }
+
         return $array;
     }
 

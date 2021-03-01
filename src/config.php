@@ -1,51 +1,194 @@
 <?php
-/**
- * @author zsw zswemail@qq.com
- *
- * 默认值配置文件
- *
- * 类型名称必须小写 upload|colorpicker
- *
- * 继承关系的插件将覆盖上级
- *
- * 配置值为空将读取系统默认配置
+/*
+ * Author: zsw zswemail@qq.com
  */
 
-$upload_url = '图片上传地址';
-$manage_url = '图片管理地址';
+namespace surface;
 
-return [
-    'upload'  => [
-        'manageShow' => true,    // 图片管理
-        'manageUrl'  => $manage_url,    // 文件管理地址
-        'action'     => $upload_url,    // 文件上传地址
-        'uploadType' => 'image', // 文件类型 支持image|file
-        'multiple'   => false,
-        'limit'      => 1,
-    ],
-    'uploads' => [ // uploads继承自upload 将覆盖upload配置
-        'multiple' => true,
-        'limit'    => 9,
-    ],
-    'range'   => [
-        'range' => true,
-    ],
-    'selects' => [
-        'multiple'   => true,
-        'filterable' => true,
-    ],
-    'frame'   => [
-        'icon'   => 'el-icon-plus',
-        'height' => '550px',
-        'width'  => '976px', // 90%
-    ],
-    'editor'  => [
-        'theme'           => 'black', // 主题 primary|black|grey|blue
-        'items'           => null,    // 菜单内容
-        'editorUploadUrl' => $upload_url,
-        'editorManageUrl' => $manage_url,
-        'editorMediaUrl'  => $upload_url,
-        'editorFlashUrl'  => $upload_url,
-        'editorFileUrl'   => $upload_url,
-    ],
-];
+use surface\helper\Helper;
+
+/**
+ * 配置服务
+ *
+ * Class Config
+ *
+ * @package Surface
+ */
+class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
+{
+    protected $config = [];
+
+    public function __construct(array $default = [])
+    {
+        $this->config = $default;
+    }
+
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    public function __set($name, $value)
+    {
+        return $this->set($name, $value);
+    }
+
+    public function __isset($name)
+    {
+        return $this->has($name);
+    }
+
+    public function __unset($name)
+    {
+        unset($this->config[$name]);
+    }
+
+    public function offsetExists($offset)
+    {
+        return $this->__isset($offset);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->__get($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        return $this->__set($offset, $value);
+    }
+
+    public function offsetUnset($offset)
+    {
+        return $this->__unset($offset);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->config;
+    }
+
+    /**
+     * 获取配置参数 为空则获取所有配置
+     * @access public
+     * @param  string $name    配置参数名（支持多级配置 .号分割）
+     * @param  mixed  $default 默认值
+     * @return mixed
+     */
+    public function get(string $name = null, $default = null)
+    {
+        // 无参数时获取所有
+        if (empty($name)) {
+            return $this->config;
+        }
+
+        if (false === strpos($name, '.')) {
+            return $this->pull($name);
+        }
+
+        $name    = explode('.', $name);
+        $name[0] = strtolower($name[0]);
+        $config  = $this->config;
+
+        // 按.拆分成多维数组进行判断
+        foreach ($name as $val) {
+            if (isset($config[$val])) {
+                $config = $config[$val];
+            } else {
+                return $default;
+            }
+        }
+
+        return $config;
+    }
+
+
+    /**
+     * 设置配置参数 name为数组则为批量设置
+     * @access public
+     * @param  string $name 配置名
+     * @param  array|string  $val 配置参数
+     * @return array
+     */
+    public function set($name, $val = null)
+    {
+        if (is_array($name) && $val == null) {
+            foreach ($name as $k => $v) {
+                $this->set($k, $v);
+            }
+        }else if(is_string($name)){
+            $name   = explode('.', $name);
+            $config = [];
+            $nameLength = count($name);
+            foreach ($name as $k => $n) {
+                if ($nameLength == $k + 1) {
+                    $config[$n] = $val;
+                }else{
+                    $config[$n] = [];
+                }
+            }
+            $this->config = $this->recursive($this->config, $config);
+        }
+
+        return $this->config;
+    }
+
+    /**
+     * 数组深度合并 相同KEY值 如果是数组合并 如果是字符串覆盖
+     *
+     * @param $original
+     * @param $extend
+     */
+    private function recursive(array $original, array $extend):array
+    {
+        foreach ($extend as $k => $v) {
+            $original[$k] = isset($original[$k]) && is_array($original[$k]) ? $this->recursive($original[$k], (array)$v) : $v;
+        }
+        return $original;
+    }
+
+    /**
+     * 检测配置是否存在
+     * @access public
+     * @param  string $name 配置参数名（支持多级配置 .号分割）
+     * @return bool
+     */
+    public function has(string $name): bool
+    {
+        return !is_null($this->get($name));
+    }
+
+    /**
+     * 获取一级配置
+     * @access protected
+     * @param  string $name 一级配置名
+     *
+     * @return mixed|null
+     */
+    protected function pull(string $name)
+    {
+        $name = strtolower($name);
+        return $this->config[$name] ?? null;
+    }
+
+    public function toArray()
+    {
+        return $this->getIterator()->getArrayCopy();
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->config);
+    }
+
+    public function __invoke($config = [])
+    {
+        if (is_array($config)) {
+            foreach ($config as $name=>$value) {
+                $this->config[$name] = $value;
+            }
+        }
+        return $this;
+    }
+
+}

@@ -1,8 +1,8 @@
 {
     "name": "iszsw/surface",
-    "description": "PHP表单、表格页面生成器",
+    "description": "CURD 页面构建器",
     "license": "MIT",
-    "keywords": ["table", "form", "form-create", "php"],
+    "keywords": ["curd", "curd-create", "surface", "php"],
     "homepage": "https://zsw.ink/",
     "authors": [
         {
@@ -25,13 +25,6 @@
     "autoload-dev": {
         "psr-4": {
             "surface\\test\\": "test"
-        }
-    },
-    "extra": {
-        "think":{
-            "config":{
-                "surface": "src/config.php"
-            }
         }
     }
 }

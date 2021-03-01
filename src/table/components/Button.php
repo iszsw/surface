@@ -1,46 +1,130 @@
 <?php
-/*
- * Author: zsw zswemail@qq.com
- */
+
 namespace surface\table\components;
 
-use surface\DataTypeInterface;
-use surface\helper\Helper;
-use surface\table\attribute\Button as ButtonAttr;
+use surface\Component;
 
-class Button implements DataTypeInterface
+/**
+ * 创建一个按钮组件
+ *
+ * Class Button
+ *
+ * @package surface\table\components
+ * Author: zsw zswemail@qq.com
+ */
+class Button extends Component
 {
 
-    protected $button;
+    protected $name = 's-button';
 
     /**
-     * Button constructor.
-     * @param string $type  page|submit|confirm|html|alert
-     *
-     * refresh                  默认true     成功之后自动刷新
-     * autoClose    page有效     默认true     设置为false不自动关闭
-     * closeTime    page有效     默认1500(ms) 自动关闭时间
-     *
-     * @param string $title
-     * @param array $params
-     * @param string $faClass
+     * 打开页面
      */
-    public function __construct($type = '', $title = '', $params = [], $faClass = '')
-    {
-        $this->button = new ButtonAttr(['type'=>$type, 'title' => $title, 'params' => $params, 'faClass' => $faClass]);
-    }
-
-    public function init($self):void{}
+    const HANDLER_PAGE = 'page';
 
     /**
-     * 返回格式化数组
-     *
-     * @return mixed
-     * Author: zsw zswemail@qq.com
+     * 确认框
      */
-    public function getData()
+    const HANDLER_CONFIRM = 'confirm';
+
+    /**
+     * 重新拉取数据
+     */
+    const HANDLER_REFRESH = 'refresh';
+
+    /**
+     * header 提交选中
+     */
+    const HANDLER_SUBMIT = 'submit';
+
+
+    public function __construct($icon = 'el-icon-s-tools', $tooltip = '查看')
     {
-        return Helper::filterEmpty($this->button);
+        parent::__construct(
+            [
+                'el'    => $this->name,
+                'props' => [
+                    'prop'       => [
+                        'type' => 'text',
+                        'icon' => $icon,
+                    ],
+                    'tooltip'    => $tooltip,
+                    'confirmBtn' => false,
+                    'cancelBtn'  => false,
+                ],
+            ]
+        );
     }
+
+    /**
+     * @param       $url    地址
+     * @param array $data   请求扩展参数
+     *
+     * @return Button
+     */
+    public function createPage($url, array $data = [])
+    {
+        return $this->props(
+            is_array($url)
+                ? $url
+                : [
+                'handler' => self::HANDLER_PAGE,
+                'url'     => $url,
+                'data'    => $data,
+            ]
+        );
+    }
+
+    /**
+     * @param       $confirmMsg 点击提示文字
+     * @param array $async      异步提交地址
+     *
+     * @return Button
+     */
+    public function createConfirm($confirmMsg, array $async = [])
+    {
+        return $this->props(
+            is_array($confirmMsg)
+                ? $confirmMsg
+                : [
+                'handler'    => self::HANDLER_CONFIRM,
+                'confirmMsg' => $confirmMsg,
+                'async'      => $async,
+            ]
+        );
+    }
+
+    /**
+     * 刷新
+     *
+     * @return Button
+     */
+    public function createRefresh()
+    {
+        return $this->props(['handler' => self::HANDLER_REFRESH]);
+    }
+
+    /**
+     *
+     * @param array  $async      异步提交地址
+     * @param string $confirmMsg 提示文字
+     * @param string $pk         提交的主键
+     *
+     * @return Button
+     */
+    public function createSubmit(array $async = [], string $confirmMsg = '', string $pk = 'id')
+    {
+        return $this->props(
+            [
+                'handler'    => self::HANDLER_SUBMIT,
+                'confirmMsg' => $confirmMsg,
+                'async'      => $async,
+                'pk'         => $pk,
+            ]
+        );
+    }
+
 
 }
+
+

@@ -5,68 +5,78 @@
 
 namespace surface\table;
 
-use surface\Base;
+use surface\Surface;
+use surface\Component;
+use surface\table\traits;
 use surface\table\components;
+use surface\table\components\Table as TableComponent;
 
 
 /**
  * Class Build
  *
- * @method components\Text text($field, $title = null, $column = null) static
- * @method components\LongText longText($field, $title = null, $column = null) static
- * @method components\TextEdit textEdit($field, $title = null, $column = null) static
- * @method components\Html html($field, $title = null, $column = null) static
- * @method components\SwitchEdit switchEdit($field, $title = null, $column = null) static
- * @method components\SelectEdit selectEdit($field, $title = null, $column = null) static
- * @method components\In in($field, $title = null, $column = null) static
- * @method components\Button button($type = '', $title = '', $params = [], $faClass = '') static
+ * @method components\Expand expand($prop, $label) static
+ * @method components\Selection selection($prop) static
+ * @method components\Column column($prop, $label) static
+ * @method Component component($config) static     下拉
+ *
+ * scopedSlots自定义组件
+ * @method components\Switcher switcher($prop, $label) static 开关
+ * @method components\Writable writable($prop, $label) static 可编辑文本
+ * @method components\Select select($prop, $label) static     下拉
+ *
+ * Handler 组件
+ * @method components\Button button($handler, $icon) static
  *
  * @package surface\table
  * Author: zsw zswemail@qq.com
  */
-class Table extends Base
+class Table extends Surface
 {
 
-    use \surface\table\traits\Table;
-    use \surface\table\traits\Column;
-    use \surface\table\traits\Search;
+    use traits\Header;
+    use traits\Pagination;
 
-    protected static $servers = [
-        'text'       => components\Text::class,
-        'longText'   => components\LongText::class,
-        'textEdit'   => components\TextEdit::class,
-        'html'       => components\Html::class,
-        'switchEdit' => components\SwitchEdit::class,
-        'selectEdit' => components\SelectEdit::class,
-        'in'         => components\In::class,
-        'button'     => components\Button::class,
+    protected static $components = [
+        'expand' => components\Expand::class,
+        'selection' => components\Selection::class,
+        'writable'  => components\Writable::class,
+        'switcher'  => components\Switcher::class,
+        'select'    => components\Select::class,
+        'column'    => components\Column::class,
+        'Table'     => components\Form::class,
+        'button'    => components\Button::class,
+        'component' => Component::class,
     ];
-
-    public function __construct($closure = null, $config = [])
-    {
-        $this->table($config);
-        parent::__construct($closure);
-    }
 
     protected function init()
     {
+        $this->model(new TableComponent($this->config));
+
         $this->addStyle([
-            '<link href="'.$this->getStaticDomain().'/surface/table/table.css" rel="stylesheet">',
-            '<link href="//cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">',
+            '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src/index.css" rel="stylesheet">',
         ]);
-        $this->addStyle([
-            '<script src="//cdn.staticfile.org/vue/2.6.10/vue.js"></script>',
+
+        $this->addScript([
+            '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
             '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
-            '<script src="//cdn.staticfile.org/sweetalert/2.1.2/sweetalert.min.js"></script>',
-            '<script src="'.$this->getStaticDomain().'/surface/table/table.js"></script>',
+            '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
+            '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/surface-table.js"></script>',
         ]);
     }
 
     public function page(): string
     {
-        $this->buildSearchView();
+        $id      = $this->getId();
+        $columns = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
+        $table    = json_encode($this->getModel()->format() ?: (object)[], JSON_UNESCAPED_UNICODE);
+        $pagination  = $this->getPagination();
+        $header  = $this->getHeader();
+        $pagination = $pagination ? json_encode($pagination->format(), JSON_UNESCAPED_UNICODE) : 'null';
+        $header = $header ? json_encode($header->format(), JSON_UNESCAPED_UNICODE) : 'null';
+
         ob_start();
-        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template' .DIRECTORY_SEPARATOR.'page.php';
+        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'page.php';
         $html = ob_get_clean();
         return $html;
     }
