@@ -24,9 +24,14 @@ $ composer require iszsw/surface
 ## 演示
 
 ```shell
-进入verdor/iszsw/surface/test目录
 
-$ php -S localhost:888
+1、下载surface包
+
+2、执行 composer install
+
+3、cd test/
+
+4、 php -S localhost:888
 
 访问
 [localhost:888](http://localhost:888) 

@@ -56,7 +56,8 @@ class Factory
         $component = strtolower($name);
         $class = "\\surface\\{$component}\\" . ucfirst($component);
         if (class_exists($class)) {
-            array_push($param, static::configure($component));
+            if (count($param) === 0) $param = [null];
+            if (count($param) === 1) array_push($param, static::configure($component));
             return (new \ReflectionClass($class))->newInstanceArgs($param);
         }
 
