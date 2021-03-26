@@ -250,14 +250,14 @@ abstract class Surface
                 '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
                 '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
                 '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
-                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/'.$name.'.js"></script>',
+                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src@main/'.$name.'.js"></script>',
             ]
         );
     }
 
     protected $theme = [
-            '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src/index.css" rel="stylesheet">',
-        ];
+        '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src@main/index.css" rel="stylesheet">',
+    ];
 
     /**
      * 自定义主题设置
