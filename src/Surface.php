@@ -250,8 +250,7 @@ abstract class Surface
                 '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
                 '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
                 '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
-              //'<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/'.$name.'.js"></script>',
-                '<script src="//s.c/static/surface/'.$name.'.js"></script>',
+                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/'.$name.'.js"></script>',
             ]
         );
     }
