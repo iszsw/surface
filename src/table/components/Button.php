@@ -57,6 +57,18 @@ class Button extends Component
     }
 
     /**
+     * 根据 '行字段' 判断是否禁用该行使用按钮
+     * 行按钮有效
+     *
+     * @param $field
+     *
+     * @return Button
+     */
+    public function visible($field){
+        return $this->props('visible', $field);
+    }
+
+    /**
      * @param       $url    地址
      * @param array $data   请求扩展参数
      *

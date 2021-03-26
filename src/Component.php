@@ -6,6 +6,8 @@ namespace surface;
  *
  * Class Component
  *
+ * @method $this el($el)
+ * @method $this slot($slot)
  * @method $this props($key, $value)
  * @method $this style($key, $value)
  * @method $this class($class)
@@ -43,6 +45,16 @@ class Component
         return $this;
     }
 
+    public function __get($attr)
+    {
+        return $this->config->get($attr);
+    }
+
+    public function __set($name, $value)
+    {
+        return $this->__call($name, [$value]);
+    }
+
     /**
      * 子组件回调
      * @var callback
@@ -60,10 +72,10 @@ class Component
 
         $this->formatCallback = $callback;
 
-        foreach (['scopedSlots', 'children'] as $type) {
+        foreach (['scopedSlots', 'children'] as $type)
             if (isset($config[$type]))
                 $config[$type] = array_map([$this, 'formatComponent'], $config[$type]);
-        }
+
 
         is_callable($this->formatCallback) && call_user_func($this->formatCallback, $this);
 

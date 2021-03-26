@@ -3,7 +3,8 @@
 $images = "";
 
 for ($i = 0; $i < 20; $i++) {
-    $images .= "<img src='http://q1.qlogo.cn/g?b=qq&nk=191587".rand(100, 999)."&s=640' onclick=\"add(event)\">";
+    $id = '191587' . rand(100, 999);
+    $images .= "<img src='http://q1.qlogo.cn/g?b=qq&nk=".$id."&s=640' onclick=\"add(event, $id)\">";
 }
 
 ?>
@@ -36,10 +37,34 @@ for ($i = 0; $i < 20; $i++) {
 <script>
     var surface_selection = []
 
-    function add(event) {
-        event.srcElement.className = event.srcElement.className == 'check' ? '' : 'check'
-        surface_selection.push('http://q1.qlogo.cn/g?b=qq&nk=19158734'+Math.floor((Math.random()*10)+1)+'&s=640')
+    function getQueryVariable(variable)
+    {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
     }
+
+    let isTake = getQueryVariable('take') !== false
+
+    function add(event, id) {
+        if (event.srcElement.className == 'check') {
+            event.srcElement.className = ''
+            surface_selection.pop()
+        }else{
+            event.srcElement.className = 'check'
+            let url = 'http://q1.qlogo.cn/g?b=qq&nk='+id+'&s=640'
+
+            surface_selection.push(isTake ? {
+                label: '<img src="http://q1.qlogo.cn/g?b=qq&nk='+id+'&s=640">',
+                value: id
+            } : url)
+        }
+    }
+
 </script>
 
 <div class="container">

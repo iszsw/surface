@@ -9,6 +9,25 @@ use surface\Factory;
 use surface\table\components\Button;
 use surface\table\components\Pagination;
 
+function d(...$data)
+{
+    echo "<pre>";
+    foreach ($data as $d)
+    {
+        var_dump($d);
+    }
+}
+
+function dd(...$data)
+{
+    echo "<pre>";
+    foreach ($data as $d)
+    {
+        var_dump($d);
+    }
+    die;
+}
+
 class Surface
 {
 
@@ -23,19 +42,24 @@ class Surface
 
         $form = Factory::form();
 
+        $form->search(true); // 启用search 作为table子页面交互，将获取数据作为table拉取数据的参数
+
         /**
          * 表配置
          */
         $form->options(
             [
-                'search'    => true,
                 'submitBtn' => [
-                    'innerText' => '搜索',
+                    'props' => [
+                        'prop' => [
+                            'type' => 'primary',
+                            'icon' => 'el-icon-search',
+                        ],
+                        'confirmMsg' => '确定搜索吗',
+                    ]
                 ],
-                'async'     => [
-                    'url' => '/',
-                ],
-                'form'      => [
+                // resetBtn 配置同 submitBtn
+                'props'      => [
                     'labelWidth' => '100px',
                 ],
             ]
@@ -55,7 +79,6 @@ class Surface
                         'placeholder' => "请选择活动日期",
                     ]
                 ),
-
             ]
         );
 
@@ -87,7 +110,7 @@ class Surface
                         'id'
                     ),
                     (new Button('el-icon-refresh', '刷新'))->createRefresh(),
-                    $table->button('el-icon-plus', '编辑')->createPage('?form=1'),
+                    $table->button('el-icon-plus', '编辑')->createPage('?form=1')->props('doneRefresh', true),
                     (new Button('el-icon-search', '搜索'))->createPage('?search=1')->props('doneRefresh', false),
                 ]
             )
@@ -148,7 +171,11 @@ class Surface
                 $table->column('options', '操作')->props('fixed', 'right')
                     ->scopedSlots(
                         [
-                            $table->button('el-icon-edit', '编辑')->createPage('?form=1', ['id', 'username' => 'hello']),
+                            $table->button('el-icon-edit', '编辑')
+                                ->visible('option_edit')
+                                ->createPage('?form=1', ['id', 'username' => 'hello'])
+                                ->props('doneRefresh', true), // 完成之后刷新页面
+
                             $table->button('el-icon-delete', '删除')
                                 ->createConfirm('你要删除我吗？', ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php',]),
                         ]
@@ -184,12 +211,9 @@ class Surface
          */
         $form->options(
             [
-                'resetBtn' => true,
-                'async'    => [
-                    'url' => '/data.php',
-                ],
-                'form'     => [
-                    'labelWidth' => '100px',
+                //                'resetBtn' => true,
+                'async' => [
+                    'url' => '/upload.php',
                 ],
             ]
         );
@@ -199,137 +223,96 @@ class Surface
          */
         $form->columns(
             [
-                $form->input('username', '用户名')
+                $form->input('username', '用户名', '用户名必须填，必须！必须！必须！')
                     ->marker('要不得')
-                    ->validate([['required' => true, 'message' => '用户名必须']])
-                    ->children([$form->component(['type' => 'span'])->domProps(['innerText' => '元'])->slot('append')]),
-                $form->input('info', '说明'),
+                    ->validate(
+                        [
+                            ['required' => true, 'message' => '用户名必须'],
+                        ]
+                    )
+                    ->children([$form->component(['el' => 'span'])->item(false)->domProps(['innerText' => '元'])->slot('append')]),
+                $form->hidden('hidden', '看不见我'),
                 $form->number('price', '价格')->props('step', 5),
-                $form->select('hobby', '爱好')->options(
-                    [
-                        ['value' => 1, 'label' => '干饭'],
-                        ['value' => 2, 'label' => '打麻将'],
-                        ['value' => 3, 'label' => '睡觉'],
-                        ['value' => 4, 'label' => '爬山'],
-                    ]
-                )->props('multiple', ! 0),
-                $form->checkbox('label', '标签', [])->options(
-                    [
-                        ['value' => 1, 'label' => '干饭'],
-                        ['value' => 2, 'label' => '打麻将'],
-                        ['value' => 3, 'label' => '睡觉'],
-                        ['value' => 4, 'label' => '爬山'],
-                    ]
-                ),
+                $form->select('hobby', '爱好')->options([1 => '干饭', '打麻将', '睡觉', '爬山'])->props('multiple', ! 0),
+                $form->checkbox('label', '标签', [])->options([1 => '干饭', '打麻将', '睡觉', '爬山'])->props('max', 2)
+                    ->props('group', ! 0), //group = true button样式  false 普通样式
+                $form->radio('examine', '干啥呢', 2)->options([1 => '干饭', '打麻将', '睡觉', '爬山'])
+                    ->props('group', ! 1), //group = true button样式  false 普通样式,
                 $form->switcher('postage', '包邮', 0),
-                $form->date('section_day', '日期')->props(
+                $form->date('section_day', '日期', ["2021-03-04 00:00:00", "2021-04-13 00:00:00"])->props(
                     [
-                        'type'        => "datetimerange",
-                        'format'      => "yyyy-MM-dd HH:mm:ss",
-                        'placeholder' => "请选择活动日期",
+                        'type'         => "datetimerange",
+                        'value-format' => "yyyy-MM-dd HH:mm:ss",
                     ]
                 ),
                 $form->time('section_time', '时间')->props(
                     [
-                        'isRange' => ! 0,
+                        'isRange'      => ! 0,
+                        'value-format' => "HH:mm:ss",
                     ]
                 ),
                 $form->color('color', '颜色', '#333333'),
                 $form->rate('rate', '评分', 2),
                 $form->slider('slider', '范围', [15, 27])->props(['min' => 10, 'max' => 30, 'range' => ! 0]),
-                $form->tree('tree', '树')->props(
+                $form->cascader('cascader', 'cascader')->props( // 异步选择
                     [
-                        'type'              => 'checked',
-                        'defaultExpandAll'  => ! 0,
-                        'checkOnClickNode'  => ! 0,
-                        'expandOnClickNode' => ! 1,
-                        'multiple'          => ! 0,
-                        'showCheckbox'      => ! 0,
-                        'data'              => [
-                            [
-                                'id'       => 1,
-                                'title'    => 'a',
-                                'expand'   => ! 0,
-                                'selected' => ! 1,
-                                'children' => [
-                                    [
-                                        'id'       => 101,
-                                        'title'    => 'a1',
-                                        'expand'   => ! 0,
-                                        'children' => [
-                                            [
-                                                'id'    => 10101,
-                                                'title' => 'a11',
-                                            ],
-                                        ],
-                                    ],
+                        'debounce'  => 100,
+                        'clearable' => ! 0,
+                        'async'     => [
+                            'url' => '/cascaderData.php',
+                        ],
+                    ]
+                ),
+                $form->cascader('cascader1', 'cascader1', ['CQ', 'JB'])->options(// 同步选择
+                    [
+                        [
+                            'value'    => 'BJ',
+                            'label'    => '北京',
+                            'children' => [
+                                [
+                                    'value' => 'TAM',
+                                    'label' => '天安门',
+                                ],
+                                [
+                                    'value' => 'TT',
+                                    'label' => '天坛',
                                 ],
                             ],
                         ],
-                        'props'             => ['label' => 'title'],
-                    ]
-                ),
-                $form->editor('content', '说明', '<h1>666</h1>'),
-                $form->upload('avatar', '头像')->props(
-                    [
-                        'maxLength' => 5,
-                    ]
-                ),
-                $form->group(
-                    'group', '配置', [
-                               ['username' => '张三', 'age' => 18, 'hobby' => '干饭'],
-                           ]
-                )->props(
-                    'rules', [
-                               $form->input('username', '用户名'),
-                               $form->input('age', '年龄'),
-                               $form->input('hobby', '爱好'),
-                           ]
-                ),
-                $form->objects('object', 'json配置', ['username' => '666', 'age' => 18])->props(
-                    'rule', [
-                              $form->input('username', '用户名'),
-                              $form->number('age', '爱好'),
-                          ]
-                ),
-                $form->radio('examine', '审核', 'ok')->options(
-                    [
-                        ['value' => 'ok', 'label' => '通过'],
-                        ['value' => 'no', 'label' => '拒绝'],
-                    ]
-                )->control(
-                    [
                         [
-                            'value' => 'no',
-                            'rule'  => [
-                                $form->editor('reason', '拒绝理由'),
-                            ],
-                        ],
-                    ]
-                )->marker("hahaha"),
-
-                $form->checkbox('tab', 'tab选择')->options(
-                    [
-                        ['value' => 1, 'label' => '干饭'],
-                        ['value' => 2, 'label' => '打麻将'],
-                    ]
-                )->control(
-                    [
-                        [
-                            'handle' => 'val.indexOf(1) >= 0',
-                            'rule'   => [
-                                $form->input('tabInput1', '选择1'),
-                            ],
-                        ],
-                        [
-                            'handle' => 'val.indexOf(2) >= 0',
-                            'rule'   => [
-                                $form->input('tabInput2', '选择2'),
+                            'value'    => 'CQ',
+                            'label'    => '重庆',
+                            'children' => [
+                                [
+                                    'value' => 'JB',
+                                    'label' => '江北区',
+                                ],
+                                [
+                                    'value' => 'NN',
+                                    'label' => '南岸区',
+                                ],
                             ],
                         ],
                     ]
                 ),
-                $form->take('user_id', '联合选择', [1, 2, 3])->options(
+                $form->editor('content', '说明', '<h1>666</h1>')->props(
+                    [
+                        'uploadUrl' => 'upload.php', // 上传地址
+                        'manageUrl' => 'images.php', // 文件管理地址
+                        'typeName'  => 'type',        // 不同类型文件上传携带的参数 类型KEY
+                        'config'    => [                // wangEditor配置参数
+                                                        'showLinkImgAlt' => false,
+                        ],
+                    ]
+                ),
+                $form->upload('avatar', '头像', ["http://q1.qlogo.cn/g?b=qq&nk=191587814&s=640"])->props(
+                    [
+                        'manageUrl' => 'images.php', // 文件管理地址
+                        'action'    => 'upload.php', // 上传地址
+                        'limit'     => 5,
+                    ]
+                ),
+                $form->take('user_id', '联合选择', [1, 3])->options(
                     [
                         ['value' => 1, 'label' => '张三'],
                         ['value' => 2, 'label' => '<img src="http://q1.qlogo.cn/g?b=qq&nk=191587'.rand(100, 999).'&s=640" class="take-img"> 李四'],
@@ -337,7 +320,74 @@ class Surface
                     ]
                 )->props(
                     [
-                        'src' => '/',
+//                        'url'    => 'images.php?take=1',
+                        'url'    => '/',
+                        'unique' => true, // 唯一
+                        'limit'  => 9,
+                    ]
+                ),
+                $form->arrays('arrays', 'json')->options(
+                    [
+                        $form->input('json_input', '用户名'),
+                        $form->number('json_number', '年龄'),
+                        $form->checkbox('json_checkbox', '爱好')->options([1 => '干饭', '打麻将', '睡觉', '爬山'])->props('max', 2),
+                    ]
+                )->props(
+                    [
+                        'span'   => 24,
+                        'title'  => ! 1, // 显示标题 一行数据时显示  多行数据不要启用
+                        'append' => ! 0,
+                    ]
+                ),
+                $form->number('pricea', '我是惊喜', 2)->marker('惊不惊喜')
+                    ->props('step', 5)->visible([['prop' => 'priceb', 'value' => 10],]), // 字段显示条件配置
+                $form->number('priceb', '价格', 8)->marker('把我加到10有惊喜')
+                    ->visible([['prop' => 'tree', 'exec' => 'val.indexOf(1) >= 0']]), // 字段显示条件配置
+                $form->tree('tree', '树')->marker('选中我试一试')->props(
+                    [
+                        'check-strictly'     => ! 0,
+                        'auto-expand-parent' => ! 1,
+                        'showCheckbox'       => ! 0,
+                        'node-key'           => 'id',
+                        'data'               => [
+                            [
+                                'id'       => 1,
+                                'label'    => '大锅',
+                                'expand'   => ! 0,
+                                'selected' => ! 1,
+                                'children' => [
+                                    [
+                                        'id'       => 101,
+                                        'label'    => '二锅',
+                                        'expand'   => ! 0,
+                                        'children' => [
+                                            [
+                                                'id'    => 10101,
+                                                'label' => '小明',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ),
+
+                //自定义格式
+                $form->column('', 'tabs')->el('el-tabs')->children(
+                    [ // 作为子组件 一定取消使用form-item作为外层 设置item(false)
+                        $form->component()->el('el-tab-pane')->props('label', 'tab1')->item(false)->children(
+                            [
+                                $form->input('tab1-name', '姓名1'),
+                                $form->input('tab1-age', '年龄1'),
+                            ]
+                        ),
+                        $form->component()->el('el-tab-pane')->props('label', 'tab2')->item(false)->children(
+                            [
+                                $form->input('tab2-name', '姓名2'),
+                                $form->input('tab2-age', '年龄2'),
+                            ]
+                        ),
                     ]
                 ),
 
@@ -347,6 +397,7 @@ class Surface
         return $form;
     }
 }
+
 
 $index = new Surface();
 
@@ -363,6 +414,8 @@ if ($_GET['form'] ?? false)
         $surface = $index->table();
     }
 }
+
+//dd($surface->getColumns());
 
 $view = $surface->view();
 

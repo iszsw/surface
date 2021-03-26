@@ -31,6 +31,9 @@ trait Update
         return Factory::form(
             function (Form $form) use ($model)
             {
+                if (method_exists($model, 'init')) {
+                    $model->init($form);
+                }
                 $form->options($model->options());
                 $form->columns($model->columns());
             }

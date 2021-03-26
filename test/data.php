@@ -12,7 +12,7 @@ for ($i = 1; $i <= $limit; $i++)
 {
     $id = $i + $star;
     $username = '苹果' . $id;
-    $avatar = 'http://q1.qlogo.cn/g?b=qq&nk=191587'.rand(100, 999).'&s=640';
+    $avatar = 'http://q1.qlogo.cn/g?b=qq&nk=1915'.rand(10000, 99999).'&s=640';
     array_push(
         $data, [
                  'id'       => $id,
@@ -24,6 +24,7 @@ for ($i = 1; $i <= $limit; $i++)
                  'tag'      => $tags[array_rand($tags, 1)],
                  'sex'      => rand(1, 3),
                  'username' => $username,
+                 'option_edit' => !random_int(0, 1),
                  '_selection' => '<img src="'.$avatar.'">' . $username,
              ]
     );

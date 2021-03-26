@@ -2,43 +2,36 @@
 
 namespace surface\test\form;
 
-use surface\Component;
-use surface\form\components\Checkbox;
-use surface\form\components\Color;
 use surface\form\components\Date;
-use surface\form\components\Editor;
-use surface\form\components\Group;
 use surface\form\components\Input;
-use surface\form\components\Number;
-use surface\form\components\Objects;
-use surface\form\components\Radio;
-use surface\form\components\Rate;
-use surface\form\components\Select;
-use surface\form\components\Slider;
 use surface\form\components\Switcher;
-use surface\form\components\Take;
-use surface\form\components\Time;
-use surface\form\components\Tree;
-use surface\form\components\Upload;
 use surface\helper\FormInterface;
 
 class Search implements FormInterface
 {
 
+    public function init($form)
+    {
+        $form->search(true);
+    }
+
     public function options(): array
     {
         return [
-            'search'    => true,
-            'submitBtn' => [
-                'innerText' => '搜索',
-            ],
-            'async'     => [
-                'url' => '/',
-            ],
-            'form'      => [
-                'labelWidth' => '100px',
-            ],
-        ];
+                'submitBtn' => [
+                    'props' => [
+                        'prop' => [
+                            'type' => 'primary',
+                            'icon' => 'el-icon-search',
+                        ],
+                        'confirmMsg' => '确定搜索',
+                    ]
+                ],
+                // resetBtn 配置同 submitBtn
+                'props'      => [
+                    'labelWidth' => '100px',
+                ],
+            ];
     }
 
     public function columns(): array

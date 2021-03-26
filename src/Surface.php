@@ -38,6 +38,7 @@ abstract class Surface
 
     /**
      * 组件配置
+     *
      * @var Config
      */
     protected $config = [];
@@ -57,6 +58,13 @@ abstract class Surface
      * @var \Closure|null
      */
     protected $closure;
+
+    /**
+     * 搜索表单
+     *
+     * @var boolean
+     */
+    protected $search = false;
 
     public function __construct($closure = null, array $config = [])
     {
@@ -79,7 +87,7 @@ abstract class Surface
      */
     protected function execute()
     {
-        if ( ! is_null($this->closure) )
+        if ( ! is_null($this->closure))
         {
             static::dispose($this->closure, [$this]);
             $this->closure = null;
@@ -102,7 +110,7 @@ abstract class Surface
     {
         $component = static::$components[$name] ?? null;
 
-        if ( !$component )
+        if ( ! $component)
         {
             throw new SurfaceException("Component:{$name}  is not founded!");
         }
@@ -117,7 +125,8 @@ abstract class Surface
 
     protected static function dispose($server, $ages = [])
     {
-        try{
+        try
+        {
             if ($server instanceof \Closure || is_array($server))
             {
                 return call_user_func_array($server, $ages);
@@ -128,7 +137,8 @@ abstract class Surface
             {
                 return $server;
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e)
+        {
             throw new SurfaceException($e->getMessage(), $e->getCode());
         }
     }
@@ -209,12 +219,70 @@ abstract class Surface
         return $this->script;
     }
 
+    /**
+     * 搜索字段
+     *
+     * @param bool|null $search
+     *
+     * @return $this|bool
+     */
+    public function search( ?bool $search = null)
+    {
+        if (is_null($search)) {return $this->search;}
+
+        $this->search = $search;
+        return $this;
+    }
+
     public function view(): string
     {
         return $this->execute()->page();
     }
 
-    protected function init(){}
+    protected function init()
+    {
+        $this->model(new Component($this->config));
+
+        $name = strtolower(basename(static::class));
+
+        $this->addScript(
+            [
+                '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
+                '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
+                '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
+              //'<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/'.$name.'.js"></script>',
+                '<script src="//s.c/static/surface/'.$name.'.js"></script>',
+            ]
+        );
+    }
+
+    protected $theme = [
+            '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src/index.css" rel="stylesheet">',
+        ];
+
+    /**
+     * 自定义主题设置
+     *
+     * @param string|array $theme 主题样式
+     * @param bool         $cover 覆盖
+     *
+     * @return $this
+     */
+    public function theme($theme, $cover = true): self
+    {
+        if ($cover)
+        {
+            $this->theme = [];
+        }
+        array_map(
+            function ($t)
+            {
+                array_push($this->theme, $t);
+            }, (array)$theme
+        );
+
+        return $this;
+    }
 
     /**
      * 获取页面

@@ -12,7 +12,7 @@ namespace surface\exception;
  * @package surface\exception
  * Author: zsw zswemail@qq.com
  */
-class SurfaceException extends \Exception
+class SurfaceException extends \Exception implements \JsonSerializable
 {
 
     /** @var array 数据 */
@@ -72,6 +72,11 @@ class SurfaceException extends \Exception
     public function __toString()
     {
         return json_encode($this->__invoke(), JSON_UNESCAPED_UNICODE);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->__invoke();
     }
 
 }

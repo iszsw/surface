@@ -9,7 +9,6 @@ use surface\Surface;
 use surface\Component;
 use surface\table\traits;
 use surface\table\components;
-use surface\table\components\Table as TableComponent;
 
 
 /**
@@ -35,6 +34,7 @@ class Table extends Surface
 {
 
     use traits\Header;
+
     use traits\Pagination;
 
     protected static $components = [
@@ -49,36 +49,17 @@ class Table extends Surface
         'component' => Component::class,
     ];
 
-    protected function init()
-    {
-        $this->model(new TableComponent($this->config));
-
-        $this->addStyle([
-            '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src/index.css" rel="stylesheet">',
-        ]);
-
-        $this->addScript([
-            '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
-            '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
-            '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
-            '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/surface-table.js"></script>',
-        ]);
-    }
 
     public function page(): string
     {
-        $id      = $this->getId();
-        $columns = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
-        $table    = json_encode($this->getModel()->format() ?: (object)[], JSON_UNESCAPED_UNICODE);
-        $pagination  = $this->getPagination();
-        $header  = $this->getHeader();
+        $pagination = $this->getPagination();
+        $header     = $this->getHeader();
         $pagination = $pagination ? json_encode($pagination->format(), JSON_UNESCAPED_UNICODE) : 'null';
-        $header = $header ? json_encode($header->format(), JSON_UNESCAPED_UNICODE) : 'null';
+        $header     = $header ? json_encode($header->format(), JSON_UNESCAPED_UNICODE) : 'null';
 
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'page.php';
-        $html = ob_get_clean();
-        return $html;
+        return ob_get_clean();
     }
 
 }

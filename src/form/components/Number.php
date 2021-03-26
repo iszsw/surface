@@ -5,6 +5,6 @@ namespace surface\form\components;
 class Number extends Column
 {
 
-    protected $name = 'inputNumber';
+    protected $name = 'number';
 
 }

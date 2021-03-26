@@ -5,6 +5,6 @@ namespace surface\form\components;
 class Date extends Column
 {
 
-    protected $name = 'datePicker';
+    protected $name = 'date';
 
 }

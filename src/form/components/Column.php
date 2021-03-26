@@ -6,16 +6,14 @@ use surface\Component;
 
 /**
  *
- * @method $this type($value)
- * @method $this class($class)
- * @method $this row($key, $value)
- * @method $this form($key, $value)
- * @method $this col($key, $value)
- * @method $this options(array $options)
- * @method $this control(array $controls) [ ['value'=>1,'rule'=>[]], ['handle'=>'value > 1', 'rule'=>[]] ] handle(表达式 (val当前值) || 值)
- * @method $this suffix(Component $component)
- * @method $this prefix(Component $component)
- * @method $this validate(array $validate)
+ * @method $this el($el) 组件名
+ * @method $this label($label) 标题
+ * @method $this prop($prop) field参数
+ * @method $this value($value) 值
+ * @method $this options(array $options) 附加参数
+ * @method $this item($item) Component|false|(Object)[]  Component参数无需定义el名称 props，class，children...
+ * @method $this validate(array $validate) 校验
+ * @method $this visible(array $visible) 显示条件（AND） [ ['value'=>1,'prop'=>'字段'], handle ] handle(表达式 (val当前值) 'val == 1')
  *
  * @package surface\table
  * Author: zsw zswemail@qq.com
@@ -25,51 +23,47 @@ class Column extends Component
 
     protected $name = 'input';
 
-    public function __construct($field, $title = '', $value = '')
+    public function __construct($prop, $label = '', $value = '')
     {
         parent::__construct(
             [
-                'type' => $this->name,
-                'field' => $field,
-                'title' => $title,
-                'value' => $value,
+                'el' => $this->name,
+                'prop' => $prop,
+                'label' => $label,
+                'value' => $value
             ]
         );
     }
 
     /**
-     * 添加注释 注释和suffix冲突
+     * 添加表单注释
      *
      * @param string $html
+     * @param string $type  innerHTML | innerText
      *
      * @return $this
      */
-    public function marker( string $html ):self
+    public function marker( string $html , $type = 'innerHTML'):self
     {
-        /** @var $component $this */
-        $component = new Component;
-        $this->suffix($component->type('span')->class('s-marker')->domProps(['innerHTML' => $html]));
+        if (!$this->item) $this->item(new Component);
+        $children = $this->item->children ?? [];
+        array_push($children, (new Component)->el('div')->class('s-marker')->domProps([$type == 'innerHTML' ? $type : 'innerText' => $html]));
+        $this->item->children($children);
         return $this;
     }
 
     protected function afterFormat(array $config): array
     {
-        foreach (['control', 'suffix', 'prefix'] as $type) {
+        foreach (['item'] as $type) {
             if (isset($config[$type]))
                 switch ($type){
-                    case 'control':
-                        foreach ($config[$type] as &$control) {
-                            $control['rule'] = array_map([$this, 'formatComponent'], $control['rule']);
-                        }
-                        unset($control);
-                        break;
-                    case 'prefix':
-                    case 'suffix':
+                    case 'item':
                         $config[$type] = $this->formatComponent( $config[$type] );
                         break;
                     default:
                 }
         }
+        if (!isset($config['item']) && $this->label) $config['item'] = (Object)[];
         return $config;
     }
 

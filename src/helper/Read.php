@@ -28,6 +28,9 @@ trait Read
         return Factory::table(
             function (Table $table) use ($model)
             {
+                if (method_exists($model, 'init')) {
+                    $model->init($table);
+                }
                 $table->options($model->options());
                 $table->columns($model->columns());
                 ($header = $model->header()) && $table->header($header);

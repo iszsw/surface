@@ -11,8 +11,7 @@ class Editor extends Column
     {
         $self->addScript(
             [
-                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/NKeditor/NKeditor-all.js"></script>',
-                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/NKeditor/jquery.min.js"></script>',
+                '<script src="//s.c/static/surface/wangEditor.min.js"></script>',
             ]
         );
     }

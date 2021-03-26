@@ -136,8 +136,10 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
     /**
      * 数组深度合并 相同KEY值 如果是数组合并 如果是字符串覆盖
      *
-     * @param $original
-     * @param $extend
+     * @param array $original
+     * @param array $extend
+     *
+     * @return array
      */
     private function recursive(array $original, array $extend):array
     {

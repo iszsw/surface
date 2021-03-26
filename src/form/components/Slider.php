@@ -5,6 +5,6 @@ namespace surface\form\components;
 class Slider extends Column
 {
 
-    protected $name = 'Slider';
+    protected $name = 'slider';
 
 }
