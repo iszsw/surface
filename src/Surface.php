@@ -15,7 +15,7 @@ use surface\exception\SurfaceException;
  */
 abstract class Surface
 {
-    use ModelTrait;
+    use GlobalsTrait;
     use ColumnTrait;
 
     /**
@@ -41,7 +41,7 @@ abstract class Surface
      *
      * @var Config
      */
-    protected $config = [];
+    protected $config;
 
     /**
      * 延迟执行 传入闭包时延迟执行
@@ -66,13 +66,21 @@ abstract class Surface
      */
     protected $search = false;
 
-    public function __construct($closure = null, array $config = [])
+    /**
+     * 类型 下划线小写
+     * @var string
+     */
+    protected $name;
+
+    public function __construct(?\Closure $closure = null)
     {
-        $this->config = $config;
+        $name = Helper::snake(pathinfo(get_called_class())['filename']);
+
+        $this->name = $name;
 
         $this->init();
 
-        if ($closure instanceof \Closure)
+        if (!is_null($closure))
         {
             $this->closure = $closure;
             $this->delay || $this->execute();
@@ -139,7 +147,7 @@ abstract class Surface
             }
         } catch (\Exception $e)
         {
-            throw new SurfaceException($e->getMessage(), $e->getCode());
+            throw new SurfaceException($e->getMessage(), $e->getCode(), [], $e);
         }
     }
 
@@ -241,22 +249,20 @@ abstract class Surface
 
     protected function init()
     {
-        $this->model(new Component($this->config));
-
-        $name = strtolower(basename(static::class));
+        $this->globals(new Globals([], $this->name));
 
         $this->addScript(
             [
                 '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
                 '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
                 '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
-                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/'.$name.'.js"></script>',
+                '<script src="'.Factory::configure('cdn', '//cdn.jsdelivr.net/gh/iszsw/surface-src@main') . '/' . $this->name.'.js"></script>',
             ]
         );
     }
 
     protected $theme = [
-            '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src/index.css" rel="stylesheet">',
+            '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src@main/index.css" rel="stylesheet">',
         ];
 
     /**

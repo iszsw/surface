@@ -8,6 +8,7 @@ namespace surface\helper;
 use surface\exception\SurfaceException;
 use surface\form\Form;
 use surface\Factory;
+use surface\Helper;
 
 trait Update
 {
@@ -19,10 +20,14 @@ trait Update
             try {
                 $params = array_merge($_POST, json_decode(file_get_contents("php://input"), true) ?? []);
                 $msg = call_user_func_array([$model, 'save'], $params);
-                if (is_bool($msg)) {
-                    $msg === true ? '操作成功' : '操作失败';
+                $code = 1;
+                if (true === $msg) {
+                    $msg = '操作成功';
+                    $code = 0;
+                }else if (false === $msg) {
+                    $msg = '操作失败';
                 }
-                throw new SurfaceException($msg,  (int)$msg);
+                throw new SurfaceException($msg,  $code);
             }catch (SurfaceException $e) {
                 return $e;
             }

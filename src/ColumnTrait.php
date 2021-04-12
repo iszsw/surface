@@ -16,6 +16,8 @@ trait ColumnTrait
     protected $columns = [];
 
     /**
+     * 调用created方法 注入this
+     *
      * 1、[$table::text(...), ...]
      * 2、['type'=>'text', 'field'=>'aaa', 'title'=>'hello']
      * 3、[['f1'=>'v1', 'f2'=>'v2'], ['f1'=>'v1', 'f2'=>'v2']]

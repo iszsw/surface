@@ -18,16 +18,24 @@ class SurfaceException extends \Exception implements \JsonSerializable
     /** @var array 数据 */
     protected $data = [];
 
-    public function __construct($msg = "", int $code = 1, array $data = [])
+    private $_e;
+
+    public function __construct($msg = "", int $code = 1, array $data = [], \Throwable $previous = null)
     {
         if (is_numeric($msg))
         {
             $code = $msg;
         }
 
-        $this->code = $code;
-        $this->message = $msg;
         $this->data = $data;
+
+        $this->_e = $previous ?? $this;
+
+        $this->file = $this->_e->getFile();
+
+        $this->line = $this->_e->getLine();
+
+        parent::__construct($msg, $code, $previous);
     }
 
     public static function success($msg, array $data = []): self

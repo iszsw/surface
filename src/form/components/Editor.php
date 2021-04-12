@@ -11,7 +11,7 @@ class Editor extends Column
     {
         $self->addScript(
             [
-                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src/wangEditor.min.js"></script>',
+                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src@main/wangEditor.min.js"></script>',
             ]
         );
     }

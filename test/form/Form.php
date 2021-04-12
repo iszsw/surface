@@ -24,6 +24,15 @@ use surface\helper\FormInterface;
 class Form implements FormInterface
 {
 
+    public static function formatOptions(array $options, $labelName = 'label', $valueName = 'value'): array
+    {
+        $data = [];
+        foreach ($options as $k => $v) {
+            array_push($data, [$labelName => $v, $valueName => $k]);
+        }
+        return $data;
+    }
+
     public function options(): array
     {
         return [
@@ -51,11 +60,11 @@ class Form implements FormInterface
                 ->children([(new Component)->el('span')->item(false)->domProps(['innerText' => '元'])->slot('append')]),
             (new Hidden('Hidden', '说明')),
             (new Number('price', '价格'))->props('step', 5),
-            (new Select('hobby', '爱好'))->select('hobby', '爱好')->options([1 => '干饭', '打麻将', '睡觉', '爬山'])->props('multiple', ! 0),
+            (new Select('hobby', '爱好'))->select('hobby', '爱好')->options(self::formatOptions([1 => '干饭', '打麻将', '睡觉', '爬山']))->props('multiple', ! 0),
             (new Checkbox('label', '标签', []))->checkbox('label', '标签', [])
-                ->options([1 => '干饭', '打麻将', '睡觉', '爬山'])
+                ->options(self::formatOptions([1 => '干饭', '打麻将', '睡觉', '爬山']))
                 ->props('max', 2)->props('group', ! 0), //group = true button样式  false 普通样式
-            (new Radio('examine', '审核', 2))->options([1 => '干饭', '打麻将', '睡觉', '爬山'])
+            (new Radio('examine', '审核', 2))->options(self::formatOptions([1 => '干饭', '打麻将', '睡觉', '爬山']))
                 ->props('group', ! 1), //group = true button样式  false 普通样式
             new Switcher('postage', '包邮', 0),
             (new Date('section_day', '日期'))->props(

@@ -56,6 +56,8 @@ class Table extends Surface
         $header     = $this->getHeader();
         $pagination = $pagination ? json_encode($pagination->format(), JSON_UNESCAPED_UNICODE) : 'null';
         $header     = $header ? json_encode($header->format(), JSON_UNESCAPED_UNICODE) : 'null';
+        $options    = json_encode($this->getGlobals()->format() ?: (object)[], JSON_UNESCAPED_UNICODE);
+        $columns    = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
 
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'page.php';

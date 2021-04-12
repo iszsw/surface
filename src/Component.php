@@ -27,11 +27,43 @@ class Component
      */
     protected $config;
 
+    /**
+     * 配置名 默认读取文件名
+     *
+     * @var string
+     */
+    protected $configName;
+
+    /**
+     * 组件类型 table|form
+     *
+     * 默认读取目录
+     *
+     * @var string
+     */
+    protected $componentType;
+
     public function __construct(array $config = [])
     {
-        $this->config = new Config($config);
+        if (is_null($this->configName)) {
+            $this->configName = Helper::snake(pathinfo(get_called_class())['filename']);
+        }
+        if (is_null($this->componentType)) {
+            $this->componentType = Helper::snake(explode('\\',get_called_class())[1]);
+        }
+
+        $this->config = new Config();
 
         if (method_exists($this, 'init')) $this->init();
+
+        $custom = Factory::configure($this->componentType .'.'. $this->configName, []);
+        if (count($custom) > 0)
+            $this->config->set($custom);
+
+        if (count($config) > 0)
+            $this->config->set($config);
+
+
     }
 
     public function __call($attr, $arguments)

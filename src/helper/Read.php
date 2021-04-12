@@ -6,6 +6,7 @@
 namespace surface\helper;
 
 use surface\Factory;
+use surface\Helper;
 use surface\table\Table;
 use surface\DataTypeInterface;
 use surface\exception\SurfaceException;
@@ -48,12 +49,17 @@ trait Read
      */
     protected function initSearchConditions(TableInterface $table):array
     {
-        $params = array_merge($_POST, json_decode(file_get_contents("php://input"), true) ?? []);
+        $params = array_merge($_POST, $_GET, json_decode(file_get_contents("php://input"), true) ?? []);
         $page = $params['page'] ?? 1;
         $limit = $params['limit'] ?? 10;
         $sort_field = $params['sort_field'] ?? '';
         $sort_order = $params['sort_order'] ?? '';
         $where = [];
+        array_walk($params, function ($v, $k) use (&$where) {
+            if (!in_array($k, ['page', 'limit', 'sort_field', 'sort_order'])) {
+                $where[$k] = $v;
+            }
+        }, $where);
         $order = '';
         if ($sort_field)
         {
