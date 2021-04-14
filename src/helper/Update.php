@@ -18,8 +18,7 @@ trait Update
         if (Helper::isPost() || Helper::isAjax())
         {
             try {
-                $params = array_merge($_POST, json_decode(file_get_contents("php://input"), true) ?? []);
-                $msg = call_user_func_array([$model, 'save'], $params);
+                $msg  = call_user_func([$model, 'save']);
                 $code = 1;
                 if (true === $msg) {
                     $msg = '操作成功';

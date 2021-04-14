@@ -74,9 +74,8 @@ abstract class Surface
 
     public function __construct(?\Closure $closure = null)
     {
-        $name = Helper::snake(pathinfo(get_called_class())['filename']);
-
-        $this->name = $name;
+        $name = explode('\\', get_called_class());
+        $this->name = Helper::snake(end($name));
 
         $this->init();
 

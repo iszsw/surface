@@ -51,7 +51,7 @@ class Surface
 
         $form = Factory::form();
 
-        //        $form->search(true); // 启用search 作为table子页面交互，将获取数据作为table拉取数据的参数
+        $form->search(true); // 启用search 作为table子页面交互，将获取数据作为table拉取数据的参数
 
         /**
          * 表配置
@@ -66,9 +66,6 @@ class Surface
                         ],
                         //                        'confirmMsg' => '确定搜索吗',
                     ],
-                ],
-                'async'     => [
-                    'url' => 'aa',
                 ],
                 // resetBtn 配置同 submitBtn
                 'props'     => [
