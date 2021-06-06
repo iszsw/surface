@@ -33,14 +33,11 @@ class Form extends AbstractForm
         return $data;
     }
 
-<<<<<<< HEAD
     /**
      * 配置
      *
      * @return array
      */
-=======
->>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98
     public function options(): array
     {
         return [

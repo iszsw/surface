@@ -63,11 +63,7 @@ class Surface
                             'type' => 'primary',
                             'icon' => 'el-icon-search',
                         ],
-<<<<<<< HEAD
                         //  'confirmMsg' => '确定搜索吗',
-=======
-                        //                        'confirmMsg' => '确定搜索吗',
->>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98
                     ],
                 ],
                 // resetBtn 配置同 submitBtn
