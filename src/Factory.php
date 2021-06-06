@@ -18,26 +18,29 @@ use surface\exception\SurfaceException;
 class Factory
 {
 
-    static private $config = [
-        'table' => [],
-        'form' => [],
-    ];
+    /**
+     * @var Config
+     */
+    static private $config;
 
     /**
      * 注册全局配置
      *
-     * @param $config $config
+     * @param        $config
+     * @param string $def
      *
-     * @return array|mixed|null
+     * @return array|mixed|Config|null
      */
-    public static function configure($config)
+    public static function configure($config, $def = '')
     {
-        if (is_array($config)) {
-            static::$config = array_merge(static::$config, $config);
-        } elseif (is_string($config)){
-            return static::$config ? static::$config[$config] ?? null : null;
+        if (is_null(static::$config)) {
+            static::$config = new Config(is_array($config) ? $config : []);
         }
-
+        if (is_array($config)) {
+            static::$config->set($config);
+        } elseif (is_string($config)){
+            return static::$config->get($config, $def);
+        }
         return static::$config;
     }
 
@@ -57,7 +60,6 @@ class Factory
         $class = "\\surface\\{$component}\\" . ucfirst($component);
         if (class_exists($class)) {
             if (count($param) === 0) $param = [null];
-            if (count($param) === 1) array_push($param, static::configure($component));
             return (new \ReflectionClass($class))->newInstanceArgs($param);
         }
 

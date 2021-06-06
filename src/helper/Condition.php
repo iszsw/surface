@@ -1,9 +1,13 @@
 <?php
-/*
- * Author: zsw zswemail@qq.com
- */
+
 namespace surface\helper;
 
+/**
+ * ORM where条件助手
+ *
+ * @package surface\helper
+ * Author: zsw zswemail@qq.com
+ */
 trait Condition
 {
 

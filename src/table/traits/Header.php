@@ -1,7 +1,6 @@
 <?php
 namespace surface\table\traits;
 
-
 use surface\Component;
 
 /**

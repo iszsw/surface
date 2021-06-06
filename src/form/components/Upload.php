@@ -7,4 +7,10 @@ class Upload extends Column
 
     protected $name = 'upload';
 
+    protected function init()
+    {
+        $this->props(['action' => '']);
+    }
+
+
 }

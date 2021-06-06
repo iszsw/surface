@@ -5,16 +5,27 @@ namespace surface\test\form;
 use surface\form\components\Date;
 use surface\form\components\Input;
 use surface\form\components\Switcher;
-use surface\helper\FormInterface;
+use surface\helper\AbstractForm;
 
-class Search implements FormInterface
+class Search extends AbstractForm
 {
 
+    /**
+     * 初始化回调方法
+     * 可以对进行初始化配置
+     *
+     * @param $form
+     */
     public function init($form)
     {
         $form->search(true);
     }
 
+    /**
+     * 配置
+     *
+     * @return array
+     */
     public function options(): array
     {
         return [
@@ -34,6 +45,11 @@ class Search implements FormInterface
             ];
     }
 
+    /**
+     * 列
+     *
+     * @return array
+     */
     public function columns(): array
     {
         return [
@@ -47,11 +63,6 @@ class Search implements FormInterface
                 ]
             )
         ];
-    }
-
-    public function save()
-    {
-        return "操作成功";
     }
 
 }

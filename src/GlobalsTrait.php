@@ -5,23 +5,23 @@ namespace surface;
 /**
  * Table Form 模型
  *
- * @package surface\model\traits
+ * @package surface\globals\traits
  * Author: zsw zswemail@qq.com
  */
-trait ModelTrait
+trait GlobalsTrait
 {
 
     /**
      * @var Component
      */
-    protected $model;
+    protected $globals;
 
     /**
-     * @param Component $model
+     * @param Component $globals
      */
-    public function model(Component $model)
+    public function globals(Component $globals)
     {
-        $this->model = $model;
+        $this->globals = $globals;
     }
 
     /**
@@ -37,7 +37,7 @@ trait ModelTrait
                 $this->options($k, $v);
             }
         }else{
-            $this->model->$key($val);
+            $this->globals->$key($val);
         }
 
         return $this;
@@ -46,9 +46,9 @@ trait ModelTrait
     /**
      * @return Component
      */
-    public function getModel()
+    public function getGlobals()
     {
-        return $this->model;
+        return $this->globals;
     }
 
 

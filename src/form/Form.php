@@ -87,7 +87,8 @@ class Form extends Surface
 
     public function page(): string
     {
-        $options     = json_encode($this->getModel()->format(), JSON_UNESCAPED_UNICODE);
+        $options     = $this->getGlobals()->format();
+        $options     = json_encode(count($options) > 0 ? $options : (object)[], JSON_UNESCAPED_UNICODE);
         $columns     = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
         $search      = $this->search();
 

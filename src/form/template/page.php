@@ -56,6 +56,9 @@
                         }
                     }
                 }
+                if (!options.hasOwnProperty('props')) {
+                    options.props = {}
+                }
                 options.props.model = formData
                 options.onSubmit = function (value, then) {
                     $table.searchChange(value)
@@ -72,7 +75,6 @@
                         surfaceSearchData.push(search)
                     }
                     parent.surfaceSearchData = surfaceSearchData
-
                     $table.hideDialog()
                 }
             }else{

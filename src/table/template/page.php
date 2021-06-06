@@ -19,8 +19,8 @@
         window.$surfaceTable = surfaceTable.create(document.getElementById('<?= $id; ?>'), {
             header: <?= $header; ?>,
             pagination: <?= $pagination; ?>,
-            options: <?= json_encode($this->getModel()->format() ?: (object)[], JSON_UNESCAPED_UNICODE); ?>,
-            columns: <?= json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE); ?>,
+            options: <?= $options ?>,
+            columns: <?= $columns ?>,
         })
 
     }());

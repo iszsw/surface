@@ -5,27 +5,25 @@
 
 namespace surface\helper;
 
-use surface\exception\SurfaceException;
 use surface\form\Form;
 use surface\Factory;
+use surface\Helper;
 
 trait Update
 {
 
-    protected function createForm(FormInterface $model)
+    protected function createForm(AbstractForm $model)
     {
         if (Helper::isPost() || Helper::isAjax())
         {
             try {
-                $params = array_merge($_POST, json_decode(file_get_contents("php://input"), true) ?? []);
-                $msg = call_user_func_array([$model, 'save'], $params);
-                if (is_bool($msg)) {
-                    $msg === true ? '操作成功' : '操作失败';
+                if (!call_user_func([$model, 'save'])) {
+                    throw new \Exception(call_user_func([$model, 'getError']) ?: '操作失败');
                 }
-                throw new SurfaceException($msg,  (int)$msg);
-            }catch (SurfaceException $e) {
-                return $e;
+            } catch (\Exception $e) {
+                return Helper::error($e->getMessage());
             }
+            return Helper::success('操作成功');
         }
 
         return Factory::form(

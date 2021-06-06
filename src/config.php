@@ -5,8 +5,6 @@
 
 namespace surface;
 
-use surface\helper\Helper;
-
 /**
  * 配置服务
  *
@@ -18,9 +16,9 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
 {
     protected $config = [];
 
-    public function __construct(array $default = [])
+    public function __construct(?array $default = [])
     {
-        $this->config = $default;
+        $this->config = $default ?? [];
     }
 
     public function __get($name)
@@ -83,7 +81,7 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
         }
 
         if (false === strpos($name, '.')) {
-            return $this->pull($name);
+            return $this->pull($name, $default);
         }
 
         $name    = explode('.', $name);
@@ -164,13 +162,14 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
      * 获取一级配置
      * @access protected
      * @param  string $name 一级配置名
+     * @param null   $default
      *
      * @return mixed|null
      */
-    protected function pull(string $name)
+    protected function pull(string $name, $default = null)
     {
         $name = strtolower($name);
-        return $this->config[$name] ?? null;
+        return $this->config[$name] ?? $default;
     }
 
     public function toArray()
