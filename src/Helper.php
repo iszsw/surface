@@ -50,6 +50,7 @@ class Helper
         return ltrim(str_replace(" ", "", ucwords($str)), $separator );
     }
 
+<<<<<<< HEAD
     public static function success(string $msg,array $data = []){
         return ['code' => 0, 'msg'  => $msg, 'data' => $data];
     }
@@ -59,4 +60,6 @@ class Helper
     }
 
 
+=======
+>>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98
 }

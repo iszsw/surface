@@ -137,10 +137,14 @@ abstract class Surface
             return call_user_func_array($server, $ages);
         } elseif (class_exists($server))
         {
+<<<<<<< HEAD
             return (new \ReflectionClass($server))->newInstanceArgs($ages);
         } else
         {
             return $server;
+=======
+            throw new SurfaceException($e->getMessage(), $e->getCode(), [], $e);
+>>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98
         }
     }
 

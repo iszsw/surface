@@ -17,11 +17,25 @@ trait Update
         if (Helper::isPost() || Helper::isAjax())
         {
             try {
+<<<<<<< HEAD
                 if (!call_user_func([$model, 'save'])) {
                     throw new \Exception(call_user_func([$model, 'getError']) ?: '操作失败');
                 }
             } catch (\Exception $e) {
                 return Helper::error($e->getMessage());
+=======
+                $msg  = call_user_func([$model, 'save']);
+                $code = 1;
+                if (true === $msg) {
+                    $msg = '操作成功';
+                    $code = 0;
+                }else if (false === $msg) {
+                    $msg = '操作失败';
+                }
+                throw new SurfaceException($msg,  $code);
+            }catch (SurfaceException $e) {
+                return $e;
+>>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98
             }
             return Helper::success('操作成功');
         }

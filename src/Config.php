@@ -5,6 +5,11 @@
 
 namespace surface;
 
+<<<<<<< HEAD:src/config.php
+=======
+use surface\Helper;
+
+>>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98:src/Config.php
 /**
  * 配置服务
  *

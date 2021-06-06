@@ -8,11 +8,18 @@ thinkPHP6 **0代码**生成CURD页面 [iszsw/curd](https://gitee.com/iszsw/curd)
 ## 文档
 [https://www.kancloud.cn/zswok/surface/](https://www.kancloud.cn/zswok/surface/)
 
+<<<<<<< HEAD
 ## 演示
 
 [http://surface.demo.zsw.ink/](http://surface.demo.zsw.ink/)
 
 [查看文档](https://www.kancloud.cn/zswok/surface)
+=======
+
+## 演示
+
+[http://surface.demo.zsw.ink/](http://surface.demo.zsw.ink/)
+>>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98
 
 ## 特性
 
@@ -43,7 +50,11 @@ thinkPHP6 **0代码**生成CURD页面 [iszsw/curd](https://gitee.com/iszsw/curd)
 $ composer require iszsw/surface
 ```
 
+<<<<<<< HEAD
 ## 快速使用 演示代码
+=======
+## 使用
+>>>>>>> 0df92f05daa46f780b739eaf5d880f4f92b55a98
 
 [演示 /test/index.php](/test/index.php) 
 
