@@ -33,10 +33,14 @@ class Form extends FormAbstract
         return $data;
     }
 
+    /**
+     * 配置
+     *
+     * @return array
+     */
     public function options(): array
     {
         return [
-            'resetBtn' => true,
             'async'    => [
                 'url' => '',
             ],
@@ -46,6 +50,11 @@ class Form extends FormAbstract
         ];
     }
 
+    /**
+     * 列
+     *
+     * @return array
+     */
     public function columns(): array
     {
         return [
@@ -123,9 +132,15 @@ class Form extends FormAbstract
         ];
     }
 
+    /**
+     * 保存回调事件
+     *
+     * true | false | 错误说明
+     */
     public function save():bool
     {
-        return true;
+        $this->error = '操作失败了';
+        return false;
     }
 
 }

@@ -16,105 +16,132 @@ class Table extends TableAbstract
 {
 
     /**
+     * 顶部按钮
+     *
      * @return Component|null
      */
     public function header(): ?Component
     {
-        return (new Header(['el' => 'div']))->children(
-                [
-                    (new Button('el-icon-check', '提交'))->createSubmit(
-                        ['method' => 'post', 'data' => ['username' => 'hello'], 'url' => 'data.php'],
-                        '确认提交选择的数据',
-                        'id'
-                    ),
-                    (new Button('el-icon-refresh', '刷新'))->createRefresh(),
-                    (new Button('el-icon-plus', '编辑'))->createPage('?form=1'),
-                    (new Button('el-icon-search', '搜索'))->createPage('?search=1')->props('doneRefresh', false),
-                ]
-            );
+        return (new Component(['el' => 'div']))->children(
+            [
+                (new Button('el-icon-check', '提交'))->createSubmit(
+                    ['method' => 'post', 'data' => ['username' => 'hello'], 'url' => 'data.php'],
+                    '确认提交选择的数据',
+                    'id'
+                ),
+                (new Button('el-icon-refresh', '刷新'))->createRefresh(),
+                (new Button('el-icon-plus', '编辑'))->createPage('?form=1'),
+                (new Button('el-icon-search', '搜索'))->createPage('?search=1')->props('doneRefresh', false),
+            ]
+        );
     }
 
+    /**
+     * table 默认配置
+     *
+     * @return array|\string[][]
+     */
     public function options(): array
     {
         return [
-                'props' => [
-                    'emptyText' => "求求你别看了，没有啦",
-                ]
-            ];
+            'props' => [
+                'emptyText' => "求求你别看了，没有啦",
+            ],
+        ];
     }
 
+    /**
+     * 列配置
+     *
+     * @return array
+     */
     public function columns(): array
     {
         return [
             new Selection('id'),
             (new Expand('address', '地址'))->scopedSlots([new component(['el' => 'span', 'inject' => ['children']])]),
-                (new Column('avatar', '头像'))->scopedSlots(
-                    [
-                        new component(
-                            [
-                                'el'     => 'img',
-                                'style'  => ['width' => '50px'],
-                                'inject' => ['attrs' => ['src']],
-                            ]
-                        ),
-                    ]
-                ),
-                (new Column('avatar', '头像大图'))->scopedSlots(
-                    [
-                        new component(
-                            [
-                                'el'     => 'el-image',
-                                'style'  => ['width' => '50px'],
-                                'inject' => ['attrs' => ['src', 'array.preview-src-list']],
-                            ]
-                        ),
-                    ]
-                ),
-                (new Column('vip', 'VIP'))->scopedSlots([new component(['inject' => ['domProps' => 'innerHTML']])]),
-                (new Column('username', '用户名'))->props(['show-overflow-tooltip' => true, 'sortable' => true, 'width' => '150px']),
-                (new Column('phone', '手机'))->scopedSlots(
-                    [
-                        (new Writable())->props(['method' => 'post', 'async' => ['data' => ['id'], 'url' => 'data.php']]),
-                    ]
-                )->props('width', '150px'),
-                (new Column('status', '状态'))->scopedSlots(
-                    [
-                        (new Switcher())->props(['method' => 'post', 'async' => ['data' => ['id'], 'url' => 'data.php',]]),
-                    ]
-                ),
-                (new Column('sex', '性别'))->scopedSlots(
-                    [
-                        (new Select())->props(
-                            [
-                                'async'   => ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php'],
-                                'options' => [1 => '男', '女', '未知',],
-                            ]
-                        ),
-                    ]
-                ),
-                (new Column('tag', '标签'))->scopedSlots([new Component(['el' => 'el-tag', 'inject' => ['children', 'title']])]),
-                (new Column('options', '操作'))->props('fixed', 'right')
-                    ->scopedSlots(
+            (new Column('avatar', '头像'))->scopedSlots(
+                [
+                    new component(
                         [
-                            (new Button('el-icon-edit', '编辑'))->createPage('?form=1', ['id', 'username' => 'hello']),
-                            (new Button('el-icon-delete', '删除'))
-                                ->createConfirm('你要删除我吗？', ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php',]),
+                            'el'     => 'img',
+                            'style'  => ['width' => '50px'],
+                            'inject' => ['attrs' => ['src']],
                         ]
                     ),
-            ];
+                ]
+            ),
+            (new Column('avatar', '头像大图'))->scopedSlots(
+                [
+                    new component(
+                        [
+                            'el'     => 'el-image',
+                            'style'  => ['width' => '50px'],
+                            'inject' => ['attrs' => ['src', 'array.preview-src-list']],
+                        ]
+                    ),
+                ]
+            ),
+            (new Column('vip', 'VIP'))->scopedSlots([new component(['inject' => ['domProps' => 'innerHTML']])]),
+            (new Column('username', '用户名'))->props(['show-overflow-tooltip' => true, 'sortable' => true, 'width' => '150px']),
+            (new Column('phone', '手机'))->scopedSlots(
+                [
+                    (new Writable())->props(['method' => 'post', 'async' => ['data' => ['id'], 'url' => 'data.php']]),
+                ]
+            )->props('width', '150px'),
+            (new Column('status', '状态'))->scopedSlots(
+                [
+                    (new Switcher())->props(['method' => 'post', 'async' => ['data' => ['id'], 'url' => 'data.php',]]),
+                ]
+            ),
+            (new Column('sex', '性别'))->scopedSlots(
+                [
+                    (new Select())->props(
+                        [
+                            'async'   => ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php'],
+                            'options' => [1 => '男', '女', '未知',],
+                        ]
+                    ),
+                ]
+            ),
+            (new Column('tag', '标签'))->scopedSlots([new Component(['el' => 'el-tag', 'inject' => ['children', 'title']])]),
+            (new Column('options', '操作'))->props('fixed', 'right')
+                ->scopedSlots(
+                    [
+                        (new Button('el-icon-edit', '编辑'))->createPage('?form=1', ['id', 'username' => 'hello']),
+                        (new Button('el-icon-delete', '删除'))
+                            ->createConfirm('确认删除数据？', ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php',]),
+                    ]
+                ),
+        ];
     }
 
+    /**
+     * 分页配置
+     *
+     * @return Component|null
+     */
     public function pagination(): ?Component
     {
-        return (new Pagination())->props(
-                [
-                    'async' => [
-                        'url' => '', // 请求地址
-                    ],
-                ]
-            );
+        return (new Component())->props(
+            [
+                'async' => [
+                    'url' => '', // 请求地址
+                ],
+            ]
+        );
     }
 
+    /**
+     * 获取数据的回调方法
+     *
+     * @param array  $where
+     * @param string $order
+     * @param int    $page
+     * @param int    $limit
+     *
+     * @return array
+     */
     public function data($where = [], $order = '', $page = 1, $limit = 1): array
     {
         $star = ($page - 1) * 10;
@@ -124,20 +151,20 @@ class Table extends TableAbstract
         for ($i = 1; $i <= $limit; $i++)
         {
             $id = $i + $star;
-            $username = '苹果' . $id;
+            $username = '苹果'.$id;
             $avatar = 'http://q1.qlogo.cn/g?b=qq&nk=191587'.rand(100, 999).'&s=640';
             array_push(
                 $data, [
-                         'id'       => $id,
-                         'avatar'   => $avatar,
-                         'vip'      => '<h2>V'.rand(1, 9).'</h2>',
-                         'phone'    => '155555555'.rand(10, 99),
-                         'address'  => $adds[array_rand($adds)],
-                         'status'   => ! rand(0, 1),
-                         'tag'      => $tags[array_rand($tags, 1)],
-                         'sex'      => rand(1, 3),
-                         'username' => $username,
-                         '_selection' => '<img src="'.$avatar.'">' . $username,
+                         'id'         => $id,
+                         'avatar'     => $avatar,
+                         'vip'        => '<h2>V'.rand(1, 9).'</h2>',
+                         'phone'      => '155555555'.rand(10, 99),
+                         'address'    => $adds[array_rand($adds)],
+                         'status'     => ! rand(0, 1),
+                         'tag'        => $tags[array_rand($tags, 1)],
+                         'sex'        => rand(1, 3),
+                         'username'   => $username,
+                         '_selection' => '<img src="'.$avatar.'">'.$username,
                      ]
             );
         }

@@ -63,7 +63,7 @@ class Surface
                             'type' => 'primary',
                             'icon' => 'el-icon-search',
                         ],
-                        //                        'confirmMsg' => '确定搜索吗',
+                        //  'confirmMsg' => '确定搜索吗',
                     ],
                 ],
                 // resetBtn 配置同 submitBtn
@@ -185,7 +185,7 @@ class Surface
                                 ->props('doneRefresh', true), // 完成之后刷新页面
 
                             $table->button('el-icon-delete', '删除')
-                                ->createConfirm('你要删除我吗？', ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php',]),
+                                ->createConfirm('确认删除数据？', ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php',]),
                         ]
                     ),
             ]

@@ -10,11 +10,22 @@ use surface\helper\FormAbstract;
 class Search extends FormAbstract
 {
 
+    /**
+     * 初始化回调方法
+     * 可以对进行初始化配置
+     *
+     * @param $form
+     */
     public function init($form)
     {
         $form->search(true);
     }
 
+    /**
+     * 配置
+     *
+     * @return array
+     */
     public function options(): array
     {
         return [
@@ -34,6 +45,11 @@ class Search extends FormAbstract
             ];
     }
 
+    /**
+     * 列
+     *
+     * @return array
+     */
     public function columns(): array
     {
         return [
@@ -47,11 +63,6 @@ class Search extends FormAbstract
                 ]
             )
         ];
-    }
-
-    public function save():bool
-    {
-        return "操作成功";
     }
 
 }
