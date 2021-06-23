@@ -50,4 +50,13 @@ class Helper
         return ltrim(str_replace(" ", "", ucwords($str)), $separator );
     }
 
+    public static function success(string $msg,array $data = []){
+        return ['code' => 0, 'msg'  => $msg, 'data' => $data];
+    }
+
+    public static function error(string $msg,array $data = []){
+        return ['code' => 1, 'msg'  => $msg, 'data' => $data];
+    }
+
+
 }

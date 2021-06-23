@@ -19,9 +19,9 @@ use surface\form\components\Slider;
 use surface\form\components\Switcher;
 use surface\form\components\Time;
 use surface\form\components\Tree;
-use surface\helper\FormInterface;
+use surface\helper\FormAbstract;
 
-class Form implements FormInterface
+class Form extends FormAbstract
 {
 
     public static function formatOptions(array $options, $labelName = 'label', $valueName = 'value'): array
@@ -123,9 +123,9 @@ class Form implements FormInterface
         ];
     }
 
-    public function save()
+    public function save():bool
     {
-        return "操作成功";
+        return true;
     }
 
 }

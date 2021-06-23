@@ -61,7 +61,7 @@
                 }
                 options.props.model = formData
                 options.onSubmit = function (value, then) {
-                    $table.searchChange(value)
+                    $table.searchChange && $table.searchChange(value)
                     let exist = false;
                     search = {key, value}
                     for (let i = 0; i < surfaceSearchData.length; i++) {

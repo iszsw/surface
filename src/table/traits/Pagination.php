@@ -1,7 +1,7 @@
 <?php
 namespace surface\table\traits;
 
-use surface\table\components\Pagination as PaginationComponent;
+use surface\Component;
 
 /**
  * 分页
@@ -14,18 +14,18 @@ trait Pagination
 {
 
     /**
-     * @var PaginationComponent
+     * @var Component
      */
     protected $pagination;
 
     /**
      * 注册分页组件
      *
-     * @param PaginationComponent $pagination
+     * @param Component $component
      */
-    public function pagination( PaginationComponent $pagination )
+    public function pagination( Component $component )
     {
-        $this->pagination = $pagination;
+        $this->pagination = $component;
     }
 
     public function getPagination()

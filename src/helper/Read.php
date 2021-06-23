@@ -9,20 +9,18 @@ use surface\Factory;
 use surface\Helper;
 use surface\table\Table;
 use surface\DataTypeInterface;
-use surface\exception\SurfaceException;
 
 trait Read
 {
-    use Condition;
 
-    protected function createTable(TableInterface $model)
+    protected function createTable(TableAbstract $model)
     {
         if (Helper::isPost() || Helper::isAjax())
         {
             try {
-                throw new SurfaceException('请求成功', 0, call_user_func_array([$model, 'data'], $this->initSearchConditions($model)));
-            }catch (SurfaceException $e) {
-                return $e;
+                return Helper::success('请求成功', call_user_func_array([$model, 'data'], $this->initSearchConditions($model)));
+            }catch (\Exception $e) {
+                return Helper::error($e->getMessage());
             }
         }
 
@@ -42,12 +40,12 @@ trait Read
 
     /**
      * 获取条件
-     * @param TableInterface $table
+     * @param TableAbstract $table
      *
      * @return array
      * Author: zsw zswemail@qq.com
      */
-    protected function initSearchConditions(TableInterface $table):array
+    protected function initSearchConditions(TableAbstract $table):array
     {
         $params = array_merge($_POST, $_GET, json_decode(file_get_contents("php://input"), true) ?? []);
         $page = $params['page'] ?? 1;

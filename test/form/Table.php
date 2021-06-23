@@ -3,24 +3,22 @@
 namespace surface\test\form;
 
 use surface\Component;
-use surface\helper\TableInterface;
+use surface\helper\TableAbstract;
 use surface\table\components\Button;
 use surface\table\components\Column;
 use surface\table\components\Expand;
-use surface\table\components\Header;
-use surface\table\components\Pagination;
 use surface\table\components\Select;
 use surface\table\components\Selection;
 use surface\table\components\Switcher;
 use surface\table\components\Writable;
 
-class Table implements TableInterface
+class Table extends TableAbstract
 {
 
     /**
-     * @return Header|null
+     * @return Component|null
      */
-    public function header(): ?Header
+    public function header(): ?Component
     {
         return (new Header(['el' => 'div']))->children(
                 [
@@ -106,7 +104,7 @@ class Table implements TableInterface
             ];
     }
 
-    public function pagination(): ?Pagination
+    public function pagination(): ?Component
     {
         return (new Pagination())->props(
                 [

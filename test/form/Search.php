@@ -5,9 +5,9 @@ namespace surface\test\form;
 use surface\form\components\Date;
 use surface\form\components\Input;
 use surface\form\components\Switcher;
-use surface\helper\FormInterface;
+use surface\helper\FormAbstract;
 
-class Search implements FormInterface
+class Search extends FormAbstract
 {
 
     public function init($form)
@@ -49,7 +49,7 @@ class Search implements FormInterface
         ];
     }
 
-    public function save()
+    public function save():bool
     {
         return "操作成功";
     }

@@ -7,7 +7,6 @@ require '../vendor/autoload.php';
 use surface\Component;
 use surface\Factory;
 use surface\table\components\Button;
-use surface\table\components\Pagination;
 
 function d(...$data)
 {
@@ -197,7 +196,7 @@ class Surface
          * 分页配置
          */
         $table->pagination(
-            (new Pagination())->props(
+            (new Component())->props(
                 [
                     'async' => [
                         'url' => 'data.php', // 请求地址

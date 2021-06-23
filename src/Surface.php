@@ -117,7 +117,7 @@ abstract class Surface
     {
         $component = static::$components[$name] ?? null;
 
-        if ( ! $component)
+        if ( !$component)
         {
             throw new SurfaceException("Component:{$name}  is not founded!");
         }
@@ -132,21 +132,15 @@ abstract class Surface
 
     protected static function dispose($server, $ages = [])
     {
-        try
+        if ($server instanceof \Closure || is_array($server))
         {
-            if ($server instanceof \Closure || is_array($server))
-            {
-                return call_user_func_array($server, $ages);
-            } elseif (class_exists($server))
-            {
-                return (new \ReflectionClass($server))->newInstanceArgs($ages);
-            } else
-            {
-                return $server;
-            }
-        } catch (\Exception $e)
+            return call_user_func_array($server, $ages);
+        } elseif (class_exists($server))
         {
-            throw new SurfaceException($e->getMessage(), $e->getCode(), [], $e);
+            return (new \ReflectionClass($server))->newInstanceArgs($ages);
+        } else
+        {
+            return $server;
         }
     }
 

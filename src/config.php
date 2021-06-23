@@ -5,8 +5,6 @@
 
 namespace surface;
 
-use surface\Helper;
-
 /**
  * 配置服务
  *
