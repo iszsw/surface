@@ -24,6 +24,19 @@ class Table extends TableAbstract
     {
         return (new Component(['el' => 'div']))->children(
             [
+                (new Component())->el('div')->children(
+                    [
+                        (new Component())->el('el-breadcrumb')->children(
+                            [
+                                (new Component())->el('el-breadcrumb-item')->children(['系统设置']),
+                                (new Component())->el('el-breadcrumb-item')->children(['附件管理']),
+                                (new Component())->el('el-breadcrumb-item')->children(['附件列表']),
+                            ]
+                        ),
+                        (new Component())->el('h2')->children(['会员列表']),
+                        (new Component())->el('el-alert')->style('margin-bottom', '20px')->props(['title' => '我是一个自定义的el-alert标签，来看看怎么用吧', 'type' => 'error', 'effect'=>'dark']),
+                    ]
+                ),
                 (new Button('el-icon-check', '提交'))->createSubmit(
                     ['method' => 'post', 'data' => ['username' => 'hello'], 'url' => 'data.php'],
                     '确认提交选择的数据',

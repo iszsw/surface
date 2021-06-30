@@ -105,11 +105,10 @@ composer require iszsw/surface
 
 ## 演示图
 
+> Table组件
+
+![6jcp11.png](https://z3.ax1x.com/2021/06/30/R0s1tP.png)
+
 > Form 组件
 
 ![6jcp11.png](https://z3.ax1x.com/2021/03/26/6jcp11.png)
-
-> Table组件
-
-![6jcp11.png](https://z3.ax1x.com/2021/03/26/6jcSpR.png)
-![6jcp11.png](https://z3.ax1x.com/2021/03/26/6jc96x.png)
