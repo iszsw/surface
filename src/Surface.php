@@ -19,6 +19,11 @@ abstract class Surface
     use ColumnTrait;
 
     /**
+     * 资源文件CDN
+     */
+    const CDN_DOMAIN = '//cdn.jsdelivr.net/gh/iszsw/surface-src';
+
+    /**
      * 唯一标识
      *
      * @var string
@@ -241,8 +246,6 @@ abstract class Surface
     {
         return $this->execute()->page();
     }
-
-    const CDN_DOMAIN = '//cdn.jsdelivr.net/gh/iszsw/surface-src';
 
     protected function init()
     {
