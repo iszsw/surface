@@ -86,10 +86,8 @@ class Surface
                    ]
         );
 
-        // 搜索 同步搜索样式 主题
-        $search = $this->search();
-        // 同步样式
-        $table->search($search);
+        // 注册搜索
+        $table->search($this->search());
 
         /**
          * 顶部
