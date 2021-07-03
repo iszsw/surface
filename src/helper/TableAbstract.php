@@ -63,4 +63,13 @@ abstract class TableAbstract extends Base
         return [];
     }
 
+    /**
+     * 搜索
+     *
+     * @return FormAbstract|null
+     */
+    function search(): ?FormAbstract {
+        return null;
+    }
+
 }

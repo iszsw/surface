@@ -65,7 +65,7 @@ github地址：[https://github.com/iszsw/surface](https://github.com/iszsw/surfa
 
 thinkPHP6 **0代码**生成CURD页面 [iszsw/curd](https://gitee.com/iszsw/curd)
 
-Admin后台演示 [iszsw/surface-admin](https://gitee.com/iszsw/surface-admin)
+Admin极速开发后台 [iszsw/surface-admin](https://gitee.com/iszsw/surface-admin)
 
 ## 手册
 
@@ -107,7 +107,7 @@ composer require iszsw/surface
 
 > Table组件
 
-![6jcp11.png](https://z3.ax1x.com/2021/06/30/R0s1tP.png)
+![6jcp11.png](https://z3.ax1x.com/2021/07/03/R2TIij.png)
 
 > Form 组件
 

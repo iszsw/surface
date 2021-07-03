@@ -37,6 +37,11 @@ class Button extends Component
      */
     const HANDLER_SUBMIT = 'submit';
 
+    /**
+     * 搜索
+     */
+    const HANDLER_SEARCH = 'search';
+
 
     public function __construct($icon = 'el-icon-s-tools', $tooltip = '查看')
     {
@@ -66,6 +71,14 @@ class Button extends Component
      */
     public function visible($field){
         return $this->props('visible', $field);
+    }
+
+    /**
+     * @return Button
+     */
+    public function createSearch()
+    {
+        return $this->props('handler', self::HANDLER_SEARCH);
     }
 
     /**

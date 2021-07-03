@@ -4,7 +4,7 @@ namespace surface\helper;
 
 /**
  *
- * Table抽象类 使用助手[必须]继承该类
+ * Form抽象类 使用助手[必须]继承该类
  *
  * Class FormAbstract
  *
@@ -13,6 +13,18 @@ namespace surface\helper;
  */
 abstract class FormAbstract extends Base
 {
+
+    /**
+     * 搜索条件
+     *
+     * 只在search中生效
+     *
+     * 搜索参数没有在rules中配置 表示 '='
+     *
+     */
+    public function rules():array {
+        return [];
+    }
 
     /**
      * 默认配置

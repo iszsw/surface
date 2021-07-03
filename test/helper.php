@@ -24,11 +24,6 @@ class Surface
         return $this->createTable(new Table());
     }
 
-    public function search()
-    {
-        return $this->createForm(new Search());
-    }
-
     public function form(){
 
         return $this->createForm(new Form());
@@ -41,17 +36,12 @@ $index = new Surface();
 if ($_GET['form'] ?? false)
 {
     $surface = $index->form();
-} else if ($_GET['search'] ?? false)
-{
-    $surface = $index->search();
 } else
 {
     $surface = $index->table();
 }
 
-$view = $surface;
-
-echo $view;
+echo is_array($surface) ? json_encode($surface, JSON_UNESCAPED_UNICODE) : $surface;
 
 
 

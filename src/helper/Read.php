@@ -5,13 +5,13 @@
 
 namespace surface\helper;
 
-use surface\Factory;
 use surface\Helper;
-use surface\table\Table;
 use surface\DataTypeInterface;
 
 trait Read
 {
+
+    use Condition;
 
     protected function createTable(TableAbstract $model)
     {
@@ -24,18 +24,7 @@ trait Read
             }
         }
 
-        return Factory::table(
-            function (Table $table) use ($model)
-            {
-                if (method_exists($model, 'init')) {
-                    $model->init($table);
-                }
-                $table->options($model->options());
-                $table->columns($model->columns());
-                ($header = $model->header()) && $table->header($header);
-                ($pagination = $model->pagination()) && $table->pagination($pagination);
-            }
-        )->view();
+        return Builder::table($model)->view();
     }
 
     /**
@@ -45,7 +34,7 @@ trait Read
      * @return array
      * Author: zsw zswemail@qq.com
      */
-    protected function initSearchConditions(TableAbstract $table):array
+    protected function initSearchConditions(?TableAbstract $table):array
     {
         $params = array_merge($_POST, $_GET, json_decode(file_get_contents("php://input"), true) ?? []);
         $page = $params['page'] ?? 1;
@@ -53,16 +42,13 @@ trait Read
         $sort_field = $params['sort_field'] ?? '';
         $sort_order = $params['sort_order'] ?? '';
         $where = [];
-        array_walk($params, function ($v, $k) use (&$where) {
-            if (!in_array($k, ['page', 'limit', 'sort_field', 'sort_order'])) {
-                $where[$k] = $v;
+        $rules = ($form = $table->search()) ? $form->rules() : [];
+        array_walk($params, function ($v, $k) use (&$where, $rules) {
+            if (!in_array($k, ['page', 'limit', 'sort_field', 'sort_order']) && $v !== '') {
+                $where[] = $this->condition($rules[$k] ?? '=', $k, $v);
             }
         }, $where);
-        $order = '';
-        if ($sort_field)
-        {
-            $order = $sort_field.' '.$sort_order;
-        }
+        $order = $sort_field ? $sort_field.' '.$sort_order : '';
         return compact('where', 'order', 'page', 'limit');
     }
 

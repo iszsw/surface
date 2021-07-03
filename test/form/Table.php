@@ -3,6 +3,7 @@
 namespace surface\test\form;
 
 use surface\Component;
+use surface\helper\FormAbstract;
 use surface\helper\TableAbstract;
 use surface\table\components\Button;
 use surface\table\components\Column;
@@ -14,6 +15,11 @@ use surface\table\components\Writable;
 
 class Table extends TableAbstract
 {
+
+    public function search(): ?FormAbstract
+    {
+        return new Search();
+    }
 
     /**
      * 顶部按钮
@@ -44,7 +50,7 @@ class Table extends TableAbstract
                 ),
                 (new Button('el-icon-refresh', '刷新'))->createRefresh(),
                 (new Button('el-icon-plus', '编辑'))->createPage('?form=1'),
-                (new Button('el-icon-search', '搜索'))->createPage('?search=1')->props('doneRefresh', false),
+                (new Button('el-icon-search', '搜索'))->createSearch(),
             ]
         );
     }

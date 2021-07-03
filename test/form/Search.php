@@ -11,38 +11,23 @@ class Search extends FormAbstract
 {
 
     /**
-     * 初始化回调方法
-     * 可以对进行初始化配置
+     * 配置搜索规则
      *
-     * @param $form
-     */
-    public function init($form)
-    {
-        $form->search(true);
-    }
-
-    /**
-     * 配置
+     * 字段 => 规则
      *
-     * @return array
+     * 根据规则组装返回where条件到Table::data方法
+     *
+     *
+     *
+     * @return array|string[]
      */
-    public function options(): array
+    public function rules(): array
     {
         return [
-                'submitBtn' => [
-                    'props' => [
-                        'prop' => [
-                            'type' => 'primary',
-                            'icon' => 'el-icon-search',
-                        ],
-                        'confirmMsg' => '确定搜索',
-                    ]
-                ],
-                // resetBtn 配置同 submitBtn
-                'props'      => [
-                    'labelWidth' => '100px',
-                ],
-            ];
+            'username' => 'LIKE',
+            'postage' => '=',
+            'section_day' => 'BETWEEN',
+        ];
     }
 
     /**

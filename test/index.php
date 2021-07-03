@@ -8,25 +8,6 @@ use surface\Component;
 use surface\Factory;
 use surface\table\components\Button;
 
-function d(...$data)
-{
-    echo "<pre>";
-    foreach ($data as $d)
-    {
-        var_dump($d);
-    }
-}
-
-function dd(...$data)
-{
-    echo "<pre>";
-    foreach ($data as $d)
-    {
-        var_dump($d);
-    }
-    die;
-}
-
 function formatOptions(array $options, $labelName = 'label', $valueName = 'value'): array
 {
     $data = [];
@@ -45,7 +26,7 @@ class Surface
         Factory::configure(require 'config.php');
     }
 
-    public function search()
+    private function search()
     {
 
         $form = Factory::form();
@@ -89,7 +70,6 @@ class Surface
                     ),
             ]
         );
-
         return $form;
     }
 
@@ -106,6 +86,11 @@ class Surface
                    ]
         );
 
+        // 搜索 同步搜索样式 主题
+        $search = $this->search();
+        // 同步样式
+        $table->search($search);
+
         /**
          * 顶部
          */
@@ -116,9 +101,9 @@ class Surface
                         [
                             (new Component())->el('el-breadcrumb')->children(
                                 [
-                                    (new Component())->el('el-breadcrumb-item')->children(['系统设置']),
-                                    (new Component())->el('el-breadcrumb-item')->children(['附件管理']),
-                                    (new Component())->el('el-breadcrumb-item')->children(['附件列表']),
+                                    (new Component())->el('el-breadcrumb-item')->children(['会员中心']),
+                                    (new Component())->el('el-breadcrumb-item')->children(['会员管理']),
+                                    (new Component())->el('el-breadcrumb-item')->children(['会员列表']),
                                 ]
                             ),
                             (new Component())->el('h2')->children(['会员列表']),
@@ -132,7 +117,7 @@ class Surface
                     ),
                     (new Button('el-icon-refresh', '刷新'))->createRefresh(),
                     $table->button('el-icon-plus', '编辑')->createPage('?form=1')->props('doneRefresh', true),
-                    (new Button('el-icon-search', '搜索'))->createPage('?search=1')->props('doneRefresh', false),
+                    (new Button('el-icon-search', '搜索'))->createSearch(),
                 ]
             )
         );
@@ -429,16 +414,10 @@ if ($_GET['form'] ?? false)
     $surface = $index->form();
 } else
 {
-    if ($_GET['search'] ?? false)
-    {
-        $surface = $index->search();
-    } else
-    {
-        $surface = $index->table();
-    }
+    $surface = $index->table();
 }
 
-//dd($surface->getColumns());
+//print_r($surface->getColumns());
 
 $view = $surface->view();
 

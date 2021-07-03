@@ -90,10 +90,10 @@ class Form extends Surface
         $options     = $this->getGlobals()->format();
         $options     = json_encode(count($options) > 0 ? $options : (object)[], JSON_UNESCAPED_UNICODE);
         $columns     = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
-        $search      = $this->search();
+        $search      = $this->search;
 
         ob_start();
-        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'page.php';
+        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR. 'page.php';
         return ob_get_clean();
     }
 

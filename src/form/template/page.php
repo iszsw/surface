@@ -9,30 +9,14 @@
     <?= implode("\r\n", $this->getStyle()) ?>
 
     <style>
-        body{
-            padding-bottom: 60px !important;
-        }
-        .s-foot-btn{
-            width: 100%;
-            position:fixed;
-            left: 0;
-            bottom: 0;
-            padding:10px !important;
-            margin-bottom: 0 !important;
-            text-align:center;
-            z-index:1999;
-            background-color: #fff
-        }
-        .s-foot-btn > .el-form-item__content {
-            margin-left: 0 !important;
-        }
+        body{padding-bottom: 60px !important;}
     </style>
 </head>
 <body>
 
-<div id="<?= $id = $this->getId(); ?>"></div>
-
 <?= implode("\r\n", $this->getScript()) ?>
+
+<div id="<?= $id = $this->getId(); ?>"></div>
 
 <script>
     (function () {

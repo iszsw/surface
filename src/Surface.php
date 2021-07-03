@@ -62,9 +62,9 @@ abstract class Surface
     /**
      * 搜索表单
      *
-     * @var boolean
+     * @var string
      */
-    protected $search = false;
+    protected $search = '';
 
     /**
      * 类型 下划线小写
@@ -221,16 +221,18 @@ abstract class Surface
     }
 
     /**
-     * 搜索字段
+     * 搜索样式
      *
-     * @param bool|null $search
+     * Table 中保存搜索HTML
+     * Form  中保存搜索状态
+     *
+     * @param string|bool|null $search
      *
      * @return $this|bool
      */
-    public function search( ?bool $search = null)
+    public function search( $search = null)
     {
         if (is_null($search)) {return $this->search;}
-
         $this->search = $search;
         return $this;
     }
@@ -285,8 +287,7 @@ abstract class Surface
     /**
      * 获取页面
      *
-     * @return mixed
-     * Author: zsw zswemail@qq.com
+     * @return string
      */
     abstract protected function page(): string;
 

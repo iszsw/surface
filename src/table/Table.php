@@ -49,7 +49,6 @@ class Table extends Surface
         'component' => Component::class,
     ];
 
-
     public function page(): string
     {
         $pagination = $this->getPagination();
@@ -58,6 +57,34 @@ class Table extends Surface
         $header     = $header ? json_encode($header->format(), JSON_UNESCAPED_UNICODE) : 'null';
         $options    = json_encode($this->getGlobals()->format() ?: (object)[], JSON_UNESCAPED_UNICODE);
         $columns    = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
+
+        /**@var $search Surface*/
+        $search        = $this->search;
+        $searchOptions = '';
+        $searchColumns = '';
+        if ($search) {
+            // 初始化
+            $search->search(true);
+            $search->options([
+                                 'props' => [
+                                     'inline' => true,
+                                 ],
+                                 'submitBtn' => [
+                                     'props' => [
+                                         'prop' => [
+                                             'icon' => 'el-icon-search',
+                                         ],
+                                     ]
+                                 ]
+                             ]);
+            $search->execute();
+            // 同步样式 主题
+            $this->addStyle($search->getStyle());
+            $this->addScript($search->getScript());
+            $searchOptions     = $search->getGlobals()->format();
+            $searchOptions     = json_encode(count($searchOptions) > 0 ? $searchOptions : (object)[], JSON_UNESCAPED_UNICODE);
+            $searchColumns     = json_encode($search->getColumns(), JSON_UNESCAPED_UNICODE);
+        }
 
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'page.php';

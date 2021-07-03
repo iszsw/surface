@@ -5,8 +5,6 @@
 
 namespace surface\helper;
 
-use surface\form\Form;
-use surface\Factory;
 use surface\Helper;
 
 trait Update
@@ -26,16 +24,7 @@ trait Update
             return Helper::success('操作成功');
         }
 
-        return Factory::form(
-            function (Form $form) use ($model)
-            {
-                if (method_exists($model, 'init')) {
-                    $model->init($form);
-                }
-                $form->options($model->options());
-                $form->columns($model->columns());
-            }
-        )->view();
+        return Builder::form($model)->view();
     }
 
 }

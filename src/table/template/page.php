@@ -7,22 +7,39 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <?= implode("\r\n", $this->theme) ?>
     <?= implode("\r\n", $this->getStyle()) ?>
+
 </head>
 <body>
 
+<?= implode("\r\n", $this->getScript()) ?>
+
 <div id="<?= $id = $this->getId(); ?>"></div>
 
-<?= implode("\r\n", $this->getScript()) ?>
 <script>
     (function () {
-
         window.$surfaceTable = surfaceTable.create(document.getElementById('<?= $id; ?>'), {
             header: <?= $header; ?>,
             pagination: <?= $pagination; ?>,
             options: <?= $options ?>,
             columns: <?= $columns ?>,
         })
+    }());
+</script>
 
+<script>
+    (function () {
+        let searchNode = document.getElementById('s-search-collapse')
+        if ( searchNode ) {
+            let options = <?= $searchOptions ?>;
+            if (this.$surfaceTable) {
+                let that = this
+                options.onSubmit = function (value, then) {
+                    that.$surfaceTable.searchChange && that.$surfaceTable.searchChange(value)
+                }
+            }
+
+            window.$surfaceForm = surfaceForm.create(searchNode, {options, columns: <?= $searchColumns ?>})
+        }
     }());
 </script>
 
