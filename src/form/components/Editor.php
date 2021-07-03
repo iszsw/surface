@@ -2,6 +2,8 @@
 
 namespace surface\form\components;
 
+use surface\Surface;
+
 class Editor extends Column
 {
 
@@ -11,7 +13,7 @@ class Editor extends Column
     {
         $self->addScript(
             [
-                '<script src="//cdn.jsdelivr.net/gh/iszsw/surface-src@main/wangEditor.min.js"></script>',
+                '<script src="'.Surface::CDN_DOMAIN.'/wangEditor.min.js"></script>',
             ]
         );
     }

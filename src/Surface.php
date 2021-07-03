@@ -242,6 +242,8 @@ abstract class Surface
         return $this->execute()->page();
     }
 
+    const CDN_DOMAIN = '//cdn.jsdelivr.net/gh/iszsw/surface-src';
+
     protected function init()
     {
         $this->globals(new Globals([], $this->name));
@@ -251,13 +253,13 @@ abstract class Surface
                 '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
                 '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
                 '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
-                '<script src="'.Factory::configure('cdn', '//cdn.jsdelivr.net/gh/iszsw/surface-src@main') . '/' . $this->name.'.js"></script>',
+                '<script src="'.Factory::configure('cdn', self::CDN_DOMAIN) . '/' . $this->name.'.js"></script>',
             ]
         );
     }
 
     protected $theme = [
-            '<link href="//cdn.jsdelivr.net/gh/iszsw/surface-src@main/index.css" rel="stylesheet">',
+            '<link href="'.self::CDN_DOMAIN.'/index.css" rel="stylesheet">',
         ];
 
     /**
