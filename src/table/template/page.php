@@ -26,6 +26,9 @@
     }());
 </script>
 
+<?php
+if ($search){
+?>
 <script>
     (function () {
         let searchNode = document.getElementById('s-search-collapse')
@@ -42,6 +45,9 @@
         }
     }());
 </script>
+<?php
+}
+?>
 
 </body>
 </html>

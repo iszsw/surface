@@ -101,12 +101,12 @@ class Button extends Component
     }
 
     /**
-     * @param       $confirmMsg 点击提示文字
-     * @param array $async      异步提交地址
+     * @param        $confirmMsg 点击提示文字
+     * @param null|array $async      异步提交地址
      *
      * @return Button
      */
-    public function createConfirm($confirmMsg, array $async = [])
+    public function createConfirm($confirmMsg, ?array $async = null)
     {
         return $this->props(
             is_array($confirmMsg)
