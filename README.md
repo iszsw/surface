@@ -74,15 +74,10 @@ thinkPHP6 **0代码**生成CURD页面 [iszsw/curd](https://gitee.com/iszsw/curd)
 
 Admin极速开发后台 [iszsw/surface-admin](https://gitee.com/iszsw/surface-admin)
 
-## 手册
+## 文档
 
 [https://www.kancloud.cn/zswok/surface/](https://www.kancloud.cn/zswok/surface/)
 
-## 演示
-
-[http://surface.demo.zsw.ink/](http://surface.demo.zsw.ink/)
-
-[查看文档](https://www.kancloud.cn/zswok/surface)
 
 ## 安装
 
