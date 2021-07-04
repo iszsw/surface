@@ -55,6 +55,13 @@
 >  - Take
 >  - Arrays
 
+## 演示
+
+[http://curd.demo.zsw.ink/](http://curd.demo.zsw.ink/) 
+
+账号密码 admin  123123
+
+
 ## 源码地址
 
 gitee地址(主推)：[https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
