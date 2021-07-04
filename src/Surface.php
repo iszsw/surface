@@ -21,7 +21,7 @@ abstract class Surface
     /**
      * 资源文件CDN
      */
-    const CDN_DOMAIN = '//cdn.jsdelivr.net/gh/iszsw/surface-src';
+    const CDN_DOMAIN = '//cdn.jsdelivr.net/gh/iszsw/surface-src@main';
 
     /**
      * 唯一标识
