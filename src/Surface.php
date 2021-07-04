@@ -97,7 +97,7 @@ abstract class Surface
      * @return $this
      * @throws SurfaceException
      */
-    protected function execute()
+    public function execute()
     {
         if ( ! is_null($this->closure))
         {
@@ -266,15 +266,19 @@ abstract class Surface
         ];
 
     /**
+     *
      * 自定义主题设置
      *
-     * @param string|array $theme 主题样式
+     * @param string|array|null $theme 主题样式
      * @param bool         $cover 覆盖
      *
-     * @return $this
+     * @return $this|string[]
      */
-    public function theme($theme, $cover = true): self
+    public function theme($theme = null, $cover = true)
     {
+        if (null === $theme) {
+            return $this->theme;
+        }
         if ($cover)
         {
             $this->theme = [];
