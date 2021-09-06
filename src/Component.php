@@ -46,7 +46,7 @@ class Component
     public function __construct(array $config = [])
     {
         if (is_null($this->configName)) {
-            $this->configName = Helper::snake(pathinfo(get_called_class())['filename']);
+            $this->configName = Helper::snake(pathinfo(str_replace('\\', '/', get_called_class()))['filename']);
         }
         if (is_null($this->componentType)) {
             $this->componentType = Helper::snake(explode('\\',get_called_class())[1]);
