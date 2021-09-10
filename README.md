@@ -76,7 +76,7 @@ Admin极速开发后台 [iszsw/surface-admin](https://gitee.com/iszsw/surface-ad
 
 ## 文档
 
-[https://www.kancloud.cn/zswok/surface/](https://www.kancloud.cn/zswok/surface/)
+[https://www.kancloud.cn/iszsw/surface/](https://www.kancloud.cn/iszsw/surface/)
 
 
 ## 安装
