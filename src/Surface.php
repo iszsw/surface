@@ -259,6 +259,12 @@ abstract class Surface
                 '<script src="'.Factory::configure('cdn', self::CDN_DOMAIN) . '/' . $this->name.'.js"></script>',
             ]
         );
+
+        $styles  = Factory::configure($this->name .'.style', []);
+        $scripts = Factory::configure($this->name .'.script', []);
+
+        count($styles) > 0 && $this->addStyle($styles);
+        count($scripts) > 0 && $this->addScript($scripts);
     }
 
     protected $theme = [
