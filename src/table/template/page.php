@@ -17,37 +17,36 @@
 
 <script>
     (function () {
-        window.$surfaceTable = surfaceTable.create(document.getElementById('<?= $id; ?>'), {
+        window.__S_TABLE_hasSearch = !!<?= $search == '' ? 0: 1; ?>;
+
+        window.__S_TABLE = surfaceTable.create(document.getElementById('<?= $id; ?>'), {
             header: <?= $header; ?>,
             pagination: <?= $pagination; ?>,
             options: <?= $options ?>,
             columns: <?= $columns ?>,
         })
-    }());
-</script>
 
-<?php
-if ($search){
-?>
-<script>
-    (function () {
-        let searchNode = document.getElementById('s-search-collapse')
-        if ( searchNode ) {
-            let options = <?= $searchOptions ?>;
-            if (this.$surfaceTable) {
-                let that = this
-                options.onSubmit = function (value, then) {
-                    that.$surfaceTable.searchChange && that.$surfaceTable.searchChange(value)
+        if (window.__S_TABLE_hasSearch) {
+            let searchNode = document.getElementById('s-search-collapse');
+            if (searchNode) {
+                let options = <?= $searchOptions == ''?'""':$searchOptions; ?>;
+                if (this.__S_TABLE) {
+                    let that = this
+                    options.onSubmit = function (value, then) {
+                        that.__S_TABLE.searchChange && that.__S_TABLE.searchChange(value)
+                    }
                 }
-            }
 
-            window.$surfaceForm = surfaceForm.create(searchNode, {options, columns: <?= $searchColumns ?>})
+                window.__S_FORM = surfaceForm.create(searchNode, {
+                    options,
+                    columns: <?= $searchColumns == ''?'""':$searchColumns; ?>})
+
+                window.__S_FORM.submit()
+            }
         }
     }());
 </script>
-<?php
-}
-?>
+
 
 </body>
 </html>

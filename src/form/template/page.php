@@ -26,8 +26,8 @@
             searchPage = !!'<?= $search ?>'
 
         const parent = window.parent
-        if (parent && parent.$surfaceTable) {
-            let $table = parent.$surfaceTable
+        if (parent && parent.__S_TABLE) {
+            let $table = parent.__S_TABLE
             if (searchPage) {
                 let surfaceSearchData = parent.surfaceSearchData || []
                 let key = btoa(location.pathname + location.search)
@@ -71,6 +71,7 @@
                 }
             }
         }
+        console.log(options.onSubmit)
 
         window.$surfaceForm = surfaceForm.create(document.getElementById(id), {options, columns})
 
