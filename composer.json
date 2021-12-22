@@ -2,12 +2,12 @@
     "name": "iszsw/surface",
     "description": "CURD 页面构建器",
     "license": "MIT",
-    "keywords": ["curd", "curd-create", "surface", "php"],
+    "keywords": ["curd", "Low code", "surface", "php"],
     "homepage": "https://zsw.ink/",
     "authors": [
         {
             "name": "zsw",
-            "email": "zswemail@qq.com"
+            "email": "iszsw@qq.com"
         }
     ],
     "support": {
