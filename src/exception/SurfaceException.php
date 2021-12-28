@@ -1,6 +1,6 @@
 <?php
 /*
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 
 namespace surface\exception;
@@ -10,7 +10,7 @@ namespace surface\exception;
  * Class SurfaceException
  *
  * @package surface\exception
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class SurfaceException extends \Exception
 {

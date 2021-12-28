@@ -1,6 +1,6 @@
 <?php
 /*
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 
 namespace surface\helper;
@@ -32,7 +32,7 @@ trait Read
      * @param TableAbstract $table
      *
      * @return array
-     * Author: zsw zswemail@qq.com
+     * Author: zsw iszsw@qq.com
      */
     protected function initSearchConditions(?TableAbstract $table):array
     {

@@ -10,7 +10,7 @@ use surface\Config;
  * Class Selection
  *
  * @package surface\table\components
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Selection extends Column
 {

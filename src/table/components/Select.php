@@ -8,7 +8,7 @@ namespace surface\table\components;
  * Class Select
  *
  * @package surface\table\components
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Select extends Editable
 {

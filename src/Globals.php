@@ -4,7 +4,7 @@ namespace surface;
 
 /**
  * @package surface\table
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Globals extends Component
 {

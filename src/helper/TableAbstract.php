@@ -10,7 +10,7 @@ use surface\Component;
  * Class TableAbstract
  *
  * @package surface\helper
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 abstract class TableAbstract extends Base
 {
@@ -28,7 +28,7 @@ abstract class TableAbstract extends Base
      * 默认配置
      *
      * @return array
-     * Author: zsw zswemail@qq.com
+     * Author: zsw iszsw@qq.com
      */
     public function options():array{
         return [];

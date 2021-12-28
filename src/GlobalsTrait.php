@@ -6,7 +6,7 @@ namespace surface;
  * Table Form 模型
  *
  * @package surface\globals\traits
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 trait GlobalsTrait
 {

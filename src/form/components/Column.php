@@ -16,7 +16,7 @@ use surface\Component;
  * @method $this visible(array $visible) 显示条件（AND） [ ['value'=>1,'prop'=>'字段'], ['prop'=>'', 'exec'=>'val === 1'], ['exec' => 'model.field === 1']] exec js表达式
  *
  * @package surface\table
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Column extends Component
 {

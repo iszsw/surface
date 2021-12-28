@@ -1,6 +1,6 @@
 <?php
 /*
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 
 namespace surface\table;
@@ -28,7 +28,7 @@ use surface\table\components;
  * @method components\Button button($handler, $icon) static
  *
  * @package surface\table
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Table extends Surface
 {

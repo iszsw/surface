@@ -6,7 +6,7 @@ namespace surface\helper;
  * ORM where条件助手
  *
  * @package surface\helper
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 trait Condition
 {
@@ -29,7 +29,7 @@ trait Condition
      * @param $key
      * @param $val
      * @return array
-     * Author: zsw zswemail@qq.com
+     * Author: zsw iszsw@qq.com
      */
     protected function condition($condition, $key, $val) {
         $where = [];

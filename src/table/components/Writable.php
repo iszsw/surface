@@ -7,7 +7,7 @@ namespace surface\table\components;
  * Class Writable
  *
  * @package surface\table\components
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Writable extends Editable
 {

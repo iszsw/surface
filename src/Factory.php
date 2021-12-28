@@ -1,6 +1,6 @@
 <?php
 /*
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 
 namespace surface;
@@ -13,7 +13,7 @@ use surface\exception\SurfaceException;
  * @method static form\Form     form()
  * @method static table\Table   table()
  *
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Factory
 {

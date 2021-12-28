@@ -1,6 +1,6 @@
 <?php
 /*
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 
 namespace surface\form;
@@ -56,7 +56,7 @@ use surface\form\components\
  * Handler 组件
  *
  * @package surface\table
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Form extends Surface
 {

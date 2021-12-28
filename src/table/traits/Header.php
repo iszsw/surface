@@ -9,7 +9,7 @@ use surface\Component;
  * Class Input
  *
  * @package surface\form\components
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 trait Header
 {

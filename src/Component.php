@@ -17,7 +17,7 @@ namespace surface;
  * @method $this scopedSlots(array $scopedSlots)
  *
  * @package surface\table
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Component
 {

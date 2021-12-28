@@ -6,7 +6,7 @@ $manage_url = '/images.php';
 // 配置优先级  自定义配置 > 默认配置
 
 return [
-    //'cdn'   => '//b.s.c/static/surface',// 静态资源cdn地址
+//    'cdn'   => '//b.s.c/static/surface',
     'table' => [
         'globals' => [
             'props' => [

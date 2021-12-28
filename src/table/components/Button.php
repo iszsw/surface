@@ -10,7 +10,7 @@ use surface\Component;
  * Class Button
  *
  * @package surface\table\components
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Button extends Component
 {

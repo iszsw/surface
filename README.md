@@ -281,7 +281,7 @@ echo $table->view();
 
 ## 关于
 
-> **邮件** zswemail@qq.com
+> **邮件** iszsw@qq.com
 >
 > **主页**  [https://zsw.ink](https://zsw.ink) 留言
 

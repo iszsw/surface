@@ -9,7 +9,7 @@ use surface\Component;
  * Class Column
  *
  * @package surface\table
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 class Column extends Component
 {

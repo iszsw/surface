@@ -9,7 +9,7 @@ use surface\Component;
  * Class Editable
  *
  * @package surface\table\components
- * Author: zsw zswemail@qq.com
+ * Author: zsw iszsw@qq.com
  */
 abstract class Editable extends Component
 {
