@@ -59,15 +59,15 @@ class Surface
          */
         $form->columns(
             [
-                    $form->input('username', '用户名')->props('placeholder', "啦啦啦啦啦"),
-                    $form->switcher('postage', '包邮', 0),
-                    $form->date('section_day', '日期')->props(
-                        [
-                            'type'        => "datetimerange",
-                            'format'      => "yyyy-MM-dd HH:mm:ss",
-                            'placeholder' => "请选择活动日期",
-                        ]
-                    ),
+                $form->input('username', '用户名')->props('placeholder', "啦啦啦啦啦"),
+                $form->switcher('postage', '包邮', 0),
+                $form->date('section_day', '日期')->props(
+                    [
+                        'type'        => "datetimerange",
+                        'format'      => "yyyy-MM-dd HH:mm:ss",
+                        'placeholder' => "请选择活动日期",
+                    ]
+                ),
             ]
         );
         return $form;
@@ -222,11 +222,62 @@ class Surface
             ]
         );
 
+        $mixin = <<<JS
+<script>
+    // 全局混入事件
+    Vue.mixin({
+            methods: {
+                hello() {
+                    alert("全局混入事件")
+                    // \$surfaceForm 是surfaceForm API对象
+                    \$surfaceForm.change(this.prop, 'ok')
+                }
+            }
+        })
+        
+    // 自定义组件 注册world组件
+        surfaceForm.component({
+            name: 'world',
+            events: {
+                // 参数初始化时（组件未注册）调用
+                onInit(c) {
+                    console.log('surfaceForm自定义组件配置初始化')
+                }
+            },
+            component: {
+                name: 'world',
+                props: {
+                    label: String,
+                    prop: String,
+                    value: [String],
+                    model: Object
+                },
+                render(h) {
+                    return h("el-button", {
+                        on: {
+                            click() {
+                                alert('surfaceForm组件注册')
+                            }
+                        }
+                    }, this.value)
+                }
+            }
+        })
+</script>
+JS;
+
+        // 注册js资源
+        $form->addScript($mixin);
+
         /**
          * 列配置
          */
         $form->columns(
             [
+                // 点击事件绑定hello方法
+                $form->column('button','绑定事件','')->el('el-button')->on('click', 'hello')->children(["全局混入事件"]),
+                $form->column('world','自定义组件','surface-form自定义world组件')->el('world'),
+
                 $form->input('username', '用户名', '用户名必须填，必须！必须！必须！')
                     ->marker('要不得')
                     ->validate(
