@@ -71,7 +71,6 @@
                 }
             }
         }
-        console.log(options.onSubmit)
 
         window.$surfaceForm = surfaceForm.create(document.getElementById(id), {options, columns})
 
