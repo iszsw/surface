@@ -28,32 +28,33 @@
 ## 内置功能
 ### table
 
->  - Button
->  - Editable
->  - Expand
->  - Select
->  - Selection
->  - Switcher
->  - Writable
+>  - Button     按钮（submit提交按钮、异步提交按钮，确认按钮，创建子页面按钮，空按钮-自定义点击事件）
+>  - Editable   允许编辑
+>  - Expand     展开
+>  - Select     下拉选择
+>  - Selection  复选框
+>  - Switcher   开关
+>  - Writable   在线编辑
 
 ### form
 
->  - Input
->  - Number
->  - Checkbox
->  - Radio
->  - Switch
->  - Select
->  - Cascader
->  - Color
->  - Date
->  - Time
->  - Rate
->  - Slider
->  - Upload
->  - Tree
->  - Take
->  - Arrays
+>  - Input      输入框
+>  - Number     数字
+>  - Checkbox   多选
+>  - Radio      单选
+>  - Switch     开关
+>  - Select     下拉选择
+>  - Cascader   联动（同步、异步）
+>  - Color      颜色
+>  - Date       日期（日期时间，范围）
+>  - Time       时间（范围）
+>  - Rate       评分
+>  - Slider     滑块
+>  - Upload     上传
+>  - Tree       树
+>  - Take       获取（从iframe子页面获取内容到当前字段）
+>  - Arrays     无限级数组（嵌套任意form内容）
+>  - Component  自定义组件（自定义组件注册调用）
 
 ## 演示
 
@@ -88,196 +89,178 @@ composer require iszsw/surface
 
  > 测试代码
 
-```PHP
-
+```php
 <?php
-
-use surface\Component;
-use surface\Factory;
-use surface\table\components\Button;
-
-// 构建搜索表单
-$search = Factory::form();
-$search->search(true); // 启用search 作为table子页面交互，将获取数据作为table拉取数据的参数
-/**
- * 表配置
- */
-$search->options(
-    [
-        'submitBtn' => [
-            'props' => [
-                'prop' => [
-                    'type' => 'primary',
-                    'icon' => 'el-icon-search',
-                ],
-                //  'confirmMsg' => '确定搜索吗',
-            ],
-        ],
-        // resetBtn 配置同 submitBtn
-        'props'     => [
-            'labelWidth' => '100px',
-        ],
-    ]
-);
-
-/**
- * 列配置
- */
-$search->columns(
-    [
-            $form->input('username', '用户名')->props('placeholder', "啦啦啦啦啦"),
-            $form->switcher('postage', '包邮', 0),
-            $form->date('section_day', '日期')->props(
-                [
-                    'type'        => "datetimerange",
-                    'format'      => "yyyy-MM-dd HH:mm:ss",
-                    'placeholder' => "请选择活动日期",
-                ]
-            ),
-    ]
-);
-
-
-// 构建表格
-$table = Factory::table();
-
-/**
- * 表配置
- */
-$table->options(
-    'props', [
-               'emptyText' => "求求你别看了，没有啦",
-           ]
-);
-
-// 注册搜索
-$table->search($search);
-
-/**
- * 顶部样式
- */
-$table->header(
-    (new Component(['el' => 'div']))->children(
+// Table组件示例
+$tbales = [
+    new selection("id"),
+    (new Column('id', '普通组件'))->props('width', '50px'),
+    (new Expand('address', '折叠'))->scopedSlots(
         [
-            (new Component())->el('div')->children(
+            (new Component())->el('span')
+                // 【重要】将当前列字段address的值注入innerHTML，需要注入到多个属性使用 Array
+                ->inject('domProps', 'innerHTML') 
+                ->style('width', '80px'),
+        ]
+    ),
+    (new Column('status', '开关组件'))->scopedSlots(
                 [
-                    (new Component())->el('el-breadcrumb')->children(
+                    //支持url替换 {字段}替换成当前列参数
+                    (new Switcher())->props(['async' => ['data' => ['id', 'a' => 'b'], 'method' => 'POST', 'url' => '/change/{id}/{username}']]),
+                ]
+            )->props('width', '150px'),
+
+    (new Column('thumbnail', '自定义显示内容'))->scopedSlots(
+                [
+                    (new Component())->el('el-image')->inject('attrs', ['src', 'array.preview-src-list'])->style('width', '80px'),
+                ]
+            )->props('width', '100px'),
+    
+    (new Column('options', '操作'))->props('fixed', 'right')// 右侧浮动
+        ->scopedSlots(
+            [
+                (new Button('el-icon-delete', '删除'))
+                    // 【重要】当前列_delete_visible的值为true时才显示按钮
+                    ->visible('_delete_visible')
+                    //支持url替换 {字段}替换成当前列参数
+                    ->createConfirm('确认删除数据？', ['method' => 'DELETE', 'data' => ['id'], 'url' => 'delete/{id}']),
+            ]
+        ),
+];
+// Form组件示例
+$form = [
+    (new Input('username', '用户名'))
+        ->input('username', '用户名', '用户名必须填，必须！必须！必须！')
+        ->marker('要不得')
+        ->validate( // 验证 支持页面验证+后台验证
+            [
+                ['required' => true, 'message' => '用户名必须'],
+            ]
+        )
+        // 无限级嵌套子组件
+        ->children([(new Component)->el('span')->item(false)->domProps(['innerText' => '元'])->slot('append')]),
+    (new Hidden('Hidden', '说明')),
+    (new Number('price', '价格'))->props('step', 5),
+    (new Select('hobby', '爱好'))->select('hobby', '爱好')->options(self::formatOptions([1 => '干饭', '打麻将', '睡觉', '爬山']))->props('multiple', ! 0),
+    (new Checkbox('label', '标签', []))->checkbox('label', '标签', [])
+        ->options(self::formatOptions([1 => '干饭', '打麻将', '睡觉', '爬山']))
+        ->props('max', 2)->props('group', ! 0), //group = true button样式  false 普通样式
+    (new Radio('examine', '审核', 2))->options(self::formatOptions([1 => '干饭', '打麻将', '睡觉', '爬山']))
+        ->props('group', ! 1), //group = true button样式  false 普通样式
+    new Switcher('postage', '包邮', 0),
+    (new Date('section_day', '日期'))->props(
+        [
+            'type'         => "datetimerange",
+            'value-format' => "yyyy-MM-dd HH:mm:ss",
+        ]
+    ),
+    (new Time('section_time', '时间'))->props(
+        [
+            'isRange'      => ! 0,
+            'value-format' => "HH:mm:ss",
+        ]
+    ),
+    new Color('color', '颜色', '#333333'),
+    new Rate('rate', '评分', 2),
+    (new Slider('slider', '范围', [15, 27]))->props(['min' => 10, 'max' => 30, 'range' => ! 0]),
+    (new Tree('tree', '树'))->props(
+        [
+            'type'              => 'checked',
+            'defaultExpandAll'  => ! 0,
+            'checkOnClickNode'  => ! 0,
+            'expandOnClickNode' => ! 1,
+            'multiple'          => ! 0,
+            'showCheckbox'      => ! 0,
+            'data'              => [
+                [
+                    'id'       => 1,
+                    'title'    => 'a',
+                    'expand'   => ! 0,
+                    'selected' => ! 1,
+                    'children' => [
                         [
-                            (new Component())->el('el-breadcrumb-item')->children(['会员中心']),
-                            (new Component())->el('el-breadcrumb-item')->children(['会员管理']),
-                            (new Component())->el('el-breadcrumb-item')->children(['会员列表']),
-                        ]
-                    ),
-                    (new Component())->el('h2')->children(['会员列表']),
-                    (new Component())->el('el-alert')->style('margin-bottom', '20px')->props(['title' => '我是一个自定义的el-alert标签，来看看怎么用吧', 'type' => 'error', 'effect'=>'dark']),
-                ]
-            ),
-            (new Button('el-icon-check', '提交'))->createSubmit(
-                ['method' => 'post', 'data' => ['username' => 'hello'], 'url' => 'data.php'],
-                '确认提交选择的数据',
-                'id'
-            ),
-            (new Button('el-icon-refresh', '刷新'))->createRefresh(),
-            $table->button('el-icon-plus', '编辑')->createPage('?form=1')->props('doneRefresh', true),
-            (new Button('el-icon-search', '搜索'))->createSearch(),
-        ]
-    )
-);
-
-
-$table->columns( // 列配置
-    [
-        $table->selection('id'),
-        $table->expand('address', '地址')->scopedSlots([$table->component(['el' => 'span', 'inject' => ['children']])]),
-        $table->column('avatar', '头像')->scopedSlots(
-            [
-                $table->component(
-                    [
-                        'el'     => 'img',
-                        'style'  => ['width' => '50px'],
-                        'inject' => ['attrs' => ['src']],
-                    ]
-                ),
-            ]
-        ),
-        $table->column('avatar', '头像大图')->scopedSlots(
-            [
-                $table->component(
-                    [
-                        'el'     => 'el-image',
-                        'style'  => ['width' => '50px'],
-                        'inject' => ['attrs' => ['src', 'array.preview-src-list']],
-                    ]
-                ),
-            ]
-        ),
-        $table->column('vip', 'VIP')->scopedSlots([$table->component(['inject' => ['domProps' => 'innerHTML']])]),
-        $table->column('username', '用户名')->props(['show-overflow-tooltip' => true, 'sortable' => true, 'width' => '150px']),
-        $table->column('phone', '手机')->scopedSlots(
-            [
-                $table->writable()->props(['async' => ['method' => 'post', 'data' => ['id'], 'url' => 'data.php']]),
-            ]
-        )->props('width', '150px'),
-        $table->column('status', '状态')->scopedSlots(
-            [
-                $table->switcher()->props(['async' => ['method' => 'post', 'data' => ['id'], 'url' => 'data.php',]]),
-            ]
-        ),
-        $table->column('sex', '性别')->scopedSlots(
-            [
-                $table->select()->props(
-                    [
-                        'async'   => ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php'],
-                        'options' => [1 => '男', '女', '未知',],
-                    ]
-                ),
-            ]
-        ),
-        $table->column('tag', '标签')->scopedSlots([$table->component(['el' => 'el-tag', 'inject' => ['children', 'title']])]),
-        $table->column('options', '操作')->props('fixed', 'right')
-            ->scopedSlots(
-                [
-                    $table->button('el-icon-edit', '编辑')
-                        ->visible('option_edit') // option_edit字段为真显示按钮
-                        ->createPage('?form=1', ['id', 'username' => 'hello'])
-                        ->props('doneRefresh', true), // 完成之后刷新页面
-
-                    $table->button('el-icon-delete', '删除')
-                        ->createConfirm('确认删除数据？', ['method' => 'post', 'data' => ['id', 'username' => 'hello'], 'url' => 'data.php',]),
-                ]
-            ),
-    ]
-);
-
-
-/**
- * 分页配置
- */
-$table->pagination(
-    (new Component())->props(
-        [
-            'async' => [
-                'url' => 'data.php', // 请求地址
-                //'data' => [], // 请求扩展参数
-                //...axios 参数
+                            'id'       => 101,
+                            'title'    => 'a1',
+                            'expand'   => ! 0,
+                            'children' => [
+                                [
+                                    'id'    => 10101,
+                                    'title' => 'a11',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
+            'props'             => ['label' => 'title'],
         ]
-    )
-);
+    ),
+    new Editor('content', '说明', '<h1>666</h1>'),
+    (new Number('pricea', '我是惊喜', 2))->marker('惊不惊喜')->props('step', 5)
+        ->visible([['prop' => 'priceb', 'value' => 10],]), // 字段显示条件配置
+    (new Number('priceb', '价格', 8))->marker('把我加到10有惊喜'),
+];
 
 
-// 生成页面
-echo $table->view();
+// 自定义组件和全局事件绑定
+$mixin = <<<JS
+<script>
+    // 全局混入事件
+    Vue.mixin({
+            methods: {
+                hello() {
+                    alert("全局混入事件")
+                    // \$surfaceForm 是surfaceForm API对象
+                    \$surfaceForm.change(this.prop, 'ok')
+                }
+            }
+        })
+        
+    // 自定义组件 注册world组件
+    surfaceForm.component({
+        name: 'world',
+        events: {
+            // 参数初始化时（组件未注册）调用
+            onInit(c) {
+                console.log('surfaceForm自定义组件配置初始化')
+            }
+        },
+        component: {
+            name: 'world',
+            props: {
+                label: String,
+                prop: String,
+                value: [String],
+                model: Object
+            },
+            render(h) {
+                return h("el-button", {
+                    on: {
+                        click() {
+                            alert('surfaceForm组件注册')
+                        }
+                    }
+                }, this.value)
+            }
+        }
+    })
+</script>
+JS;
+
+// 注册js资源
+$form->addScript($mixin);
+
+// 点击事件绑定hello方法
+$form->column('button','绑定事件','')->el('el-button')->on('click', 'hello')->children(["全局混入事件"]),
+$form->column('world','自定义组件','surface-form自定义world组件')->el('world'),
 
 ```
 
-
-
  > 更多功能演示
 
-[演示 /test/index.php](/test/index.php) 
+基础功能[演示 /test/index.php](/test/index.php) 
 
-[助手函数演示 /test/helper.php](/test/helper.php) 
+内置封装的[助手工具演示 /test/helper.php](/test/helper.php) 
 
 ## 关于
 
