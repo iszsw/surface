@@ -263,7 +263,7 @@ abstract class Surface
         );
 
         $this->theme = [
-            '<link href="'. ($cdn ? : '//cdn.staticfile.org/') . '/element-ui/index.dark.css" rel="stylesheet">',
+            '<link href="'. ($cdn ? : self::CDN_DOMAIN) . '/element-ui/index.dark.css" rel="stylesheet">',
         ];
 
         $styles  = Factory::configure($this->name .'.style', []);
