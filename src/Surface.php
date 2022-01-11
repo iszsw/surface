@@ -251,14 +251,20 @@ abstract class Surface
     {
         $this->globals(new Globals($this->name, []));
 
+        $cdn = Factory::configure('cdn', '');
+
         $this->addScript(
             [
-                '<script src="//cdn.staticfile.org/vue/2.6.12/vue.js"></script>',
-                '<script src="//cdn.staticfile.org/axios/0.19.0-beta.1/axios.min.js"></script>',
-                '<script src="//cdn.staticfile.org/element-ui/2.14.1/index.min.js"></script>',
-                '<script src="'.Factory::configure('cdn', self::CDN_DOMAIN) . '/' . $this->name.'.js"></script>',
+                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/vue/2.6.12/vue.min.js"></script>',
+                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/axios/0.24.0/axios.min.js"></script>',
+                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/element-ui/2.15.7/index.min.js"></script>',
+                '<script src="'. ($cdn ? : self::CDN_DOMAIN) . '/' . $this->name.'.js"></script>',
             ]
         );
+
+        $this->theme = [
+            '<link href="'. ($cdn ? : '//cdn.staticfile.org/') . '/element-ui/index.dark.css" rel="stylesheet">',
+        ];
 
         $styles  = Factory::configure($this->name .'.style', []);
         $scripts = Factory::configure($this->name .'.script', []);
@@ -267,9 +273,7 @@ abstract class Surface
         count($scripts) > 0 && $this->addScript($scripts);
     }
 
-    protected $theme = [
-            '<link href="'.self::CDN_DOMAIN.'/index.css" rel="stylesheet">',
-        ];
+    protected $theme = [];
 
     /**
      *
