@@ -83,7 +83,7 @@ Admin极速开发后台 [iszsw/surface-admin](https://gitee.com/iszsw/surface-ad
 ## 安装
 
 ```bash
-# 运行环境要求PHP7.1+。
+# 运行环境要求 PHP7.1+ || PHP8.0+
 composer require iszsw/surface
 ```
 

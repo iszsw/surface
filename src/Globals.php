@@ -9,7 +9,7 @@ namespace surface;
 class Globals extends Component
 {
 
-    public function __construct(array $config = [], string $name)
+    public function __construct(string $name, array $config = [])
     {
         $this->componentType = $name;
         parent::__construct($config);

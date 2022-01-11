@@ -249,7 +249,7 @@ abstract class Surface
 
     protected function init()
     {
-        $this->globals(new Globals([], $this->name));
+        $this->globals(new Globals($this->name, []));
 
         $this->addScript(
             [
