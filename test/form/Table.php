@@ -64,6 +64,7 @@ class Table extends TableAbstract
     {
         return [
             'props' => [
+                'stripe' => true,
                 'emptyText' => "求求你别看了，没有啦",
             ],
         ];
