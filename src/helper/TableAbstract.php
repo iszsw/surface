@@ -44,10 +44,16 @@ abstract class TableAbstract extends Base
     /**
      * 分页
      *
-     * @return Component|null
+     * @return null|Component
      */
     public function pagination(): ?Component{
-        return null;
+        return (new Component())->props(
+            [
+                'async' => [
+                    'url' => '',
+                ],
+            ]
+        );
     }
 
     /**

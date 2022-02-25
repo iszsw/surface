@@ -18,7 +18,7 @@ trait Read
         if (Helper::isPost() || Helper::isAjax())
         {
             try {
-                return Helper::success('请求成功', call_user_func_array([$model, 'data'], $this->initSearchConditions($model)));
+                return Helper::success('请求成功', call_user_func_array([$model, 'data'], self::initSearchConditions($model)));
             }catch (\Exception $e) {
                 return Helper::error($e->getMessage());
             }
@@ -34,7 +34,7 @@ trait Read
      * @return array
      * Author: zsw iszsw@qq.com
      */
-    protected function initSearchConditions(?TableAbstract $table):array
+    public static function initSearchConditions(TableAbstract $table):array
     {
         $params = array_merge($_POST, $_GET, json_decode(file_get_contents("php://input"), true) ?? []);
         $page = $params['page'] ?? 1;
@@ -45,7 +45,7 @@ trait Read
         $rules = ($form = $table->search()) ? $form->rules() : [];
         array_walk($params, function ($v, $k) use (&$where, $rules) {
             if (!in_array($k, ['page', 'limit', 'sort_field', 'sort_order']) && $v !== '') {
-                $where[] = $this->condition($rules[$k] ?? '=', $k, $v);
+                $where[] = self::condition($rules[$k] ?? '=', $k, $v);
             }
         }, $where);
         $order = $sort_field ? $sort_field.' '.$sort_order : '';

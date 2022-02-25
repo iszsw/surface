@@ -19,9 +19,11 @@
     (function () {
         window.__S_TABLE_hasSearch = !!<?= $search == '' ? 0: 1; ?>;
 
+        let pagination = <?= $pagination; ?>;
+
         window.__S_TABLE = surfaceTable.create(document.getElementById('<?= $id; ?>'), {
             header: <?= $header; ?>,
-            pagination: <?= $pagination; ?>,
+            pagination,
             options: <?= $options ?>,
             columns: <?= $columns ?>,
         })
@@ -41,7 +43,10 @@
                     options,
                     columns: <?= $searchColumns == ''?'""':$searchColumns; ?>})
 
-                window.__S_FORM.submit()
+                // 异步多页面下自动提交搜索
+                if (pagination) {
+                    window.__S_FORM.submit()
+                }
             }
         }
     }());

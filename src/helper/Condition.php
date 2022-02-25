@@ -11,7 +11,7 @@ namespace surface\helper;
 trait Condition
 {
 
-    private $match = [
+    protected static $match = [
         'EQ'        => '=',
         'NEQ'       => '!=',
         'EQUAL'     => '=',
@@ -31,10 +31,10 @@ trait Condition
      * @return array
      * Author: zsw iszsw@qq.com
      */
-    protected function condition($condition, $key, $val) {
+    public static function condition($condition, $key, $val) {
         $where = [];
         $condition = strtoupper($condition);
-        $condition = $this->match[$condition] ?? $condition;
+        $condition = self::$match[$condition] ?? $condition;
         switch ($condition) {
             case '=':
             case '!=':

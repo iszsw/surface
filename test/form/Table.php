@@ -16,6 +16,19 @@ use surface\table\components\Writable;
 class Table extends TableAbstract
 {
 
+    public function init(\surface\table\Table $table)
+    {
+        /*
+         * 1、可用于初始化 Table 对象
+         *
+         * 2、注入 style、script、自定义组件、静态资源
+         * $table->addStyle("<style>.class{color:red}</style>");
+         * $table->addScript("<script src='/url/script.js'></script>");
+         *
+         * 3、...
+         */
+    }
+
     public function search(): ?FormAbstract
     {
         return new Search();
@@ -64,7 +77,6 @@ class Table extends TableAbstract
     {
         return [
             'props' => [
-                'stripe' => true,
                 'emptyText' => "求求你别看了，没有啦",
             ],
         ];
@@ -134,22 +146,6 @@ class Table extends TableAbstract
                     ]
                 ),
         ];
-    }
-
-    /**
-     * 分页配置
-     *
-     * @return Component|null
-     */
-    public function pagination(): ?Component
-    {
-        return (new Component())->props(
-            [
-                'async' => [
-                    'url' => '', // 请求地址
-                ],
-            ]
-        );
     }
 
     /**

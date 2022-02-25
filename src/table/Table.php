@@ -55,7 +55,7 @@ class Table extends Surface
         $header     = $this->getHeader();
         $pagination = $pagination ? json_encode($pagination->format(), JSON_UNESCAPED_UNICODE) : 'null';
         $header     = $header ? json_encode($header->format(), JSON_UNESCAPED_UNICODE) : 'null';
-        $options    = json_encode($this->getGlobals()->format() ?: (object)[], JSON_UNESCAPED_UNICODE);
+        $options    = json_encode($this->getGlobals()->format() ?: new \stdClass(), JSON_UNESCAPED_UNICODE);
         $columns    = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
 
         /**@var $search Surface*/
@@ -82,7 +82,7 @@ class Table extends Surface
             $this->addStyle($search->getStyle());
             $this->addScript($search->getScript());
             $searchOptions     = $search->getGlobals()->format();
-            $searchOptions     = json_encode(count($searchOptions) > 0 ? $searchOptions : (object)[], JSON_UNESCAPED_UNICODE);
+            $searchOptions     = json_encode(count($searchOptions) > 0 ? $searchOptions : new \stdClass(), JSON_UNESCAPED_UNICODE);
             $searchColumns     = json_encode($search->getColumns(), JSON_UNESCAPED_UNICODE);
         }
 

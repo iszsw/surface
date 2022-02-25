@@ -11,11 +11,9 @@ use surface\table\components\Button;
 function formatOptions(array $options, $labelName = 'label', $valueName = 'value'): array
 {
     $data = [];
-    foreach ($options as $k => $v)
-    {
+    foreach ($options as $k => $v) {
         array_push($data, [$labelName => $v, $valueName => $k]);
     }
-
     return $data;
 }
 
@@ -32,6 +30,8 @@ class Surface
     {
 
         $form = Factory::form();
+
+        $form->search(true); // 启用search 作为table子页面交互，将获取数据作为table拉取数据的参数
 
         /**
          * 表配置
@@ -70,7 +70,6 @@ class Surface
                 ),
             ]
         );
-
         return $form;
     }
 
@@ -83,7 +82,6 @@ class Surface
          */
         $table->options(
             'props', [
-                       'stripe'    => true,
                        'emptyText' => "求求你别看了，没有啦",
                    ]
         );
@@ -107,13 +105,7 @@ class Surface
                                 ]
                             ),
                             (new Component())->el('h2')->children(['会员列表']),
-                            (new Component())->el('el-alert')
-                                ->style('margin-bottom', '20px')
-                                ->props([
-                                            'title'  => '我是一个自定义的el-alert标签，来看看怎么用吧',
-                                            'type'   => 'error',
-                                            'effect' => 'dark',
-                                        ]),
+                            (new Component())->el('el-alert')->style('margin-bottom', '20px')->props(['title' => '我是一个自定义的el-alert标签，来看看怎么用吧', 'type' => 'error', 'effect'=>'dark']),
                         ]
                     ),
                     (new Button('el-icon-check', '提交'))->createSubmit(
@@ -134,11 +126,7 @@ class Surface
         $table->columns( // 列配置
             [
                 $table->selection('id'),
-                $table->expand('address', '地址')->scopedSlots(
-                    [
-                        $table->component(['el' => 'span', 'inject' => ['children']]),
-                    ]
-                ),
+                $table->expand('address', '地址')->scopedSlots([$table->component(['el' => 'span', 'inject' => ['children']])]),
                 $table->column('avatar', '头像')->scopedSlots(
                     [
                         $table->component(
@@ -287,8 +275,8 @@ JS;
         $form->columns(
             [
                 // 点击事件绑定hello方法
-                $form->column('button', '绑定事件', '')->el('el-button')->on('click', 'hello')->children(["全局混入事件"]),
-                $form->column('world', '自定义组件', 'surface-form自定义world组件')->el('world'),
+                $form->column('button','绑定事件','')->el('el-button')->on('click', 'hello')->children(["全局混入事件"]),
+                $form->column('world','自定义组件','surface-form自定义world组件')->el('world'),
 
                 $form->input('username', '用户名', '用户名必须填，必须！必须！必须！')
                     ->marker('要不得')

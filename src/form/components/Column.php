@@ -11,7 +11,7 @@ use surface\Component;
  * @method $this prop($prop) field参数
  * @method $this value($value) 值
  * @method $this options(array $options) 附加参数
- * @method $this item($item) Component|false|(Object)[]  Component参数无需定义el名称 props，class，children...
+ * @method $this item($item) Component|false|new \stdClass()  Component参数无需定义el名称 props，class，children...
  * @method $this validate(array $validate) 校验
  * @method $this visible(array $visible) 显示条件（AND） [ ['value'=>1,'prop'=>'字段'], ['prop'=>'', 'exec'=>'val === 1'], ['exec' => 'model.field === 1']] exec js表达式
  *
@@ -63,7 +63,7 @@ class Column extends Component
                     default:
                 }
         }
-        if (!isset($config['item']) && $this->label) $config['item'] = (Object)[];
+        if (!isset($config['item']) && $this->label) $config['item'] = new \stdClass();
         return $config;
     }
 
