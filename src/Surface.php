@@ -257,7 +257,7 @@ abstract class Surface
             [
                 '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/vue/2.6.12/vue.min.js"></script>',
                 '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/axios/0.24.0/axios.min.js"></script>',
-                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/element-ui/2.15.7/index.min.js"></script>',
+                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/element-ui/2.15.6/index.min.js"></script>',
                 '<script src="'. ($cdn ? : self::CDN_DOMAIN) . '/' . $this->name.'.js"></script>',
             ]
         );
