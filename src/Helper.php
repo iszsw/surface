@@ -50,6 +50,32 @@ class Helper
         return ltrim(str_replace(" ", "", ucwords($str)), $separator );
     }
 
+    /**
+     * @param $props
+     * @param $main
+     *
+     * @return array|false|string|null
+     * Author: zsw zswemail@qq.com
+     */
+    public static function props2json( $props, bool $main = true )
+    {
+        if (!is_array($props)) {
+            return 'null';
+        }
+
+        foreach ($props as $k => $prop) {
+            if (is_array($prop)) {
+                if (count($prop) > 0) {
+                    $props[$k] = static::props2json($prop, false);
+                }else{
+                    $props[$k] = new \stdClass();
+                }
+            }
+        }
+
+        return $main ? json_encode($props, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : $props;
+    }
+
     public static function success(string $msg,array $data = []){
         return ['code' => 0, 'msg'  => $msg, 'data' => $data];
     }

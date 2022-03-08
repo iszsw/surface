@@ -5,6 +5,7 @@
 
 namespace surface\form;
 
+use surface\Helper;
 use surface\Surface;
 use surface\Component;
 use surface\form\components\
@@ -87,9 +88,8 @@ class Form extends Surface
 
     public function page(): string
     {
-        $options     = $this->getGlobals()->format();
-        $options     = json_encode(count($options) > 0 ? $options : new \stdClass(), JSON_UNESCAPED_UNICODE);
-        $columns     = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
+        $options     = Helper::props2json($this->getGlobals()->format());
+        $columns     = Helper::props2json($this->getColumns());;
         $search      = $this->search;
 
         ob_start();

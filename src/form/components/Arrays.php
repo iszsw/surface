@@ -9,7 +9,7 @@ class Arrays extends Column
 
     public function __construct($field, $title = '', $value = '')
     {
-        parent::__construct($field, $title, $value ?: new \stdClass());
+        parent::__construct($field, $title, $value ?: []);
     }
 
     protected function afterFormat(array $config):array

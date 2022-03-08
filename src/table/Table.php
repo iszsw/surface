@@ -5,6 +5,7 @@
 
 namespace surface\table;
 
+use surface\Helper;
 use surface\Surface;
 use surface\Component;
 use surface\table\traits;
@@ -53,10 +54,10 @@ class Table extends Surface
     {
         $pagination = $this->getPagination();
         $header     = $this->getHeader();
-        $pagination = $pagination ? json_encode($pagination->format(), JSON_UNESCAPED_UNICODE) : 'null';
-        $header     = $header ? json_encode($header->format(), JSON_UNESCAPED_UNICODE) : 'null';
-        $options    = json_encode($this->getGlobals()->format() ?: new \stdClass(), JSON_UNESCAPED_UNICODE);
-        $columns    = json_encode($this->getColumns(), JSON_UNESCAPED_UNICODE);
+        $pagination = $pagination ? Helper::props2json($pagination->format()) : 'null';
+        $header     = $header ? Helper::props2json($header->format()) : 'null';
+        $options    = Helper::props2json($this->getGlobals()->format());
+        $columns    = Helper::props2json($this->getColumns());
 
         /**@var $search Surface*/
         $search        = $this->search;
@@ -81,9 +82,9 @@ class Table extends Surface
             // 同步样式 主题
             $this->addStyle($search->getStyle());
             $this->addScript($search->getScript());
-            $searchOptions     = $search->getGlobals()->format();
-            $searchOptions     = json_encode(count($searchOptions) > 0 ? $searchOptions : new \stdClass(), JSON_UNESCAPED_UNICODE);
-            $searchColumns     = json_encode($search->getColumns(), JSON_UNESCAPED_UNICODE);
+
+            $searchOptions = Helper::props2json($search->getGlobals()->format());
+            $searchColumns = Helper::props2json($search->getColumns());
         }
 
         ob_start();
