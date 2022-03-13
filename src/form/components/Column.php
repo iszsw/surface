@@ -47,7 +47,7 @@ class Column extends Component
     {
         if (!$this->item) $this->item(new Component);
         $children = $this->item->children ?? [];
-        array_push($children, (new Component)->el('div')->class('s-marker')->domProps([$type == 'innerHTML' ? $type : 'innerText' => $html]));
+        $children[] = (new Component)->el('div')->class('s-marker')->domProps([$type == 'innerHTML' ? $type : 'innerText' => $html]);
         $this->item->children($children);
         return $this;
     }

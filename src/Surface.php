@@ -296,7 +296,7 @@ abstract class Surface
         array_map(
             function ($t)
             {
-                array_push($this->theme, $t);
+                $this->theme[] = $t;
             }, (array)$theme
         );
 

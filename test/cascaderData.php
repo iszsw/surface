@@ -14,7 +14,7 @@ $data = [];
 function add(&$data, $val, $label, $child = true) {
     $item = ['value' =>$val, 'label' => $label];
     if ($child) $child ? $item['children'] = [] : '';
-    array_push($data, $item);
+    $data[] = $item;
 }
 
 $maxLength = 2;

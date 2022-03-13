@@ -169,20 +169,18 @@ class Table extends TableAbstract
             $id = $i + $star;
             $username = '苹果'.$id;
             $avatar = 'http://q1.qlogo.cn/g?b=qq&nk=191587'.rand(100, 999).'&s=640';
-            array_push(
-                $data, [
-                         'id'         => $id,
-                         'avatar'     => $avatar,
-                         'vip'        => '<h2>V'.rand(1, 9).'</h2>',
-                         'phone'      => '155555555'.rand(10, 99),
-                         'address'    => $adds[array_rand($adds)],
-                         'status'     => ! rand(0, 1),
-                         'tag'        => $tags[array_rand($tags, 1)],
-                         'sex'        => rand(1, 3),
-                         'username'   => $username,
-                         '_selection' => '<img src="'.$avatar.'">'.$username,
-                     ]
-            );
+            $data[] = [
+                'id'         => $id,
+                'avatar'     => $avatar,
+                'vip'        => '<h2>V'.rand(1, 9).'</h2>',
+                'phone'      => '155555555'.rand(10, 99),
+                'address'    => $adds[array_rand($adds)],
+                'status'     => ! rand(0, 1),
+                'tag'        => $tags[array_rand($tags, 1)],
+                'sex'        => rand(1, 3),
+                'username'   => $username,
+                '_selection' => '<img src="'.$avatar.'">'.$username,
+            ];
         }
 
         return [

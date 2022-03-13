@@ -40,7 +40,7 @@ trait ColumnTrait
             } elseif ($columns instanceof Component)
             {
                 if (method_exists($columns, 'created')) $columns->created($this);
-                array_push($this->columns, $columns);
+                $this->columns[] = $columns;
             } else
             {
                 throw new SurfaceException('Columns must implement interface:'.Component::class);
@@ -56,9 +56,13 @@ trait ColumnTrait
             $columns = [];
             foreach ($this->columns as $col) {
                 /** @var Component $col */
-                array_push($columns, $col->format(function (Component $component) {
-                    if (method_exists($component, 'created')) $component->created($this);
-                }));
+                $columns[] = $col->format(function (Component $component)
+                {
+                    if (method_exists($component, 'created'))
+                    {
+                        $component->created($this);
+                    }
+                });
             }
             return $columns;
         }else{

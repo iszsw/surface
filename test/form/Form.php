@@ -28,7 +28,7 @@ class Form extends FormAbstract
     {
         $data = [];
         foreach ($options as $k => $v) {
-            array_push($data, [$labelName => $v, $valueName => $k]);
+            $data[] = [$labelName => $v, $valueName => $k];
         }
         return $data;
     }

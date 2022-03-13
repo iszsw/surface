@@ -12,7 +12,7 @@ function formatOptions(array $options, $labelName = 'label', $valueName = 'value
 {
     $data = [];
     foreach ($options as $k => $v) {
-        array_push($data, [$labelName => $v, $valueName => $k]);
+        $data[] = [$labelName => $v, $valueName => $k];
     }
     return $data;
 }

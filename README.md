@@ -262,12 +262,6 @@ $form->column('world','自定义组件','surface-form自定义world组件')->el(
 
 内置封装的[助手工具演示 /test/helper.php](/test/helper.php) 
 
-## 关于
-
-> **邮件** iszsw@qq.com
->
-> **主页**  [https://zsw.ink](https://zsw.ink) 留言
-
 
 ## 说明
 
