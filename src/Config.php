@@ -41,27 +41,27 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
         unset($this->config[$name]);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->__isset($offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->__get($offset);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
-        return $this->__set($offset, $value);
+        $this->__set($offset, $value);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
-        return $this->__unset($offset);
+        $this->__unset($offset);
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->config;
     }
@@ -172,12 +172,12 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
         return $this->config[$name] ?? $default;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->getIterator()->getArrayCopy();
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->config);
     }
