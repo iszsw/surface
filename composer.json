@@ -1,6 +1,5 @@
 {
     "name": "iszsw/surface",
-    "version": "v3.0.0",
     "description": "CURD 页面构建器",
     "license": "MIT",
     "keywords": ["curd", "Low code", "surface", "php"],

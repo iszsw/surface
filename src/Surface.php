@@ -247,8 +247,7 @@ class Surface
                     '<script src="//unpkg.com/vue@3"></script>',
                     '<script src="//unpkg.com/element-plus"></script>',
                     '<script src="//unpkg.com/element-plus/dist/locale/zh-cn"></script>',
-//                    '<script src="//unpkg.com/surface-plus"></script>',
-                    '<script src="http://localhost:667/index.js"></script>',
+                    '<script src="//unpkg.com/surface-plus"></script>',
                 ], true
             );
 
