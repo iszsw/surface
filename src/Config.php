@@ -1,12 +1,9 @@
 <?php
-/*
- * Author: zsw iszsw@qq.com
- */
 
 namespace surface;
 
 /**
- * 配置服务
+ * 配置
  *
  * Class Config
  *
@@ -14,7 +11,7 @@ namespace surface;
  */
 class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
 {
-    protected $config = [];
+    protected array $config = [];
 
     public function __construct(?array $default = [])
     {
@@ -68,12 +65,13 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
 
     /**
      * 获取配置参数 为空则获取所有配置
-     * @access public
-     * @param  string $name    配置参数名（支持多级配置 .号分割）
-     * @param  mixed  $default 默认值
+     *
+     * @param string $name    配置参数名（支持多级配置 .号分割）
+     * @param mixed       $default 默认值
+     *
      * @return mixed
      */
-    public function get(string $name = null, $default = null)
+    public function get(string $name = '', $default = null)
     {
         // 无参数时获取所有
         if (empty($name)) {
@@ -85,7 +83,6 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
         }
 
         $name    = explode('.', $name);
-        $name[0] = strtolower($name[0]);
         $config  = $this->config;
 
         // 按.拆分成多维数组进行判断
@@ -168,7 +165,6 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
      */
     protected function pull(string $name, $default = null)
     {
-        $name = strtolower($name);
         return $this->config[$name] ?? $default;
     }
 
@@ -177,9 +173,22 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
         return $this->getIterator()->getArrayCopy();
     }
 
+    private function format(array $configs = [])
+    {
+        foreach ($configs as &$config) {
+            if ($config instanceof IFormat) {
+                $config = $config->format();
+            }
+            if (is_array($config)) {
+                $config = $this->format($config);
+            }
+        }
+        return $configs;
+    }
+
     public function getIterator(): \ArrayIterator
     {
-        return new \ArrayIterator($this->config);
+        return new \ArrayIterator($this->format(($this->config)));
     }
 
     public function __invoke($config = [])

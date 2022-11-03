@@ -3,67 +3,62 @@
 namespace surface;
 
 /**
+ * 组件基类
+ * 所有组件必须继承本类
  *
- * Class Component
+ * @property array $children
  *
- * @method $this el($el)
- * @method $this slot($slot)
- * @method $this props($key, $value)
- * @method $this style($key, $value)
- * @method $this class($class)
- * @method $this attrs($key, $value)
- * @method $this domProps($key, $value)
- * @method $this children(array $children)
- * @method $this scopedSlots(array $scopedSlots)
+ * @method self el(string $el)
+ * @method self children(string|int|array $el)
+ * @method self props(array $props) 属性
+ * @method self slot(string $slot) 插槽
  *
- * @package surface\table
- * Author: zsw iszsw@qq.com
+ * @package surface
  */
-class Component
+class Component implements \JsonSerializable
 {
 
     /**
-     * @var Config
+     * 渲染时触发
+     *
+     * 回调参数 (Document $document, Surface $surface)
      */
-    protected $config;
+    const EVENT_VIEW = 'view';
+
+    use EventTrait;
+
+    // 组件名称
+    protected string $name;
+
+    protected Config $config;
 
     /**
-     * 配置名 默认读取文件名
+     * @param array|string $config
      *
-     * @var string
      */
-    protected $configName;
-
-    /**
-     * 组件类型 table|form
-     *
-     * 默认读取目录
-     *
-     * @var string
-     */
-    protected $componentType;
-
-    public function __construct(array $config = [])
+    public function __construct( $config = [] )
     {
-        if (is_null($this->configName)) {
-            $this->configName = Helper::snake(pathinfo(str_replace('\\', '/', get_called_class()))['filename']);
-        }
-        if (is_null($this->componentType)) {
-            $this->componentType = Helper::snake(explode('\\',get_called_class())[1]);
-        }
-
         $this->config = new Config();
+
+        $this->listen(self::EVENT_VIEW, function (Surface $surface, Document $document){
+            $this->triggerAllSub($this->children, self::EVENT_VIEW, [$surface, $document]);
+        },false);
 
         if (method_exists($this, 'init')) $this->init();
 
-        $custom = Factory::configure($this->componentType .'.'. $this->configName, []);
-        if (count($custom) > 0)
-            $this->config->set($custom);
+        if (is_string($config)){
+            $config = ['el' => $config];
+        }
 
-        if (count($config) > 0)
-            $this->config->set($config);
+        if (!isset($config['el'])) {
+            if (!isset($this->name)) {
+                $called = explode('\\', get_called_class());
+                $this->name = strtolower(preg_replace('/([a-z])([A-Z])/', "$1-$2", end($called)));;
+            }
+            $config['el'] = $this->name;
+        }
 
-
+        if (count($config) > 0) {$this->config->set($config);}
     }
 
     public function __call($attr, $arguments)
@@ -87,46 +82,27 @@ class Component
         return $this->__call($name, [$value]);
     }
 
-    /**
-     * 子组件回调
-     * @var callback
-     */
-    private $formatCallback;
-
-    /**
-     * @param callback $callback
-     *
-     * @return array
-     */
-    final public function format( $callback = null ): array
+    public function jsonSerialize(): array
     {
-        $config = $this->config->toArray();
-
-        $this->formatCallback = $callback;
-
-        foreach (['scopedSlots', 'children'] as $type)
-            if (isset($config[$type]))
-                $config[$type] = array_map([$this, 'formatComponent'], $config[$type]);
-
-
-        is_callable($this->formatCallback) && call_user_func($this->formatCallback, $this);
-
-        return $this->afterFormat($config);
-    }
-
-    protected function afterFormat(array $config):array
-    {
-        return $config;
+        return $this->config->toArray();
     }
 
     /**
-     * @param array | Component  $component 最多一层
+     * 触发自己和所有下级事件
      *
-     * @return array
+     * @param        $children
+     * @param string $event
+     * @param null   $params
      */
-    protected function formatComponent( $component )
+    private function triggerAllSub($children, string $event, $params = null): void
     {
-        return $component instanceof Component ? $component->format($this->formatCallback) : $component;
+        if (is_array($children)) {
+            foreach ($children as $child){
+                $this->triggerAllSub($child, $event, $params);
+            }
+        } elseif ($children instanceof self) {
+            $children->trigger($event, $params);
+        }
     }
 
 }

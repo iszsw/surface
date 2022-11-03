@@ -2,312 +2,346 @@
 
 namespace surface;
 
-use surface\exception\SurfaceException;
 
-/**
- *
- * surface 公共类
- *
- * Class Surface
- *
- * @package surface
- * Author: zsw iszsw@qq.com
- */
-abstract class Surface
+class Surface
 {
-    use GlobalsTrait;
-    use ColumnTrait;
-
-    /**
-     * 资源文件CDN
-     */
-    const CDN_DOMAIN = '//cdn.jsdelivr.net/gh/iszsw/surface-src@main';
 
     /**
      * 唯一标识
      *
      * @var string
      */
-    protected $id;
+    protected string $id;
 
-    protected $script = [];
+    protected array $script = [];
 
-    protected $style = [];
-
-    /**
-     * 组件
-     *
-     * @var array
-     */
-    protected static $components = [];
+    protected array $style = [];
 
     /**
-     * 组件配置
-     *
-     * @var Config
+     * @var array<Functions>
      */
-    protected $config;
+    private array $registers = [];
 
     /**
-     * 延迟执行 传入闭包时延迟执行
-     * 只能通过继承覆盖
-     * 如果需要立即执行设置false
-     *
-     * @var bool
+     * @var array<Functions>
      */
-    protected $delay = true;
+    private array $setups = [];
 
     /**
-     * 待处理闭包
-     *
-     * @var \Closure|null
+     * @var array<Document>
      */
-    protected $closure;
+    private array $documents = [];
 
-    /**
-     * 搜索表单
-     *
-     * @var string
-     */
-    protected $search = '';
+    private string $globalSize = 'default';
 
-    /**
-     * 类型 下划线小写
-     * @var string
-     */
-    protected $name;
+    private bool $importDependent = false;
 
-    public function __construct(?\Closure $closure = null)
+    public function __construct()
     {
-        $name = explode('\\', get_called_class());
-        $this->name = Helper::snake(end($name));
-
         $this->init();
-
-        if (!is_null($closure))
-        {
-            $this->closure = $closure;
-            $this->delay || $this->execute();
-        }
     }
 
     /**
-     * 立即执行
+     * 添加HTML模板
      *
      * @return $this
-     * @throws SurfaceException
      */
-    public function execute()
+    public function append(Document $document, bool $unshift = false): self
     {
-        if ( ! is_null($this->closure))
+        $document->trigger(Document::EVENT_CREATE, [$this]);
+        if ($unshift) {
+            array_unshift($this->documents, $document);
+        }else{
+            $this->documents[] = $document;
+        }
+        return $this;
+    }
+
+    protected function init()
+    {
+        $this->register(Functions::create('app.use(ElementPlus, {locale: (typeof ElementPlusLocaleZhCn === "undefined") ?null:ElementPlusLocaleZhCn, size: "'.$this->globalSize.'"});app.use(Surface);', ['app']));
+    }
+
+    /**
+     * 设置全局组件尺寸
+     *
+     * @param string $size
+     *
+     * @return $this
+     */
+    public function setSize(string $size = ''):self
+    {
+        $this->globalSize = $size;
+        return $this;
+    }
+
+    /**
+     * vue初始化调用
+     * 初始化的时候调用 作为全局引入样式等
+     *
+     * fn(app):void
+     *
+     * @param Functions $fn
+     *
+     * @return $this
+     */
+    public function register(Functions $fn): self
+    {
+        $this->registers[] = $fn;
+
+        return $this;
+    }
+
+    /**
+     * 自定义资源依赖引入
+     *
+     * @return $this
+     */
+    public function customDependent(): self
+    {
+        $this->importDependent = true;
+        return $this;
+    }
+
+    /**
+     * 初始化data中的数据
+     *
+     * fn(data):void
+     *
+     * @param Functions $fn
+     *
+     * @return $this
+     */
+    public function setup(Functions $fn): self
+    {
+        $this->setups[] = $fn;
+
+        return $this;
+    }
+
+    /**
+     * 添加Javascript
+     *
+     * @param $script
+     * @param $unshift 顶部插入
+     *
+     * @return $this
+     */
+    public function addScript($script, bool $unshift = false): self
+    {
+        return $this->addResources($script, 'script', $unshift);
+    }
+
+    /**
+     * 添加样式
+     *
+     * @param $style
+     * @param $unshift 顶部插入
+     *
+     * @return $this
+     */
+    public function addStyle($style, bool $unshift = false): self
+    {
+        return $this->addResources($style, 'style', $unshift);
+    }
+
+    protected function addResources($resource,string $type = 'script', bool $unshift = false): self
+    {
+        if (is_array($resource))
         {
-            static::dispose($this->closure, [$this]);
-            $this->closure = null;
+            if ($unshift) $resource = array_reverse($resource);
+
+            foreach ($resource as $v)
+            {
+                $this->addResources($v, $type, $unshift);
+            }
+        } else
+        {
+            if ($type === 'script')
+            {
+                if ( ! in_array($resource, $this->script))
+                {
+                    if ($unshift) {
+                        array_unshift($this->script, $resource);
+                    }else{
+                        $this->script[] = $resource;
+                    }
+                }
+            } else
+            {
+                if ( ! in_array($resource, $this->style))
+                {
+                    if ($unshift) {
+                        array_unshift($this->style, $resource);
+                    }else{
+                        $this->style[] = $resource;
+                    }
+                }
+            }
         }
 
         return $this;
     }
 
-    public static function __callStatic($name, $arguments)
+    /**
+     * @param int $len
+     *
+     * @return string
+     */
+    public static function uuid(int $len = 6): string
     {
-        return static::make($name, $arguments);
-    }
-
-    public function __call($name, $arguments)
-    {
-        return $this->make($name, $arguments);
-    }
-
-    public static function make($name, $arguments)
-    {
-        $component = static::$components[$name] ?? null;
-
-        if ( !$component)
-        {
-            throw new SurfaceException("Component:{$name}  is not founded!");
+        $chars = array( "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
+        shuffle ( $chars ); // 将数组打乱
+        $str = '';
+        $charLen = count($chars) - 1;
+        for ($i = 0; $i < $len; $i ++) {
+            $str .= $chars[mt_rand ( 0, $charLen) ];
         }
-
-        return static::dispose($component, $arguments);
+        return $str;
     }
 
-    public static function getServers()
-    {
-        return static::$components;
-    }
-
-    protected static function dispose($server, $ages = [])
-    {
-        if ($server instanceof \Closure || is_array($server))
-        {
-            return call_user_func_array($server, $ages);
-        } elseif (class_exists($server))
-        {
-            return (new \ReflectionClass($server))->newInstanceArgs($ages);
-        } else
-        {
-            return $server;
-        }
-    }
-
-    public static function bind($name, $call)
-    {
-        static::$components[$name] = $call;
-    }
-
-    public function addScript($script)
-    {
-        if (is_array($script))
-        {
-            foreach ($script as $v)
-            {
-                $this->addResources($v);
-            }
-        } else
-        {
-            $this->addResources($script);
-        }
-
-        return $this;
-    }
-
-    public function addStyle($style)
-    {
-        if (is_array($style))
-        {
-            foreach ($style as $v)
-            {
-                $this->addResources($v, 'style');
-            }
-        } else
-        {
-            $this->addResources($style, 'style');
-        }
-
-        return $this;
-    }
-
-    private function addResources($resource, $type = 'script')
-    {
-        if ($type === 'script')
-        {
-            if ( ! in_array($resource, $this->script))
-            {
-                $this->script[] = $resource;
-            }
-        } else
-        {
-            if ( ! in_array($resource, $this->style))
-            {
-                $this->style[] = $resource;
-            }
-        }
-
-        return $this;
-    }
-
-    public function getId()
+    /**
+     * 获取唯一Key
+     *
+     * @return string
+     */
+    public function id(): string
     {
         if (empty($this->id))
         {
-            $this->id = uniqid('z');
+            $this->id = self::uuid();
         }
 
         return $this->id;
     }
 
-    public function getStyle()
+    /**
+     * 获取样式
+     *
+     * @return array
+     */
+    public function getStyle(): array
     {
         return $this->style;
     }
 
-    public function getScript()
+    /**
+     * 获取Javascript
+     *
+     * @return array
+     */
+    public function getScript(): array
     {
         return $this->script;
     }
 
-    /**
-     * 搜索样式
-     *
-     * Table 中保存搜索HTML
-     * Form  中保存搜索状态
-     *
-     * @param string|bool|null $search
-     *
-     * @return $this|bool
-     */
-    public function search( $search = null)
+    private function toJson(array $array):string
     {
-        if (is_null($search)) {return $this->search;}
-        $this->search = $search;
-        return $this;
+        return json_encode($array, JSON_UNESCAPED_UNICODE);
     }
 
-    public function view(): string
-    {
-        return $this->execute()->page();
-    }
+    private function importDependent(){
+        if (!$this->importDependent) {
+            $this->addScript(
+                [
+                    '<script src="//unpkg.com/vue@3"></script>',
+                    '<script src="//unpkg.com/element-plus"></script>',
+                    '<script src="//unpkg.com/element-plus/dist/locale/zh-cn"></script>',
+//                    '<script src="//unpkg.com/surface-plus"></script>',
+                    '<script src="http://localhost:667/index.js"></script>',
+                ], true
+            );
 
-    protected function init()
-    {
-        $this->globals(new Globals($this->name, []));
+            $this->addStyle(
+                [
+                    '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">',
+                    '<link href="//unpkg.com/surface-plus/dist/index.css" rel="stylesheet">',
+                ], true
+            );
 
-        $cdn = Factory::configure('cdn', '');
-
-        $this->addScript(
-            [
-                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/vue/2.6.12/vue.min.js"></script>',
-                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/axios/0.24.0/axios.min.js"></script>',
-                '<script src="'. ($cdn ? : '//cdn.staticfile.org/') . '/element-ui/2.15.6/index.min.js"></script>',
-                '<script src="'. ($cdn ? : self::CDN_DOMAIN) . '/' . $this->name.'.js"></script>',
-            ]
-        );
-
-        $this->theme = [
-            '<link href="'. ($cdn ? : self::CDN_DOMAIN) . '/element-ui/index.dark.css" rel="stylesheet">',
-        ];
-
-        $styles  = Factory::configure($this->name .'.style', []);
-        $scripts = Factory::configure($this->name .'.script', []);
-
-        count($styles) > 0 && $this->addStyle($styles);
-        count($scripts) > 0 && $this->addScript($scripts);
-    }
-
-    protected $theme = [];
-
-    /**
-     *
-     * 自定义主题设置
-     *
-     * @param string|array|null $theme 主题样式
-     * @param bool         $cover 覆盖
-     *
-     * @return $this|string[]
-     */
-    public function theme($theme = null, $cover = true)
-    {
-        if (null === $theme) {
-            return $this->theme;
+            $this->importDependent = true;
         }
-        if ($cover)
-        {
-            $this->theme = [];
-        }
-        array_map(
-            function ($t)
-            {
-                $this->theme[] = $t;
-            }, (array)$theme
-        );
-
-        return $this;
     }
 
     /**
-     * 获取页面
+     * 生成代码
+     * 不包括样式和依赖的js
      *
      * @return string
      */
-    abstract protected function page(): string;
+    public function display(): string
+    {
+        $documentNode = [];
+        $documentData = [];
+        foreach ($this->documents as $document)
+        {
+            $document->trigger(Document::EVENT_VIEW, [$this]);
+            $documentNode[] = $document->getNode();
+            $documentData = array_merge($documentData, $document->getBind());
+        }
+
+        $registers = [];
+        foreach ($this->registers as $register)
+        {
+            $registers[] = $register->format();
+        }
+
+        $setups = [];
+        $setupData = $this->setups;
+        array_unshift($setupData, $this->dataInit());
+        foreach ($setupData as $setup)
+        {
+            $setups[] = $setup->format();
+        }
+
+        $id = $this->id();
+        $setups = $this->toJson($setups);
+        $registers = $this->toJson($registers);
+        $documentData = $this->toJson($documentData);
+        $documentNode = implode('', $documentNode);
+
+        ob_start();
+        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'display.php';
+
+        return ob_get_clean();
+    }
+
+    /**
+     * setup数据初始化 最先执行
+     *
+     * ref:field
+     * reactive:field
+     *
+     * @return Functions
+     */
+    private function dataInit() :Functions
+    {
+        return Functions::create(<<<JS
+for(let i in data) {
+    let split = i.split(":", 2)
+    let func = split[0].toLocaleString()
+    if (split.length > 1 && ['ref', 'reactive'].indexOf(func) > -1) {
+        data[split[1]] = Vue[func](data[i])
+        delete data[i]
+    }
+}
+JS, ["data"]);
+    }
+
+    /**
+     * 生成页面
+     *
+     * @return string
+     */
+    public function view(): string
+    {
+        $this->importDependent();
+        ob_start();
+        include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'view.php';
+        return ob_get_clean();
+    }
 
 }
+
+
+
