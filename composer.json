@@ -15,7 +15,7 @@
         "source": "https://github.com/iszsw/surface"
     },
     "require": {
-        "php": ">=7.1.3"
+        "php": ">=7.3.0"
     },
     "autoload": {
         "psr-4": {

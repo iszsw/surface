@@ -20,9 +20,9 @@ $table = (new Table())->vModel()->binds(
                 [// 4种自定义绑定表格数据格式
                  // 绑定到children
                  (new Component(['el' => 'div', ':children' => ''])),
-                 // {age}替换
+                 // 当前列字段age提交到{age}位置
                  (new Component(['el' => 'div', ':children' => '年龄：{age}'])),
-                 // 自定义处理函数
+                 // 自定义处理函数返回字符串显示
                  (new Component(['el' => 'div', ':children' => \surface\Functions::create("return '虚岁：' + row[field]", ["field", "row", "prop"])])),
                  // html渲染需要绑定到innerHTML
                  (new Component(['el' => 'span', 'props' => [':innerHTML' => "<b>{name}</b>"]])),

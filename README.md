@@ -33,27 +33,15 @@ gitee地址：[https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
 github地址：[https://github.com/iszsw/surface](https://github.com/iszsw/surface)
 
 
-## 文档
-
-[https://doc.zsw.ink](https://doc.zsw.ink) v3版本文档更新中... 更多功能演示查看test目录下测试代码
-
-
 ## 安装
 
 ```bash
-# 运行环境要求 PHP7.1+ || PHP8.0+
+# 运行环境要求 PHP7.4+ || 推荐 PHP8+
 composer require iszsw/surface
 ```
 
-### 说明
+### 文档
 
-v3版本基于VUE3+ElementPlus完全重构
+> 文档 [Docuement](Document.md)
 
-surface构建器包括两部分
-
-一、document 文档
-- 通过 Surface/Document 直接构建出html内容，内置Table和Form两种文档构建器 
-
-二、component 组件
-- 通过Json构建出组件内容，Table和Form组件中内置了组件解析工具通过Json生成组件
-
+> 测试代码：[https://gitee.com/iszsw/surface/tree/master/test](https://gitee.com/iszsw/surface/tree/master/test)
