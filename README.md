@@ -1,7 +1,6 @@
 <p align="center"><img src="https://z3.ax1x.com/2021/06/29/Rdtqde.png" alt="surface" width="200px" style="border-radius: 50%" /></p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">
     Surface</h1>
-<h4 align="center">低代码PHP页面构建器，快速构建后台Table、Form页面</h4>
 <p align="center">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT" />
   <a href="https://github.com/iszsw">
@@ -17,6 +16,8 @@
 
 ## 特性
 
+surface的设计初衷是为了减少或者不写前端的代码能简单的构建出通用的页面
+
 - 低代码
 - 面向对象风格
 - 自定义主题样式
@@ -27,7 +28,7 @@
 
 ## 源码地址
 
-gitee地址(主推)：[https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
+gitee地址：[https://gitee.com/iszsw/surface](https://gitee.com/iszsw/surface)
 
 github地址：[https://github.com/iszsw/surface](https://github.com/iszsw/surface)
 
@@ -43,3 +44,16 @@ github地址：[https://github.com/iszsw/surface](https://github.com/iszsw/surfa
 # 运行环境要求 PHP7.1+ || PHP8.0+
 composer require iszsw/surface
 ```
+
+### 说明
+
+v3版本基于VUE3+ElementPlus完全重构
+
+surface构建器包括两部分
+
+一、document 文档
+- 通过 Surface/Document 直接构建出html内容，内置Table和Form两种文档构建器 
+
+二、component 组件
+- 通过Json构建出组件内容，Table和Form组件中内置了组件解析工具通过Json生成组件
+
