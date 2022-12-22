@@ -46,4 +46,4 @@ composer require iszsw/surface
 
 > 文档 [Docuement](Document.md)
 
-> 测试代码：[/iszsw/surface/tree/master/example](/iszsw/surface/tree/master/example)
+> 测试代码：[Example](/example)
