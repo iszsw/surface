@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Input extends Form
+class Input extends FormColumn
 {
 
 }

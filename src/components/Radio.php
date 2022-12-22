@@ -4,7 +4,7 @@ namespace surface\components;
 
 use surface\OptionsTrait;
 
-class Radio extends Form
+class Radio extends FormColumn
 {
 
     use OptionsTrait;

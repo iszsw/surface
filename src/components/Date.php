@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Date extends Form
+class Date extends FormColumn
 {
 
 }

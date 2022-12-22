@@ -4,11 +4,11 @@ v3版本基于VUE3+ElementPlus完全重构，
 
 ## Surface构成
 
-### 一、document 文档
+### 一、Document html标签生成类
 
 > 通过 Surface/Document:class 直接生成html内容，内置引入了ElementPlus，所以ElementPlus的所有组件都支持生成
 
-#### 初探document
+#### document使用
 ```php
 
 //初始化surface容器
@@ -43,7 +43,7 @@ $document = (new \surface\Document("div"))
         ]
     );
 
-// 将文档加入到容器中
+// 加入到容器中
 $surface->append($document);
 
 
@@ -51,10 +51,10 @@ $document->listen(\surface\Document::EVENT_VIEW, function (\surface\Surface $sur
     // 调用 $surface->view() 时触发
 });
 
-// 显示生成的代码（不包含静态资源）不同页面可以混合使用
+// 生成页面（不包含静态资源）
 // echo $surface->display();
 
-// 生成页面
+// 渲染页面
 echo $surface->view();
 
 ```
@@ -69,20 +69,26 @@ echo $surface->view();
 </div>
 
 <script>
-    // ... surface 前端处理
+    // ... surface 前端处理逻辑
 </script>
 
 ```
 
-#### s-table和s-form是内置的文档可以直接使用
+#### 新增了s-table表格和s-form表单两个组件可以直接使用
 
-##### Form \surface\documents\Form:class
+- s-form \surface\documents\Form:class
+  - 属性
+      - v-model 表单API
+      - v-model:data 表单数据绑定
+      - columns 表单项
+      - options 表单配置
+
 
 ```php
 $form = new \surface\documents\Form();
-$form->attrs( // 下列名字可以自定义
+$form->binds( // binds绑定到全局的数据 不能重名 注意命名冲突
     [
-        'formColumns' => [], // component 组件集合 看下面的第二点
+        'formColumns' => [], // component 组件集合 看下面的 二、Component 组件生成类
         'formOptions' => [ // 表单配置
             'config'       => [ // 全局配置参数
                 'responseKeys'  => [ // 异步请求响应 key 别名
@@ -132,7 +138,7 @@ $form->attrs( // 下列名字可以自定义
             // 'reset' => null, 
         ]
     ]
-)->binds( // 下面的值为上面自定义的名字
+)->attrs( // 将绑定的变量绑定到标签上
     [
         ':columns' => 'formColumns',
         ':options' => 'formOptions',
@@ -140,13 +146,17 @@ $form->attrs( // 下列名字可以自定义
 )
 ```
 
-##### Table \surface\documents\Table:class
+- s-table \surface\documents\Table:class
+    - 属性
+        - v-model 表格API
+        - columns 列
+        - options 表格配置
 
 ```php
 $table = (new \surface\documents\Table())->binds(
     [
         // table中列只能使用TableColumn组件内容可以无限级嵌套
-        'columns' => [
+        'tableColumns' => [
             (new \surface\components\TableColumn())->props(['type' => 'selection']),
             (new \surface\components\TableColumn())->props(['label' => '年龄', 'prop' => 'age'])->children(
                 [// 4种自定义绑定表格数据格式
@@ -199,7 +209,7 @@ $table = (new \surface\documents\Table())->binds(
                 ]
             ),
         ],
-        'options' => [
+        'tableOptions' => [
             'config'          => [
                 'responseKeys'        => [
                     'code' => 'code',
@@ -223,7 +233,7 @@ $table = (new \surface\documents\Table())->binds(
             ],
         ],
         // 自定义搜索 参考上面Form 表单中内容会提交到table数据接口
-        'search'  => [
+        'tableSearch'  => [
             'columns' => [
                 (new \surface\components\Input(['label' => "Input", 'name' => 'input']))->col(['span' => 6]),
             ],
@@ -237,9 +247,9 @@ $table = (new \surface\documents\Table())->binds(
 )->attrs(
     [
         // 将上面binds参数绑定到标签上
-        ':columns' => 'columns',
-        ':options' => 'options',
-        ':search'  => 'search',
+        ':columns' => 'tableColumns',
+        ':options' => 'tableOptions',
+        ':search'  => 'tableSearch',
     ]
 )->appendChild(
     [
@@ -254,7 +264,7 @@ $table = (new \surface\documents\Table())->binds(
 
 ##### 其他任何组件都可以参考form和table生成
 
-### 二、component 组件
+### 二、Component 组件生成类
 
 > 通过Json构建出组件内容，document和component本质都是一样，只是实现方式和场景不一样
 
@@ -265,10 +275,10 @@ $form->attrs(
             (new \surface\components\Input(['label' => "Input", 'name' => 'input']))
                 ->rules(['required'=>true, 'message' => '请输入名字!']), // rules 验证
             (new \surface\components\Number(['label' => "number1", 'name' => 'number1', 'value' => 1]))
-                ->suffix("加到2有惊喜"),// suffix后缀
+                ->suffix("加到2有惊喜"),// 每个组件都有suffix插槽
             (new \surface\components\Number(['label' => "number2", 'name' => 'number2', 'value' => 1]))
                 ->suffix("['name'=>'number1', 'value'=>2]")
-                ->visible([ // 组件动态显示和隐藏条件4中校验方式
+                ->visible([ // 组件动态显示和隐藏条件4种校验方式
                     ['name' => 'number1', 'value' => 2],
                     ['name' => 'number1', 'exec' => 'val === 2'],
                     ['exec' => 'models.number1 === 2'],
@@ -282,7 +292,5 @@ $form->attrs(
 
 ## 自定义组件
 
-自定义组件参考vue官方文档
-
-表单组件实现v-model就可以实现双向数据绑定
+自定义组件[参考示例](/example/component1.php)
 

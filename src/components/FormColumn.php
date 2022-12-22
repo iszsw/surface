@@ -20,7 +20,7 @@ use surface\Component;
  *
  * @package surface\components
  */
-class Form extends Component
+class FormColumn extends Component
 {
 
     protected function init(){

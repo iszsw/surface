@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Rate extends Form
+class Rate extends FormColumn
 {
 
 }

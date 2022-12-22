@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Color extends Form
+class Color extends FormColumn
 {
 
 }

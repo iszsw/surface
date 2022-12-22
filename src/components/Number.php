@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Number extends Form
+class Number extends FormColumn
 {
 
 }

@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Upload extends Form
+class Upload extends FormColumn
 {
 
 }

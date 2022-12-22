@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Time extends Form
+class Time extends FormColumn
 {
 
 }

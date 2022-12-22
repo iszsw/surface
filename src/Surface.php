@@ -308,8 +308,7 @@ class Surface
     /**
      * setup数据初始化 最先执行
      *
-     * ref:field
-     * reactive:field
+     * ref|reactive参数解析
      *
      * @return Functions
      */

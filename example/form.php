@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../../../autoload.php";
+require_once __DIR__."/../../../autoload.php";
 
 use surface\Component;
 use surface\documents\Form;
@@ -29,6 +29,7 @@ function createData($maxDeep, $maxChildren, $deep = 1, $key = 'node'): array
             'children' => $children,
         ];
     }
+
     return $data;
 }
 
@@ -38,7 +39,7 @@ $form = (new Form())->binds( // 绑定到全局的变量 同一个surface下可�
     [
         'columns' => [
             (new \surface\components\Input(['label' => "Input", 'name' => 'input']))
-                ->rules(['required'=>true, 'message' => '请输入名字!']),
+                ->rules(['required' => true, 'message' => '请输入名字!']),
             (new \surface\components\Number(['label' => "number1", 'name' => 'number1', 'value' => 1]))
                 ->suffix("加到2有惊喜"),
             (new \surface\components\Number(['label' => "number2", 'name' => 'number2', 'value' => 1]))
@@ -140,12 +141,12 @@ JS, ["node", "resolve"]
                     'limit'    => 2,
                     'action'   => '/api/upload.php',// 上传地址 根据options中config格式 data=['url' => '地址']
                     'multiple' => true,
-//                    'manage'   => [ // 管理页面
-//                        'url'     => '/api/manage.php',
-//                        'method'  => 'get',
-//                        'headers' => ['X-HEADER' => 'header'],
-//                        'data'    => ["id" => 123],
-//                    ],
+                    //                    'manage'   => [ // 管理页面
+                    //                        'url'     => '/api/manage.php',
+                    //                        'method'  => 'get',
+                    //                        'headers' => ['X-HEADER' => 'header'],
+                    //                        'data'    => ["id" => 123],
+                    //                    ],
                 ]
             ),
             (new Component(['el' => "el-divider"]))->children("自定义组件"),
@@ -178,11 +179,12 @@ JS, ["node", "resolve"]
         ],
         'options' => [
             'config'       => [
-                'responseKeys'        => [ // 异步请求响应 key 别名
-                                           'code' => 'code',
-                                           'data' => 'data',
-                                           'msg'  => 'msg',
-                ],
+                'responseKeys'        =>
+                    [ // 异步请求响应 key 别名
+                      'code' => 'code',
+                      'data' => 'data',
+                      'msg'  => 'msg',
+                    ],
                 'responseSuccessCode' => 0,// 请求成功`code`的值 其他值都为失败
             ],
             'props'        => [
@@ -195,8 +197,8 @@ JS, ["node", "resolve"]
                 'span' => 24,
             ],
             'submitBefore' => \surface\Functions::create("console.log('submitBefore', data)", ["data"]),  // 提交前返回 false 阻止提交
-            'submitAfter' => \surface\Functions::create("console.log('submitAfter');ElMessage.success(res.msg || '提交成功')", ["data", "res"]),  // 提交成功后回调事件，自定义submit事件 不会触发
-            'validate' => \surface\Functions::create("console.log('validate', prop, isValid)", ["prop", "isValid"]),  // 字段校验失败回调
+            'submitAfter'  => \surface\Functions::create("console.log('submitAfter');ElMessage.success(res.msg || '提交成功')", ["data", "res"]),  // 提交成功后回调事件，自定义submit事件 不会触发
+            'validate'     => \surface\Functions::create("console.log('validate', prop, isValid)", ["prop", "isValid"]),  // 字段校验失败回调
             'request'      => [
                 'url'     => '/api/change.php',
                 'method'  => 'post',
@@ -208,22 +210,23 @@ JS, ["node", "resolve"]
                 ],
             ],
             'submit'       => [
-                'props' => [
+                'props'    => [
                     'type' => 'success',
                 ],
-                "children"=> '确认'
+                "children" => '确认',
             ],
             //            'reset' => null, // 不需要reset可以设置为 null
-        ]
+        ],
     ]
 )->attrs(
     [ // 本标签绑定
-        ':columns' => 'columns',
-        ':options' => 'options',
+      ':columns' => 'columns',
+      ':options' => 'options',
     ]
 )->vModel(['input' => "Hello"], 'data');
 
-$form->listen(Form::EVENT_CREATE, function (Surface $surface) {
+$form->listen(Form::EVENT_CREATE, function (Surface $surface)
+{
     // 通过append方法注册到$surface时调用
 });
 

@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Editable extends Form
+class Editable extends FormColumn
 {
 
 }

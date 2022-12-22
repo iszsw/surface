@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Slider extends Form
+class Slider extends FormColumn
 {
 
 }

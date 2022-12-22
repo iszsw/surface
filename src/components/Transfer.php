@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Transfer extends Form
+class Transfer extends FormColumn
 {
 
     public function options(array $options): self

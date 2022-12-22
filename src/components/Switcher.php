@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Switcher extends Form
+class Switcher extends FormColumn
 {
 
     protected string $name = 'switch';

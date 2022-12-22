@@ -18,7 +18,7 @@ class Document
     const EVENT_CREATE = 'create';
 
     /**
-     * view、display渲染时触发
+     * view、display渲染前触发
      * 回调参数 (Surface $surface)
      */
     const EVENT_VIEW = 'view';
@@ -29,7 +29,6 @@ class Document
      * @var string
      */
     protected string $name = 'span';
-
 
     private string $vModelKey = '__DEFAULT_KEY';
 
@@ -43,9 +42,10 @@ class Document
     protected array $children = [];
 
     protected Config $attr;
+
     protected Config $bind;
 
-    public function __construct($name = null)
+    public function __construct(string $name = null)
     {
         if ($name) {
             $this->name = $name;
@@ -90,7 +90,7 @@ class Document
     /**
      * 绑定到data中的变量
      *
-     * @param array $data
+     * @param array $data 参数名字支持前缀[ref:|reactive:]绑定双向参数
      *
      * @return $this
      */
@@ -103,6 +103,7 @@ class Document
      * 设置标签名称
      *
      * @param string $name
+     *
      * @return $this
      */
     public function setName(string $name): self
@@ -126,7 +127,7 @@ class Document
     /**
      * 获取v-model绑定的变量名
      *
-     * @param  string  $name
+     * @param  string  $name 别名
      *
      * @return string
      */
@@ -201,9 +202,29 @@ class Document
         $data = [];
         $attrs = $this->attr->toArray();
         foreach ($attrs as $k => $attr) {
-            $data[]= is_numeric($k) ? $attr : "{$k}=\"{$attr}\"";
+            $data[]= is_numeric($k) ? $attr : $this->mixed2str($k) . "=\"" . $this->mixed2str($attr) . "\"";
         }
         return implode(' ', $data);
+    }
+
+    private function mixed2str( $val ): string
+    {
+        switch (gettype($val)){
+            case "string":
+            case "integer":
+            case "double":
+            case "object":
+                return (string)$val;
+            case "boolean":
+            case "NULL":
+                return var_export($val, true);
+            case "array":
+                return json_encode($val, JSON_UNESCAPED_UNICODE);
+            case "resource":
+            default:
+                return "";
+        }
+
     }
 
     private function getChildData(array $data, $child): array

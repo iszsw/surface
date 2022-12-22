@@ -18,19 +18,22 @@ class Functions implements IFormat
     /**
      * Func constructor.
      *
-     * @param string $fn    方法体
-     * @param array $params 注入的参数
+     * @param string $fn     方法体 支持写入到<script>...</script>标签中 方便IDE代码提示
+     * @param array  $params 注入的参数
      *
      */
     public function __construct(string $fn, array $params = [])
     {
+        $fn = preg_replace("/<\/?script.*?>/", "", $fn);
         $fn = trim($fn, " \r\n");
         $pref = 'function(';
-        if (strpos($fn, $pref) === 0) {
+        if (strpos($fn, $pref) === 0)
+        {
             $reCount = 1;
             $fn = str_replace($pref, '(', $fn, $reCount);
             $this->params = null;
-        }else{
+        } else
+        {
             $this->params = $params;
         }
         $this->fn = $fn;
@@ -60,7 +63,7 @@ class Functions implements IFormat
      */
     public function format()
     {
-        return self::PREFIX . ($this->params ? "(".implode(',', $this->params)."){{$this->fn}}" : $this->fn);
+        return self::PREFIX.($this->params ? "(".implode(',', $this->params)."){{$this->fn}}" : $this->fn);
     }
 
 }

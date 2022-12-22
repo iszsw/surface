@@ -6,18 +6,19 @@ use surface\Surface;
 use surface\Component;
 use surface\Document;
 use surface\documents\Table;
+use surface\documents\Form;
 
 /**
  * 表格表单联合使用
  */
-
 $surface = new Surface();
-$id = $surface->id();
 
-$surface->addStyle("
+// 全局样式
+$surface->addStyle(
+    <<<STYLE
 <style>
 #{$surface->id()} {
-    width: 1000px;
+    width: 1200px;
     position: absolute;
     left: 0;
     right: 0;
@@ -27,22 +28,39 @@ $surface->addStyle("
     padding: 10px;
 }
 </style>
-");
+STYLE
+);
 
-$dialog = (new Document('el-dialog'))->vModel(false);// 自定义dialog弹窗
-$table = (new Table())->vModel();// 自定义Table
+// 自定义dialog弹窗
+$dialog = (new Document('el-dialog'))->vModel(false);
 
-$surfaceApi = "Surface.".$surface->id();// 在全局获取当前Surface实例
-$dialogVModel = $dialog->getVModel(); // 获取dialog的VModel
-$tableApi = $surfaceApi.".".$table->getVModel();// 获取table组件
-$tableForm = (new \surface\documents\Form())
-    ->vModel(null, 'data')// v-model绑定的数据才支持双向绑定 自定义名data
-    ->attrs( // attrs会原样绑定标签上
-        [
-            ':columns' => 'formColumns',
-            ':options' => 'formOptions',
-        ]
-    )
+// 表格
+$table = (new Table())->vModel();
+
+// 表单 v-model绑定的数据才支持双向绑定 自定义名data
+$form = (new Form())->vModel(null, 'data');
+
+// 在全局获取当前Surface实例
+$surfaceApi = "Surface.".$surface->id();
+
+// 获取弹窗
+$dialogVModel = $surfaceApi.".".$dialog->getVModel();
+
+// 获取表格Api
+$tableApi = $surfaceApi.".".$table->getVModel();
+
+// 获取表单Api
+$formApi = $surfaceApi.".".$form->getVModel();
+
+// 获取表单Data
+$formData = $surfaceApi.".".$form->getVModel('data');
+
+$form->attrs( // attrs会原样绑定标签上
+    [
+        ':columns' => 'formColumns',
+        ':options' => 'formOptions',
+    ]
+)
     ->binds( // binds的数据都是全局的  注意命名冲突
         [
             'formColumns' => [
@@ -63,7 +81,7 @@ $tableForm = (new \surface\documents\Form())
                 ],
                 'submitBefore' => \surface\Functions::create("console.log('submitBefore')", ["data"]),
                 // 提交前返回 false 阻止提交
-                'submitAfter'  => \surface\Functions::create("{$surfaceApi}.{$dialogVModel}.value = false;$tableApi.value.load()", ["data", "res"]),
+                'submitAfter'  => \surface\Functions::create("$dialogVModel.value = false;$tableApi.value.load()", ["data", "res"]),
                 // 提交成功后回调事件，自定义submit事件 不会触发
                 'request'      => [
                     'url'     => '/api/change.php',
@@ -89,28 +107,33 @@ $tableForm = (new \surface\documents\Form())
 $dialog->attrs(
     [
         'title'            => '修改',
-        'destroy-on-close' => null,// 设置值为null 标签上只显示名字
+        'destroy-on-close' => '',// 设置值为null 标签上只显示名字
     ]
-)->appendChild($tableForm); // 表单页面加入到弹窗中
+)->appendChild($form); // 表单页面加入到弹窗中
 
-$surface->append($dialog); // 将标签加入到Surface
+// 将弹窗加入到页面中
+$surface->append($dialog);
+
+// 表格配置
 $table->binds(
     [
         'columns' => [
             (new \surface\components\TableColumn())->props(['type' => 'expand', 'prop' => 'address'])->children(
                 [
-                 (new Component(['el' => 'div', ':children' => ''])),
+                    (new Component(['el' => 'div', ':children' => ''])),
                 ]
             ),
             (new \surface\components\TableColumn())->props(['type' => 'selection']),
             (new \surface\components\TableColumn())->props(
                 [
-                    'minWidth' => "120px",
-                    'label' => '姓名',
-                    'prop' => 'name',
-                    'sortable'=>true,
+                    'minWidth'   => "120px",
+                    'label'      => '姓名',
+                    'prop'       => 'name',
+                    'sortable'   => true,
                     'column-key' => 'name', // 进行filter筛选必须加入column-key
-                    'filters' => [["text" => "a", "value" => "aa"], ["text" => "b", "value" => "bb"]]])->children((new \surface\components\Input())),
+                    'filters'    => [["text" => "a", "value" => "aa"], ["text" => "b", "value" => "bb"]],
+                ]
+            )->children((new \surface\components\Input())),
             (new \surface\components\TableColumn())->props(['label' => '年龄', 'prop' => 'age'])->children(
                 [// 4种自定义绑定表格数据格式
                  // 绑定到children
@@ -124,18 +147,34 @@ $table->binds(
                 ]
             ),
             (new \surface\components\TableColumn())->props(['label' => '状态', 'prop' => 'status'])->children(
-                (new \surface\components\Switcher())->props(
-                    [
-                        // 预处理修改事件
-                        \surface\components\TableColumn::EVENT_CHANGE => [
-                            'before'  => \surface\Functions::create("console.log('before')"),
-                            'after'   => \surface\Functions::create($tableApi.".value.load();", ['prop', 'data', 'res']),
-                            'request' => [
-                                'url' => "/api/change.php",
+                [
+                    (new \surface\components\Switcher())->props(
+                        [
+                            // 预处理修改事件
+                            \surface\components\TableColumn::EVENT_CHANGE => [
+                                'before'  => \surface\Functions::create("console.log('before')"),
+                                'after'   => \surface\Functions::create($tableApi.".value.load();", ['prop', 'data', 'res']),
+                                'request' => [
+                                    'url' => "/api/change.php",
+                                ],
                             ],
-                        ],
-                    ]
-                )
+                        ]
+                    ),
+                    (new \surface\components\Switcher())->props(
+                        [
+                            // 自定义绑定的字段
+                            \surface\components\TableColumn::MODEL_PROP   => 'del_status',
+                            // 预处理修改事件
+                            \surface\components\TableColumn::EVENT_CHANGE => [
+                                'before'  => \surface\Functions::create("console.log('before')"),
+                                'after'   => \surface\Functions::create($tableApi.".value.load();", ['prop', 'data', 'res']),
+                                'request' => [
+                                    'url' => "/api/change.php",
+                                ],
+                            ],
+                        ]
+                    ),
+                ]
             ),
             (new \surface\components\TableColumn())->props(['label' => '头像', 'prop' => 'avatar'])->children(
                 (new Component(['el' => 'el-image']))->props([':src' => '', 'style' => ["width" => "50px"]])
@@ -151,10 +190,11 @@ $table->binds(
             ),
             (new \surface\components\TableColumn())->props(
                 [
-                    'label' => '操作',
-                    'fixed' => "right",
-                    'minWidth' => "160px"
-                ])->children(
+                    'label'    => '操作',
+                    'fixed'    => "right",
+                    'minWidth' => "160px",
+                ]
+            )->children(
                 [
                     (new \surface\components\Popconfirm())
                         ->onConfirm(["url" => "/api/change.php", 'method' => 'post', 'data' => ["status" => "OK", "id"]])
@@ -166,8 +206,8 @@ $table->binds(
                             // 通过:注入当前列到方法
                             ':onClick' => \surface\Functions::create(
                                 "return function(){
-                                $surfaceApi.{$tableForm->getVModel('data')}.value = row // 设置form数据
-                                $surfaceApi.$dialogVModel.value = true // 显示form弹窗
+                               $formData.value = row // 设置form数据
+                                $dialogVModel.value = true // 显示form弹窗
                             }",
                                 ['filed', 'row']
                             ),
@@ -217,28 +257,30 @@ $table->binds(
     ]
 )->appendChild(
     [
+        // table 预留的插槽
         (new Document('template'))->attrs(['#top'])->appendChild("<b>我是top-slot</b>"),
         (new Document('template'))->attrs(['#header'])->appendChild(
-            [(new Document('el-button'))->binds(
-                [
-                    "submitSel" => \surface\Functions::create(
-                        <<<HTML
+            [
+                (new Document('el-button'))->binds(
+                    [
+                        "submitSel" => \surface\Functions::create(
+                            <<<HTML
 Surface.request({url: '/api/change.php', method: 'POST',data: {id: $tableApi.value.getSelectionByField('id')}}).then(res => {
 ElMessage.success(res.msg)
 $tableApi.value.load()
 })
 HTML,
-                    ),
-                    //$surfaceApi.$dialogVModel.value = true
-                ]
-            )->attrs(
-                [
-                    "@click" => "submitSel",
-                    "type"     => "primary",
-                ]
-            )->appendChild("提交"),
-             "<b>我是append-slot</b>"
-             ]
+                        ),
+                        //$dialogVModel.value = true
+                    ]
+                )->attrs(
+                    [
+                        "@click" => "submitSel",
+                        "type"   => "primary",
+                    ]
+                )->appendChild("提交"),
+                "<b>我是append-slot</b>",
+            ]
         ),
         (new Document('template'))->attrs(['#append'])->appendChild("<b>我是append-slot</b>"),
         (new Document('template'))->attrs(['#footer'])->appendChild("<b>我是footer-slot</b>"),

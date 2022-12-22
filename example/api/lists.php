@@ -13,6 +13,7 @@ for($i = 1; $i<=$limit; $i++){
         'name' => "No." . (($page - 1) * $limit + $i),
         'age' => rand(15, 40),
         'status' => !rand(0, 1),
+        'del_status' => !rand(0, 1),
         'from' => $from[array_rand($from)],
         'address' => $address[array_rand($address)],
         'avatar' => "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"

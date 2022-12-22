@@ -9,7 +9,7 @@ namespace surface;
  * @property array $children
  *
  * @method self el(string $el)
- * @method self children(string|int|array $el)
+ * @method self children(string|int|array|self $el)
  * @method self props(array $props) 属性
  * @method self slot(string $slot) 插槽
  *
@@ -18,14 +18,13 @@ namespace surface;
 class Component implements \JsonSerializable
 {
 
+    use EventTrait;
+
     /**
      * 渲染时触发
-     *
      * 回调参数 (Document $document, Surface $surface)
      */
     const EVENT_VIEW = 'view';
-
-    use EventTrait;
 
     // 组件名称
     protected string $name;

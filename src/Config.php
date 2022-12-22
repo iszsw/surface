@@ -66,12 +66,12 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
     /**
      * 获取配置参数 为空则获取所有配置
      *
-     * @param string $name    配置参数名（支持多级配置 .号分割）
-     * @param mixed       $default 默认值
+     * @param mixed $name    配置参数名（支持多级配置 .号分割）
+     * @param mixed $default 默认值
      *
      * @return mixed
      */
-    public function get(string $name = '', $default = null)
+    public function get( $name = '', $default = null)
     {
         // 无参数时获取所有
         if (empty($name)) {
@@ -100,6 +100,9 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
 
     /**
      * 设置配置参数 name为数组则为批量设置
+     *
+     * 数字下标(非索引数组)可能存在值被覆盖的问题
+     *
      * @access public
      * @param  string $name 配置名
      * @param  array|string  $val 配置参数
@@ -109,9 +112,13 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
     {
         if (is_array($name) && $val == null) {
             foreach ($name as $k => $v) {
-                $this->set($k, $v);
+                if ((int)$k === $k) {
+                    $this->config = $this->recursive($this->config, [$v]);
+                }else{
+                    $this->set($k, $v);
+                }
             }
-        }else if(is_string($name)){
+        }else if( is_string($name) ){
             $name   = explode('.', $name);
             $config = [];
             $nameLength = count($name);
@@ -138,8 +145,12 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
      */
     private function recursive(array $original, array $extend):array
     {
-        foreach ($extend as $k => $v) {
-            $original[$k] = isset($original[$k]) && is_array($original[$k]) ? $this->recursive($original[$k], (array)$v) : $v;
+        if (isset($extend[0])) {
+            $original = array_merge($original, $extend);
+        } else {
+            foreach ($extend as $k => $v) {
+                $original[$k] = isset($original[$k]) && is_array($original[$k]) ? $this->recursive($original[$k], (array)$v) : $v;
+            }
         }
         return $original;
     }
@@ -173,7 +184,7 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
         return $this->getIterator()->getArrayCopy();
     }
 
-    private function format(array $configs = [])
+    private function format(array $configs = []): array
     {
         foreach ($configs as &$config) {
             if ($config instanceof IFormat) {
@@ -191,12 +202,10 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
         return new \ArrayIterator($this->format(($this->config)));
     }
 
-    public function __invoke($config = [])
+    public function __invoke($config = []): static
     {
         if (is_array($config)) {
-            foreach ($config as $name=>$value) {
-                $this->config[$name] = $value;
-            }
+            $this->set($config);
         }
         return $this;
     }

@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Cascader extends Form
+class Cascader extends FormColumn
 {
 
 }

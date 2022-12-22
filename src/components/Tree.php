@@ -2,7 +2,7 @@
 
 namespace surface\components;
 
-class Tree extends Form
+class Tree extends FormColumn
 {
 
 }

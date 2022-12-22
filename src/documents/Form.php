@@ -6,6 +6,14 @@ use surface\Component;
 use surface\Document;
 use surface\Surface;
 
+/**
+ *
+ * Class Form
+ *
+ * <s-form :columns="[...]" :options="{...}" />
+ *
+ * @package surface\documents
+ */
 class Form extends Document
 {
 
