@@ -28,9 +28,9 @@ class Surface
     private array $setups = [];
 
     /**
-     * @var array<Document>
+     * @var array<Component>
      */
-    private array $documents = [];
+    private array $components = [];
 
     private string $globalSize = 'default';
 
@@ -42,23 +42,23 @@ class Surface
     }
 
     /**
-     * 添加HTML模板
+     * 添加模板
      *
      * @return $this
      */
-    public function append(Document $document, bool $unshift = false): self
+    public function append(Component $component, bool $unshift = false): self
     {
-        $document->trigger(Document::EVENT_CREATE, [$this]);
         if ($unshift) {
-            array_unshift($this->documents, $document);
+            array_unshift($this->components, $component);
         }else{
-            $this->documents[] = $document;
+            $this->components[] = $component;
         }
         return $this;
     }
 
     protected function init()
     {
+        // 全局组件注册
         $this->register(Functions::create('app.use(ElementPlus, {locale: (typeof ElementPlusLocaleZhCn === "undefined") ?null:ElementPlusLocaleZhCn, size: "'.$this->globalSize.'"});app.use(Surface);', ['app']));
     }
 
@@ -216,6 +216,16 @@ class Surface
     }
 
     /**
+     * 返回当前组件所有对象
+     *
+     * @return string
+     */
+    public function data():string
+    {
+        return "window.Surface.{$this->id()}";
+    }
+
+    /**
      * 获取样式
      *
      * @return array
@@ -235,7 +245,7 @@ class Surface
         return $this->script;
     }
 
-    private function toJson(array $array):string
+    private function toJson(array|\JsonSerializable $array):string
     {
         return json_encode($array, JSON_UNESCAPED_UNICODE);
     }
@@ -263,6 +273,105 @@ class Surface
     }
 
     /**
+     * setup数据初始化 最先执行
+     * 深度处理通过ref|reactive|v-model 前缀绑定的参数
+     *
+     * @return Functions
+     */
+    private function setupBefore() :Functions
+    {
+        return Functions::create(<<<JS
+return (function handler(obj, global = null){
+    if (typeof obj === 'object') {
+        for (let i in obj) {
+            if (typeof i === 'string' && i.indexOf(":") >= 0) {
+                let split = i.split(":", 3)
+                let func = split[0].toLocaleString()
+                if (split.length > 1 && ['ref', 'reactive', 'v-model'].indexOf(func) > -1) {
+                    let attrName = split[1];
+                    let bindName = split[split.length === 3 ? 2 : 1];
+                    let isVModel = func === 'v-model'
+                    // 深度绑定
+                    let attrs = bindName.split(".");
+                    let varName = attrs[0];
+                    func = isVModel ? 'ref' : func
+                    // ref 自动加上value
+                    if (func === 'ref' && attrs[1] !== 'value') {
+                        attrs.splice(1, 0, 'value')
+                        bindName = attrs.join('.')
+                    }
+                    if (!data.hasOwnProperty(varName)) {
+                        data[varName] = Vue[func](obj[i])
+                    }
+                    let onUpdateName = 'onUpdate:' + attrName;
+                    if (isVModel && !obj.hasOwnProperty(onUpdateName)) {
+                        obj[onUpdateName] = item => {
+                            try{
+                                eval("(data."+bindName+" = item)")
+                            }catch (e) {
+                                console.error("[ SURFACE ] 变量解析失败："+bindName, e)
+                            }
+                        }
+                    }
+                    let _bind = () => {
+                        try{
+                            return eval("(data."+bindName+")")
+                        }catch (e) {
+                            console.error("[ SURFACE ] 变量解析失败："+bindName, e)
+                        }
+                    }
+                    _bind.__s_computed_exec = !0
+                    obj[attrName] = _bind
+                    global.__s_computed = true
+                    delete obj[i]
+                    continue;
+                }
+            }
+            if(typeof obj[i] === 'object'){
+                handler(obj[i], global === null ? obj[i] : global)
+            }
+        }
+    }
+}(data))
+JS, ["data"]);
+    }
+
+    /**
+     * setup最后执行
+     * 解析数据实现双休绑定
+     *
+     * @return Functions
+     */
+    private function setupAfter() :Functions
+    {
+        return Functions::create(<<<JS
+            const handler = function(obj) {
+                if (typeof obj === 'object') {
+                    for (let i in obj) {
+                        if (typeof obj[i] === 'function' && obj[i].__s_computed_exec === true) {
+                            obj[i] = obj[i]()
+                        } else if(typeof obj[i] === 'object'){
+                            handler(obj[i])
+                        }
+                    }
+                }
+                return obj
+            }
+            for (let k in data) {
+                if (typeof data[k] === 'object' && data[k].__s_computed === true) {
+                    let original = Surface.cloneDeep(data[k])
+                    data[k] = Vue.computed(() => {
+                        return handler(Surface.cloneDeep(original))
+                    })
+                }
+            }
+        
+JS, ["data"]);
+
+    }
+
+
+    /**
      * 生成代码
      * 不包括样式和依赖的js
      *
@@ -270,13 +379,9 @@ class Surface
      */
     public function display(): string
     {
-        $documentNode = [];
-        $documentData = [];
-        foreach ($this->documents as $document)
+        foreach ($this->components as $component)
         {
-            $document->trigger(Document::EVENT_VIEW, [$this]);
-            $documentNode[] = $document->getNode();
-            $documentData = array_merge($documentData, $document->getBind());
+            $component->trigger(Component::EVENT_VIEW, [$this]);
         }
 
         $registers = [];
@@ -287,7 +392,8 @@ class Surface
 
         $setups = [];
         $setupData = $this->setups;
-        array_unshift($setupData, $this->dataInit());
+        array_unshift($setupData, $this->setupBefore());
+        array_push($setupData, $this->setupAfter());
         foreach ($setupData as $setup)
         {
             $setups[] = $setup->format();
@@ -296,34 +402,12 @@ class Surface
         $id = $this->id();
         $setups = $this->toJson($setups);
         $registers = $this->toJson($registers);
-        $documentData = $this->toJson($documentData);
-        $documentNode = implode('', $documentNode);
+        $components = $this->toJson($this->components);
 
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'display.php';
 
         return ob_get_clean();
-    }
-
-    /**
-     * setup数据初始化 最先执行
-     *
-     * ref|reactive参数解析
-     *
-     * @return Functions
-     */
-    private function dataInit() :Functions
-    {
-        return Functions::create(<<<JS
-for(let i in data) {
-    let split = i.split(":", 2)
-    let func = split[0].toLocaleString()
-    if (split.length > 1 && ['ref', 'reactive'].indexOf(func) > -1) {
-        data[split[1]] = Vue[func](data[i])
-        delete data[i]
-    }
-}
-JS, ["data"]);
     }
 
     /**

@@ -9,7 +9,7 @@ namespace surface;
  * @property array $children
  *
  * @method self el(string $el)
- * @method self children(string|int|array|self $el)
+ * @method self children(string|int|array|self|Functions $el) Functions类型的渲染时会立即执行 返回值中可以继续返回component的json对象渲染子组件
  * @method self props(array $props) 属性
  * @method self slot(string $slot) 插槽
  *
@@ -20,9 +20,11 @@ class Component implements \JsonSerializable
 
     use EventTrait;
 
+    use ViewTrait;
+
     /**
      * 渲染时触发
-     * 回调参数 (Document $document, Surface $surface)
+     * 回调参数 (Surface $surface:当前容器)
      */
     const EVENT_VIEW = 'view';
 
@@ -39,8 +41,8 @@ class Component implements \JsonSerializable
     {
         $this->config = new Config();
 
-        $this->listen(self::EVENT_VIEW, function (Surface $surface, Document $document){
-            $this->triggerAllSub($this->children, self::EVENT_VIEW, [$surface, $document]);
+        $this->listen(self::EVENT_VIEW, function (Surface $surface){
+            $this->triggerAllSub($this->children, self::EVENT_VIEW, [$surface]);
         },false);
 
         if (method_exists($this, 'init')) $this->init();
@@ -93,7 +95,7 @@ class Component implements \JsonSerializable
      * @param string $event
      * @param null   $params
      */
-    private function triggerAllSub($children, string $event, $params = null): void
+    protected function triggerAllSub($children, string $event, $params = null): void
     {
         if (is_array($children)) {
             foreach ($children as $child){
@@ -102,6 +104,66 @@ class Component implements \JsonSerializable
         } elseif ($children instanceof self) {
             $children->trigger($event, $params);
         }
+    }
+
+    /**
+     * ref创建一个全局响应式对象
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return $this
+     */
+    public function ref(string $name,mixed $value):self
+    {
+        $this->listen(self::EVENT_VIEW, function (Surface $surface) use ($name, $value) {
+            switch (true){
+                case is_array($value):
+                    $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+                    break;
+                case is_string($value):
+                case $value instanceof \Stringable:
+                    $value = "'{(string)$value}'";
+                    break;
+            }
+            $surface->setup(Functions::create("return data.{$name} = Vue.ref($value)", ['data']));
+        });
+        return $this;
+    }
+
+    /**
+     * reactive创建一个全局响应式对象
+     *
+     * @param string $name
+     * @param array  $value
+     *
+     * @return $this
+     */
+    public function reactive(string $name, array $value):self
+    {
+        $this->listen(self::EVENT_VIEW, function (Surface $surface) use ($name, $value) {
+            $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+            $surface->setup(Functions::create("return data.{$name} = Vue.reactive($value)", ['data']));
+        });
+        return $this;
+    }
+
+    /**
+     * 绑定v-model
+     * 绑定格式 v-model:modelValue:name
+     * 如果不存在 'name' 将自动注册ref响应式对象
+     *
+     * @param mixed  $value 如果全局存在变量不会该值无效
+     * @param string $attr 当前组件的参数名
+     * @param string $name 绑定到全局的变量名称 不存在时候将会创建 支持深度绑定 userinfo.name
+     * 注意：如果是 name 参数是ref对象需要通过.value获取，系统做了自动获取但是对象属性存在value可能会出现错误
+     *
+     * @return $this
+     */
+    public function vModel( mixed $value = null, string $attr = 'modelValue', string $name = ''): self
+    {
+        $this->props(["v-model:$attr:".($name?:$attr) => $value]);
+        return $this;
     }
 
 }

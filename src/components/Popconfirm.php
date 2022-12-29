@@ -3,7 +3,6 @@
 namespace surface\components;
 
 use surface\Component;
-use surface\Document;
 use surface\Surface;
 
 class Popconfirm extends Component
@@ -34,32 +33,31 @@ class Popconfirm extends Component
     }
 
     /**
-     * @param array|Closure $request
+     * @param $request
+     * @param  string  $then 异步请求成功后执行的JS语句
      *
      * @return $this
      */
-    public function onConfirm( $request): self
+    public function onConfirm( $request, string $then = '' ): self
     {
-        return $this->makeHandler('onConfirm', $request);
+        return $this->makeHandler('onConfirm', $request,  $then);
     }
 
     /**
-     * @param array|Closure $request
+     * @param $request
+     * @param  string  $then 异步请求成功后执行的JS语句
      *
      * @return $this
      */
-    public function onCancel( $request ): self
+    public function onCancel( $request, string $then = '' ): self
     {
-        return $this->makeHandler('onCancel', $request);
+        return $this->makeHandler('onCancel', $request,  $then);
     }
 
-    private function makeHandler(string $name, $request): self
+    private function makeHandler(string $name, $request, string $then = ''): self
     {
-        $request instanceof \Closure || $request = function (Surface $surface, Document $document) use ($name, $request) {
-            $id = $surface->id();
-            $vModel = $document->getVModel();
+        $request instanceof \Closure || $request = function (Surface $surface) use ($name, $request, $then) {
             $request = json_encode($request, JSON_UNESCAPED_UNICODE);
-
             // 支持参数替换 1.url中{field}替换为字段 2.无下标的参数 ['id']
             $handler = \surface\Functions::create(<<<JS
 const request = $request;
@@ -86,7 +84,7 @@ return function(){
         if (res.code > 0) {
             ElementPlus.ElMessage({message: e.msg || "操作失败", type: 'error'})
         }else{
-            Surface.$id.$vModel && Surface.$id.$vModel.value.load()
+            {$then}
         }
     }).catch(e => {
         ElementPlus.ElMessage({message: e.msg || "操作失败", type: 'error'})

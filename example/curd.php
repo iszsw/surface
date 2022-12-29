@@ -1,59 +1,34 @@
 <?php
 
+
 require_once "common.php";
 
 use surface\Component;
+use surface\components\Form;
 use surface\components\Table;
 use surface\components\TableColumn;
 use surface\Surface;
 
+/**
+ * 增删改查使用
+ */
+
 $surface = new Surface();
 
+// 表格
 $table = (new Table())
     ->vModel(name: "tableApi")
     ->props(
         [
             'columns' => [
                 (new TableColumn())->props(['type' => 'selection']),
-                (new TableColumn())->props(['label' => '姓名', 'prop' => 'name'])->children((new \surface\components\Input())),
-                (new TableColumn())->props(['label' => '年龄', 'prop' => 'age'])->children(
-                    [// 4种自定义绑定表格数据格式
-                     // 绑定到children
-                     (new Component(['el' => 'div', ':children' => ''])),
-                     // 当前列字段age提交到{age}位置
-                     (new Component(['el' => 'div', ':children' => '年龄：{age}'])),
-                     // 自定义处理函数返回字符串显示
-                     (new Component(['el' => 'div', ':children' => \surface\Functions::create("return '虚岁：' + row[field]", ['field', 'row', 'prop'])])),
-                     // html渲染需要绑定到innerHTML
-                     (new Component(['el' => 'span', 'props' => [':innerHTML' => "<b>{name}</b>"]])),
-                    ]
-                ),
-                (new TableColumn())->props(['label' => '状态', 'prop' => 'status'])->children(
-                    (new \surface\components\Switcher())->props(
-                        [
-                            // 预处理修改事件
-                            TableColumn::EVENT_CHANGE => [
-                                'before'  => \surface\Functions::create("console.log('before')", ['prop', 'data']),
-                                'after'   => \surface\Functions::create("console.log('after')", ['prop', 'data', 'res']),
-                                'request' => [
-                                    'url' => "/api/change.php",
-                                ],
-                            ],
-                        ]
-                    )
-                ),
                 (new TableColumn())->props(['label' => '头像', 'prop' => 'avatar'])->children(
                     (new Component(['el' => 'el-image']))->props([':src' => '', 'style' => ["width" => "50px"]])
-                ),
-                (new TableColumn())->props(['label' => '来自', 'prop' => 'from'])->children(
-                    (new \surface\components\Select())->options(['sz' => '深圳', 'cq' => '重庆', 'sc' => '四川', 'bj' => '北京', 'sh' => '上海'])
                 ),
                 (new \surface\components\TableColumn())->props(['label' => '地址'])->children(
                     [
                         (new \surface\components\TableColumn())->props(['label' => '地址', 'minWidth' => "160px", 'prop' => 'address']),
-                        (new \surface\components\TableColumn())->props(['label' => '收货人', 'prop' => 'name'])->children(
-                            (new \surface\components\Editable()),
-                        ),
+                        (new \surface\components\TableColumn())->props(['label' => '收货人', 'prop' => 'name']),
                     ]
                 ),
                 (new TableColumn())->props(['label' => '操作'])->children(
@@ -63,15 +38,18 @@ $table = (new Table())
                             ->onConfirm(["url" => "/api/change.php", 'method' => 'post', 'data' => ["status" => "OK", "id"]], "{$surface->data()}.tableApi.value.load()")
                             ->onCancel(["url" => "/api/change.php", 'method' => 'post', 'data' => ["status" => "NO", "id"]], "{$surface->data()}.tableApi.value.load()")
                             ->reference('删除'),
+
                         (new \surface\components\Button())->props(
                             [
                                 'type'     => 'primary',
                                 // 通过:注入当前列到方法
-                                ':onClick' => \surface\Functions::create(
-                                    "return function(){
-                                console.log(row)
-                            }",
-                                    ['filed', 'row']
+                                ':onClick' => \surface\Functions::create("
+                                return function(){
+                                   {$surface->data()}.formData.value = row // 设置form数据
+                                   {$surface->data()}.dialogRef.value = true // 显示form弹窗
+                                }
+                                ",
+                                                                         ['filed', 'row']
                                 ),
                             ]
                         )->children("编辑"),
@@ -102,7 +80,6 @@ $table = (new Table())
         ]
     )->children(
         [
-            // table 预留的插槽
             (new \surface\components\Form())->slot('top')->props(
                 [
                     'columns' => [
@@ -124,14 +101,88 @@ $table = (new Table())
                     ],
                 ]
             ),
-            (new Component('i'))->slot(['header'])->children("header-slot"),
-            (new Component('i'))->slot(['append'])->children("append-slot"),
-            (new Component('i'))->slot(['footer'])->children("我是footer-slot"),
-
+            (new Component('div'))->slot(['header'])->children(
+                [
+                    (new Component('el-button'))->props(
+                        [
+                            "type"   => "primary",
+                            "onClick" => \surface\Functions::create(
+                                <<<HTML
+alert(JSON.stringify({$surface->data()}.tableApi.value.getSelectionByField('id')))
+HTML,
+                            )
+                        ]
+                    )->children("获取选中"),
+                    (new Component('el-button'))->props(
+                        [
+                            "type"   => "primary",
+                            "onClick" => \surface\Functions::create(
+                                <<<HTML
+{$surface->data()}.formData.value = {}
+{$surface->data()}.dialogRef.value = true
+HTML,
+                            )
+                        ]
+                    )->children("新增"),
+                ]
+            )
         ]
     );
 
+$form = (new Form())
+    ->vModel(name: "formApi")
+    ->vModel([], 'data', 'formData')
+    ->props(
+        [
+            'columns' => [
+                (new \surface\components\Input(['label' => "姓名", 'name' => 'name']))
+                    ->rules(['required' => true, 'message' => '请输入名字!']),
+                (new \surface\components\Number(['label' => "年龄", 'name' => 'age', 'value' => 0]))
+                    ->suffix("加到2有惊喜"),
+            ],
+            'options' => [
+                'props'        => [
+                    'label-width' => '100px',
+                ],
+                'row'          => [
+                    'justify' => 'start',
+                ],
+                'col'          => [
+                    'span' => 12,
+                ],
+                // 提交成功后回调事件，自定义submit事件 不会触发
+                'request'      => [
+                    'url'     => '/api/change.php',
+                    'method'  => 'post',
+                    'headers' => [
+                        'X-HEADER' => 'header',
+                    ],
+                    'data'    => [
+                        'append' => '这是附加参数',
+                    ],
+                ],
+                'submit'       => [
+                    'props'    => [
+                        'type' => 'success',
+                    ],
+                    "children" => '确认',
+                ],
+            ],
+        ]
+    );
 
-echo $table->view($surface);
+$dialog = (new Component('el-dialog'))
+    ->vModel(false, name: 'dialogRef')
+    ->props(
+        [
+            'title'            => '修改',
+            'destroy-on-close' => '',
+        ]
+    )->children($form);
+
+$surface->append($dialog);
+$surface->append($table);
+
+echo $surface->view();
 
 

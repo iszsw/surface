@@ -2,6 +2,11 @@
 
 namespace surface;
 
+/**
+ * Trait OptionsTrait
+ *
+ * @package surface
+ */
 trait OptionsTrait
 {
 
