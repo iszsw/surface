@@ -13,11 +13,13 @@
     <img src="https://img.shields.io/packagist/php-v/iszsw/surface.svg" alt="php version" />
   </a>
 
-<h4 align="center">PHP页面生成器，快速生成表单，表格，列表，弹窗等任意内容，前端基于Vue3+ElementPlus</h3>
+<h4 align="center">PHP页面生成器，快速生成页面，内置封装了丰富插件，前端基于Vue3</h3>
 </p>
 
-> surface的设计初衷是为了减少或者不写前端的代码，通过PHP就能轻松构建出任何页面。
-> 后端生成json，前端的render构建器解析json生成页面。
+- 减少或者不写前端的代码，通过PHP就能轻松构建出任何页面。
+- 后端生成json，前端的render构建器解析json生成页面。
+- v3完全重构，代码更友好，自由度更高。
+- 自定义主题 Element-plus(默认)、iview、Ant-design-vue、naive-ui 等任何组件库都可以自由切换
 
 ## 源码地址
 
@@ -49,7 +51,7 @@ $card = (new \surface\Component('el-card'))
                 ->props(
                     [
                         'type' => 'primary',
-                        // 点击事件 Functions::create(创建一个
+                        // 点击事件 Functions::create()创建一个匿名函数
                         'onClick' => \surface\Functions::create("console.log('hello')")
                     ]
                 )
@@ -100,3 +102,37 @@ echo $surface->view();
 - Surface.component  surface下组件注册
 - Surface.cloneDeep  深度克隆
 - Surface.render     封装的json解析器 将json转为component 调用render方法直接渲染
+
+## 切换主题
+
+> surface默认Element-plus组件库如果需要使用其他组件库可以自由切换 iview、Ant-design-vue、naive-ui 等
+
+下面已 [naiveui](https://www.naiveui.com/zh-CN/) 为例
+
+```php
+$surface = new \surface\Surface();
+
+// 1、启用自定义主题并关闭默认Element-plus主题，如果需要同时使用可以忽略
+$surface->courseTheme();
+
+// 2、引入UMD版本资源文件
+$surface->addScript('<script src="https://unpkg.com/naive-ui"></script>');
+// $surface->addStyle('<style href=""></style>'); 引入样式如果有
+
+// 3、注册naive到app对象
+$surface->use('naive');
+
+// 下面就可以自由使用了
+$component = (new \surface\Component('n-button'))
+    ->props(
+        [
+            'color' => '#8a2be2',
+            'onClick' => \surface\Functions::create("console.log('lalala')"),
+        ]
+    )
+    ->children("啦啦啦");
+
+$surface->append($component);
+
+echo $surface->view();
+```

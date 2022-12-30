@@ -8,7 +8,7 @@ namespace surface;
  *
  * @property array $children
  *
- * @method self el(string $el)
+ * @method self el(string $el) 标签名
  * @method self children(string|int|array|self|Functions $el) Functions类型的渲染时会立即执行 返回值中可以继续返回component的json对象渲染子组件
  * @method self props(array $props) 属性
  * @method self slot(string $slot) 插槽

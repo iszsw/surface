@@ -32,13 +32,42 @@ class Surface
      */
     private array $components = [];
 
-    private string $globalSize = 'default';
-
+    /**
+     * 已经导入依赖文件
+     *
+     * @var bool
+     */
     private bool $importDependent = false;
+
+    /**
+     * 设置自定义主题 如果未设置默认为 Element-plus
+     *
+     * @var bool
+     */
+    private bool $courseTheme = false;
+
+    /**
+     * 组件库依赖
+     *
+     * @var array
+     */
+    private array $use = [];
 
     public function __construct()
     {
         $this->init();
+    }
+
+    /**
+     * 自定义主题
+     *
+     * @return $this
+     */
+    public function courseTheme(): self
+    {
+        $this->courseTheme = true;
+
+        return $this;
     }
 
     /**
@@ -56,22 +85,23 @@ class Surface
         return $this;
     }
 
-    protected function init()
-    {
-        // 全局组件注册
-        $this->register(Functions::create('app.use(ElementPlus, {locale: (typeof ElementPlusLocaleZhCn === "undefined") ?null:ElementPlusLocaleZhCn, size: "'.$this->globalSize.'"});app.use(Surface);', ['app']));
-    }
+    protected function init() {}
 
     /**
-     * 设置全局组件尺寸
+     * 调用 app.use 注册组件库到 app
      *
-     * @param string $size
+     * @param string $name
+     * @param null|string $config 配置参数原样绑定 '{size: "default"}'
      *
      * @return $this
      */
-    public function setSize(string $size = ''):self
+    public function use(string $name, ?string $config = null): self
     {
-        $this->globalSize = $size;
+        $this->uses[] = [
+            'name' => $name,
+            'config' => $config
+        ];
+
         return $this;
     }
 
@@ -250,23 +280,49 @@ class Surface
         return json_encode($array, JSON_UNESCAPED_UNICODE);
     }
 
+
+    /**
+     * 导入主题
+     * 没有设置主题 默认使用Element-plus
+     *
+     * @return void
+     */
+    private function importTheme()
+    {
+        if (!$this->courseTheme) {
+            $this->addScript(
+                [
+                    '<script src="//unpkg.com/element-plus"></script>',
+                    '<script src="//unpkg.com/element-plus/dist/locale/zh-cn"></script>',
+                ]
+            );
+
+            $this->addStyle(
+                [
+                    '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">',
+                ], true
+            );
+
+            $this->use("ElementPlus", '{locale: ElementPlusLocaleZhCn, size: "default"}');
+        }
+    }
+
     private function importDependent(){
         if (!$this->importDependent) {
             $this->addScript(
                 [
                     '<script src="//unpkg.com/vue@3"></script>',
-                    '<script src="//unpkg.com/element-plus"></script>',
-                    '<script src="//unpkg.com/element-plus/dist/locale/zh-cn"></script>',
                     '<script src="//unpkg.com/surface-plus"></script>',
                 ], true
             );
 
             $this->addStyle(
                 [
-                    '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">',
                     '<link href="//unpkg.com/surface-plus/dist/index.css" rel="stylesheet">',
                 ], true
             );
+
+            $this->importTheme();
 
             $this->importDependent = true;
         }
@@ -370,6 +426,31 @@ JS, ["data"]);
 
     }
 
+    protected function registerUse(){
+        $useStr = "";
+        foreach ($this->uses as $use) {
+            $name = $use['name'];
+            $config = $use['config'] ?? "{}";
+            $useStr .= "app.use($name, $config);";
+        }
+        $this->register(Functions::create($useStr, ['app']));
+    }
+
+    protected function beforeDisplay() :void
+    {
+        $this->use('Surface');
+
+        $this->registerUse();
+
+        array_unshift($this->setups, $this->setupBefore());
+
+        $this->setups[] = $this->setupAfter();
+    }
+
+    protected function beforeView() :void
+    {
+        $this->importDependent();
+    }
 
     /**
      * 生成代码
@@ -384,6 +465,8 @@ JS, ["data"]);
             $component->trigger(Component::EVENT_VIEW, [$this]);
         }
 
+        $this->beforeDisplay();
+
         $registers = [];
         foreach ($this->registers as $register)
         {
@@ -391,10 +474,7 @@ JS, ["data"]);
         }
 
         $setups = [];
-        $setupData = $this->setups;
-        array_unshift($setupData, $this->setupBefore());
-        array_push($setupData, $this->setupAfter());
-        foreach ($setupData as $setup)
+        foreach ($this->setups as $setup)
         {
             $setups[] = $setup->format();
         }
@@ -417,7 +497,8 @@ JS, ["data"]);
      */
     public function view(): string
     {
-        $this->importDependent();
+        $this->beforeView();
+
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'view.php';
         return ob_get_clean();
