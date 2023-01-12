@@ -153,7 +153,7 @@ class Surface
      * 添加Javascript
      *
      * @param $script
-     * @param $unshift 顶部插入
+     * @param  bool  $unshift  顶部插入
      *
      * @return $this
      */
@@ -166,7 +166,7 @@ class Surface
      * 添加样式
      *
      * @param $style
-     * @param $unshift 顶部插入
+     * @param  bool  $unshift  顶部插入
      *
      * @return $this
      */
@@ -275,7 +275,12 @@ class Surface
         return $this->script;
     }
 
-    private function toJson(array|\JsonSerializable $array):string
+    /**
+     * @param  array|\JsonSerializable  $array
+     *
+     * @return string
+     */
+    private function toJson( $array ):string
     {
         return json_encode($array, JSON_UNESCAPED_UNICODE);
     }

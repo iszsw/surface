@@ -36,7 +36,7 @@ app.component('counter', {
             value
         }
       },
-    template: `<el-button @click='value++'>共 {{value}} <slot>Slot</slot></el-button><slot name='append'></slot>`,
+    template: `<el-button @click='value++'>共 {{value}} <slot>Slot</slot></el-button><slot name='append'>slot append</slot>`,
 })
 </script>
 ", ["app"]

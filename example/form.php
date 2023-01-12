@@ -179,6 +179,7 @@ JS, ["node", "resolve"]
                         ),
                     ]
                 ),
+                (new \surface\components\FormColumn(['el' => 'counter','label' => '计数', "name" => "counter", 'value' => 20]))
             ],
             'options' => [
                 'config'       => [
@@ -242,6 +243,40 @@ $form->listen(Form::EVENT_VIEW, function (Surface $surface)
 </style>
 STYLE
     );
+
+    // 注册自定义组件
+    $surface->register(
+        \surface\Functions::create(
+            "
+<script>
+app.component('counter', {
+      props: {
+        modelValue: {
+            type: [Number],
+            default: 0
+        }
+      },
+      emits: ['update:modelValue'],
+      setup(props, {emit}) {
+        const value = Vue.computed({
+            get(){
+                return props.modelValue
+            },
+            set(val) {
+                emit('update:modelValue', val)
+            }
+        })
+        return {
+            value
+        }
+      },
+    template: `<el-button @click='value++'>点击 {{value}} 次</el-button>`,
+})
+</script>
+", ["app"]
+        )
+    );
+
 });
 
 echo $form->view();

@@ -36,16 +36,24 @@ class TableColumn extends Component
      *      [
      *      'before' => Functions::class | [prop, data], // 前置方法 返回 false 阻止提交
      *      'after' => Functions::class  | [prop：字段, data：本列数据, res：异步修改成功响应], // 修改成功触发后置方法,请求异常时after返回true不提示错误信息
-     *      'request' => ["url" => 'api/update'], // 提交时request配置
+     *      'request' => ["url" => 'api/update', 'data'=>["id"=>"{id}"]], // 提交时request配置
      *      ]
      */
     const EVENT_CHANGE = '__ev_change';
 
 
     /**
-     * table子组件中自定义一个字段名不使用当前列的字段名
+     * table列子组件中自定义一个字段名不使用当前列的字段名
      */
     const MODEL_PROP = '__model_prop';
+
+
+    /**
+     * 触发 EVENT_CHANGE 事件的方式
+     *
+     * 有时候触发修改需要在 onBlur等 时候的才修改 mo
+     */
+    const MODEL_EVENT = '__model_event';
 
 
 }

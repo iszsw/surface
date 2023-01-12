@@ -13,13 +13,15 @@
     <img src="https://img.shields.io/packagist/php-v/iszsw/surface.svg" alt="php version" />
   </a>
 
-<h4 align="center">PHP页面生成器，快速生成页面，内置封装了丰富插件，前端基于Vue3</h3>
+<h4 align="center">PHP页面生成器，快速生成页面，内置封装了丰富插件，前端基于Vue3</h4>
+
 </p>
 
-- 减少或者不写前端的代码，通过PHP就能轻松构建出任何页面。
-- 后端生成json，前端的render构建器解析json生成页面。
 - v3完全重构，代码更友好，自由度更高。
+- 后端生成json，前端的解析器解析json生成页面。
+- 减少或者不写前端的代码，通过PHP就能轻松构建出任何页面。
 - 自定义主题 Element-plus(默认)、iview、Ant-design-vue、naive-ui 等任何组件库都可以自由切换
+- 所有HTML标签和组件库内置的组件都可以通过Component::class创建，内置的组件仅仅做代码提示或者简单初始化
 
 ## 源码地址
 
@@ -35,9 +37,22 @@ github地址：[https://github.com/iszsw/surface](https://github.com/iszsw/surfa
 composer require iszsw/surface
 ```
 
+## 组件
+
+> 所有内容都是基于组件实现，组件的唯一必须要素就是 `el:标签名字` 参数
+
+#### 页面中显示 `<h1>hello world</h1>`
+```php
+use \surface\Component;
+
+echo (new Component('h1'))->children("Hello world")->view();
+
+```
+
+
 ## 示例
 
-- ### vue所有功能都能轻松实现，更多完整示例代码：[Example](/example)
+- ### 更多完整示例：[Example](/example)
 
 - ### 快速上手
 ```php
@@ -51,7 +66,7 @@ $card = (new \surface\Component('el-card'))
                 ->props(
                     [
                         'type' => 'primary',
-                        // 点击事件 Functions::create()创建一个匿名函数
+                        // 点击事件 Functions::create()创建一个js调用的匿名函数
                         'onClick' => \surface\Functions::create("console.log('hello')")
                     ]
                 )
@@ -95,19 +110,25 @@ echo $surface->view();
 
 #### 可以在全局调用surface的方法 
 
-- Surface.request    axios封装的request请求
-- Surface.parseFn    字符串的 `FN:(){...}` 方法解析成js方法
-- Surface.parseJson  字符串的 json 转为 json对象 同时解析 `FN:(){...}`
-- Surface.deepParse  json对象深度解析 `FN:(){...}`
-- Surface.component  surface下组件注册
-- Surface.cloneDeep  深度克隆
-- Surface.render     封装的json解析器 将json转为component 调用render方法直接渲染
+- Surface.request(object config) axios封装的request请求
+- Surface.parseFn(string str)    字符串的 `FN:(){...}` 方法解析成js方法
+- Surface.parseJson(string str)  字符串的 json 转为 json对象 同时解析 `FN:(){...}`
+- Surface.deepParse(object obj)  json对象深度解析 `FN:(){...}`
+- Surface.component(object component)  surface下组件注册
+- Surface.cloneDeep(object obj)  深度克隆
+- Surface.render():返回render对象  封装的json解析器 将json转为component 调用render方法直接渲染
+
+## 内置增强组件
+
+### [table 表格组件 (组件名：s-table)](example/table.php)
+
+### [form 表单组件 (组件名：s-form)](example/form.php)
 
 ## 切换主题
 
 > surface默认Element-plus组件库如果需要使用其他组件库可以自由切换 iview、Ant-design-vue、naive-ui 等
 
-下面已 [naiveui](https://www.naiveui.com/zh-CN/) 为例
+下面以 [naiveui](https://www.naiveui.com/zh-CN/) 为例
 
 ```php
 $surface = new \surface\Surface();
