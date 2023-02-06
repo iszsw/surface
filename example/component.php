@@ -4,6 +4,7 @@ require_once "common.php";
 
 use surface\Component;
 use surface\Surface;
+use surface\Functions;
 
 /**
  * 自定义组件
@@ -12,7 +13,7 @@ use surface\Surface;
 $surface = new Surface();
 
 $surface->register(
-    \surface\Functions::create(
+    Functions::create(
         "
 <script>
 app.component('counter', {
@@ -48,11 +49,13 @@ $component = (new Component('counter'))->vModel(10, name: 'counterRef')
         [
             "个",
             (new Component('h1'))->slot('append')->children(
-                \surface\Functions::create( "return {$surface->data()}.counterRef.value")
+                Functions::create( "return {$surface->data()}.counterRef.value")
             ),
         ]
     );
 
+// 动态渲染组件
+//$surface->append(Functions::create("return {el: 'h2', children: '自定义动态渲染'}"));
 
 echo $component->view($surface);
 

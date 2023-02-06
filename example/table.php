@@ -68,9 +68,7 @@ $table = (new Table())
                                 'type'     => 'primary',
                                 // 通过:注入当前列到方法
                                 ':onClick' => \surface\Functions::create(
-                                    "return function(){
-                                console.log(row)
-                            }",
+                                    "return function(){ console.log(row) }",
                                     ['filed', 'row']
                                 ),
                             ]
@@ -98,6 +96,7 @@ $table = (new Table())
                     'hide-on-single-page' => true,
                     'default-page-size'   => 2,
                 ],
+                'loadAfter' => \surface\Functions::create($surface->data() . ".total.value = res.data.total", ['res'])
             ]
         ]
     )->children(
@@ -106,6 +105,13 @@ $table = (new Table())
             (new \surface\components\Form())->slot('top')->props(
                 [
                     'columns' => [
+                        (new Component('button'))->col(['span' => null])->props(
+                            [
+                                "type"    => "info",
+                                "onClick" => \surface\Functions::create("{$surface->data()}.tableApi.value.load();"),
+                            ]
+                        )->children([(new Component('icon'))->props(['icon' => 'Refresh']), " 刷新"]),
+
                         (new \surface\components\Input(['label' => "Input", 'name' => 'input']))->col(['span' => 6]),
                         (new \surface\components\Number(['label' => "number1", 'name' => 'number1']))->col(['span' => 6]),
                     ],
@@ -120,11 +126,12 @@ $table = (new Table())
                         "row" => [
                             "gutter" => 10 // 偏移 10px
                         ],
+                        'props'        => ['label-width' => 0],
                         'submitBefore' => \surface\Functions::create("{$surface->data()}.tableApi.value.load(data, true);return false", ['data'])
                     ],
                 ]
             ),
-            (new Component('i'))->slot(['header'])->children("header-slot"),
+            (new Component('h2'))->slot(['header'])->ref("total", 0)->children(\surface\Functions::create("return '总共' + ".$surface->data().".total.value + '条数据'")),
             (new Component('i'))->slot(['append'])->children("append-slot"),
             (new Component('i'))->slot(['footer'])->children("我是footer-slot"),
 

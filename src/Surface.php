@@ -44,14 +44,14 @@ class Surface
      *
      * @var bool
      */
-    private bool $courseTheme = false;
+    private bool $importTheme = false;
 
     /**
      * 组件库依赖
      *
      * @var array
      */
-    private array $use = [];
+    private array $uses = [];
 
     public function __construct()
     {
@@ -59,24 +59,19 @@ class Surface
     }
 
     /**
-     * 自定义主题
-     *
-     * @return $this
-     */
-    public function courseTheme(): self
-    {
-        $this->courseTheme = true;
-
-        return $this;
-    }
-
-    /**
      * 添加模板
      *
+     * @param  Component|Functions  $component
+     * @param  bool  $unshift
+     *
      * @return $this
      */
-    public function append(Component $component, bool $unshift = false): self
+    public function append(Component|Functions $component, bool $unshift = false): self
     {
+        if ($component instanceof Functions) {
+            $component = (new Component())->children([[Component::COMPONENT_INVOKE => Functions::create("return {el: 'h2', children: '自定义动态渲染'}")]]);
+        }
+
         if ($unshift) {
             array_unshift($this->components, $component);
         }else{
@@ -123,7 +118,19 @@ class Surface
     }
 
     /**
-     * 自定义资源依赖引入
+     * 自定义主题引入
+     *
+     * @return $this
+     */
+    public function courseTheme(): self
+    {
+        $this->importTheme = true;
+        return $this;
+    }
+
+    /**
+     * 自定义依赖引入
+     * 启用了自定义依赖同时也不会执行自定义主题
      *
      * @return $this
      */
@@ -287,14 +294,13 @@ class Surface
 
 
     /**
-     * 导入主题
-     * 没有设置主题 默认使用Element-plus
+     * 导入主题 默认使用 Element-plus
      *
      * @return void
      */
     private function importTheme()
     {
-        if (!$this->courseTheme) {
+        if (!$this->importTheme) {
             $this->addScript(
                 [
                     '<script src="//unpkg.com/element-plus"></script>',
@@ -309,9 +315,14 @@ class Surface
             );
 
             $this->use("ElementPlus", '{locale: ElementPlusLocaleZhCn, size: "default"}');
+
+            $this->importTheme = true;
         }
     }
 
+    /**
+     * 核心依赖
+     */
     private function importDependent(){
         if (!$this->importDependent) {
             $this->addScript(
@@ -321,114 +332,8 @@ class Surface
                 ], true
             );
 
-            $this->addStyle(
-                [
-                    '<link href="//unpkg.com/surface-plus/dist/index.css" rel="stylesheet">',
-                ], true
-            );
-
-            $this->importTheme();
-
             $this->importDependent = true;
         }
-    }
-
-    /**
-     * setup数据初始化 最先执行
-     * 深度处理通过ref|reactive|v-model 前缀绑定的参数
-     *
-     * @return Functions
-     */
-    private function setupBefore() :Functions
-    {
-        return Functions::create(<<<JS
-return (function handler(obj, global = null){
-    if (typeof obj === 'object') {
-        for (let i in obj) {
-            if (typeof i === 'string' && i.indexOf(":") >= 0) {
-                let split = i.split(":", 3)
-                let func = split[0].toLocaleString()
-                if (split.length > 1 && ['ref', 'reactive', 'v-model'].indexOf(func) > -1) {
-                    let attrName = split[1];
-                    let bindName = split[split.length === 3 ? 2 : 1];
-                    let isVModel = func === 'v-model'
-                    // 深度绑定
-                    let attrs = bindName.split(".");
-                    let varName = attrs[0];
-                    func = isVModel ? 'ref' : func
-                    // ref 自动加上value
-                    if (func === 'ref' && attrs[1] !== 'value') {
-                        attrs.splice(1, 0, 'value')
-                        bindName = attrs.join('.')
-                    }
-                    if (!data.hasOwnProperty(varName)) {
-                        data[varName] = Vue[func](obj[i])
-                    }
-                    let onUpdateName = 'onUpdate:' + attrName;
-                    if (isVModel && !obj.hasOwnProperty(onUpdateName)) {
-                        obj[onUpdateName] = item => {
-                            try{
-                                eval("(data."+bindName+" = item)")
-                            }catch (e) {
-                                console.error("[ SURFACE ] 变量解析失败："+bindName, e)
-                            }
-                        }
-                    }
-                    let _bind = () => {
-                        try{
-                            return eval("(data."+bindName+")")
-                        }catch (e) {
-                            console.error("[ SURFACE ] 变量解析失败："+bindName, e)
-                        }
-                    }
-                    _bind.__s_computed_exec = !0
-                    obj[attrName] = _bind
-                    global.__s_computed = true
-                    delete obj[i]
-                    continue;
-                }
-            }
-            if(typeof obj[i] === 'object'){
-                handler(obj[i], global === null ? obj[i] : global)
-            }
-        }
-    }
-}(data))
-JS, ["data"]);
-    }
-
-    /**
-     * setup最后执行
-     * 解析数据实现双休绑定
-     *
-     * @return Functions
-     */
-    private function setupAfter() :Functions
-    {
-        return Functions::create(<<<JS
-            const handler = function(obj) {
-                if (typeof obj === 'object') {
-                    for (let i in obj) {
-                        if (typeof obj[i] === 'function' && obj[i].__s_computed_exec === true) {
-                            obj[i] = obj[i]()
-                        } else if(typeof obj[i] === 'object'){
-                            handler(obj[i])
-                        }
-                    }
-                }
-                return obj
-            }
-            for (let k in data) {
-                if (typeof data[k] === 'object' && data[k].__s_computed === true) {
-                    let original = Surface.cloneDeep(data[k])
-                    data[k] = Vue.computed(() => {
-                        return handler(Surface.cloneDeep(original))
-                    })
-                }
-            }
-        
-JS, ["data"]);
-
     }
 
     protected function registerUse(){
@@ -446,15 +351,13 @@ JS, ["data"]);
         $this->use('Surface');
 
         $this->registerUse();
-
-        array_unshift($this->setups, $this->setupBefore());
-
-        $this->setups[] = $this->setupAfter();
     }
 
     protected function beforeView() :void
     {
         $this->importDependent();
+
+        $this->importTheme();
     }
 
     /**

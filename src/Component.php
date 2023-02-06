@@ -34,6 +34,13 @@ class Component implements \JsonSerializable
     protected Config $config;
 
     /**
+     * 自定义组件渲染函数
+     * [Component::COMPONENT_INVOKE => Functions::create("return {...}")]
+     *  Functions中返回一个Component渲染
+     */
+    const COMPONENT_INVOKE = "__invoke";
+
+    /**
      * @param array|string $config
      *
      */

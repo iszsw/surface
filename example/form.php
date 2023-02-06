@@ -201,7 +201,7 @@ JS, ["node", "resolve"]
                     'span' => 24,
                 ],
                 'submitBefore' => \surface\Functions::create("console.log('submitBefore', data)", ["data"]),  // 提交前返回 false 阻止提交
-                'submitAfter'  => \surface\Functions::create("console.log('submitAfter');ElMessage.success(res.msg || '提交成功')", ["data", "res"]),  // 提交成功后回调事件，自定义submit事件 不会触发
+                'submitAfter'  => \surface\Functions::create("console.log('submitAfter');ElementPlus.ElMessage.success(res.msg || '提交成功')", ["data", "res"]),  // 提交成功后回调事件，自定义submit事件 不会触发
                 'validate'     => \surface\Functions::create("console.log('validate', prop, isValid)", ["prop", "isValid"]),  // 字段校验失败回调
                 'request'      => [
                     'url'     => '/api/change.php',

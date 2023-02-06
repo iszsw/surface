@@ -78,7 +78,7 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
             return $this->config;
         }
 
-        if (false === strpos($name, '.')) {
+        if ( ! str_contains($name, '.')) {
             return $this->pull($name, $default);
         }
 
@@ -104,7 +104,7 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
      * 数字下标(非索引数组)可能存在值被覆盖的问题
      *
      * @access public
-     * @param  string $name 配置名
+     * @param  string|array $name 配置名
      * @param  array|string  $val 配置参数
      * @return array
      */

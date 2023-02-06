@@ -21,11 +21,9 @@ class Popconfirm extends Component
     public function reference( $children = '操作', string $btnType = 'primary' ): self
     {
         if (is_string($children)) {
-            $children = (new \surface\components\Button(
-                ['slot' => 'reference', 'type' => $btnType]
-            ))->children($children);
+            $children = (new Button())->props(['type' => $btnType, 'size' => 'small'])->slot('reference')->children($children);
         }else if ($children instanceof Component){
-            $children->props(['slot' => 'reference']);
+            $children->slot('reference');
         }
 
         $this->children($children);

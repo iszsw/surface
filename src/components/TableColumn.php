@@ -48,13 +48,5 @@ class TableColumn extends Component
     const MODEL_PROP = '__model_prop';
 
 
-    /**
-     * 触发 EVENT_CHANGE 事件的方式
-     *
-     * 有时候触发修改需要在 onBlur等 时候的才修改 mo
-     */
-    const MODEL_EVENT = '__model_event';
-
-
 }
 

@@ -42,6 +42,7 @@ $table = (new Table())
                         (new \surface\components\Button())->props(
                             [
                                 'type'     => 'primary',
+                                'size'      => 'small',
                                 // 通过:注入当前列到方法
                                 ':onClick' => \surface\Functions::create("
                                 return function(){
