@@ -41,6 +41,7 @@ $form = (new Form())
     ->props(
         [
             'columns' => [
+                (new Component(['el' => "el-divider"]))->children("默认组件"),
                 (new \surface\components\Input(['label' => "Input", 'name' => 'input']))
                     ->rules(['required' => true, 'message' => '请输入名字!']),
                 (new \surface\components\Number(['label' => "number1", 'name' => 'number1', 'value' => 1]))
@@ -72,20 +73,6 @@ $form = (new Form())
                     ->options(['a' => "吃饭", "b" => "睡觉", "c" => "打麻将"]),
                 (new \surface\components\Slider(['label' => "Slider", 'name' => 'Slider', 'value' => [10, 50], 'props' => ['range' => true]])),
                 (new \surface\components\Switcher(['label' => "Switcher", 'name' => 'Switcher', 'value' => true, 'props' => ['active-text' => 'OK', 'inactive-text' => "NO", 'inline-prompt' => true]])),
-                (new \surface\components\Tree(['label' => "Tree", 'name' => 'Tree', 'value' => ['node-2', 'node-32']]))
-                    ->props(
-                        [
-                            'style'        => ['width' => '100%'],
-                            'emptyText'    => '暂无数据',
-                            'showCheckbox' => true,
-                            'data'         => createData(2, 5),
-                            'props'        => [
-                                'value'    => 'id',
-                                'label'    => 'label',
-                                'children' => 'children',
-                            ],
-                        ]
-                    ),
                 (new \surface\components\Cascader(['label' => "cascader", 'name' => 'cascader', 'value' => "a12"]))->props(
                     [
                         "options" => [
@@ -152,7 +139,38 @@ JS, ["node", "resolve"]
                         //                    ],
                     ]
                 ),
-                (new Component(['el' => "el-divider"]))->children("自定义组件"),
+                (new \surface\components\Arrays(['label' => "Arrays", 'name' => 'Arrays', 'value' => [["key" => "key", 'Secret' => 'Secret']]]))->props(
+                    [
+                        'columns' => [
+                            (new \surface\components\Input(['name' => "key", 'label' => "Key"])),
+                            (new \surface\components\Input(['name' => "secret", 'label' => "Secret"])),
+                        ],
+                        'max' => 3
+                    ]
+                ),
+                (new \surface\components\Objects(['label' => "Objects", 'name' => 'Objects', 'value' => ["key" => "key", 'Secret' => 'Secret']]))->props(
+                    [
+                        'columns' => [
+                            (new \surface\components\Input(['name' => "key", 'label' => "Key"])),
+                            (new \surface\components\Input(['name' => "secret", 'label' => "Secret"])),
+                        ]
+                    ]),
+                (new \surface\components\Tree(['label' => "Tree", 'name' => 'Tree', 'value' => ['node-2', 'node-32']]))
+                    ->props(
+                        [
+                            'style'        => ['width' => '100%'],
+                            'emptyText'    => '暂无数据',
+                            'showCheckbox' => true,
+                            'data'         => createData(2, 5),
+                            'props'        => [
+                                'value'    => 'id',
+                                'label'    => 'label',
+                                'children' => 'children',
+                            ],
+                        ]
+                    ),
+
+                (new Component(['el' => "el-divider"]))->children("自定义组件样式"),
                 (new Component(['el' => "el-card", 'label' => 'el-card', 'props' => ['body-style' => ["width" => '500px']]]))->children(
                     [
                         (new \surface\components\Input(['label' => "CardInput", 'name' => 'card-input', 'value' => "Hello"])),
@@ -179,7 +197,8 @@ JS, ["node", "resolve"]
                         ),
                     ]
                 ),
-                (new \surface\components\FormColumn(['el' => 'counter','label' => '计数', "name" => "counter", 'value' => 20]))
+                // 自定义的 counter 组件
+                (new \surface\components\FormColumn(['el' => 'counter','label' => '计数', "name" => "counter", 'value' => 20])),
             ],
             'options' => [
                 'config'       => [

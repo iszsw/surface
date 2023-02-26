@@ -21,7 +21,7 @@
             ;(function handler(obj, main = null){
                 if (typeof obj === 'object') {
                     for (let i in obj) {
-                        if (typeof i === 'string' && i.indexOf(":") >= 0) {
+                        if (typeof i === 'string' && i.indexOf(":") > 0) {
                             let split = i.split(":", 3)
                             let func = split[0].toLocaleString()
                             if (split.length > 1 && ['ref', 'reactive', 'v-model'].indexOf(func) > -1) {
@@ -33,7 +33,7 @@
                                 let varName = attrs[0];
                                 func = isVModel ? 'ref' : func
                                 // ref 自动加上value
-                                if (func === 'ref' && attrs[1] !== 'value') {
+                                if ( func === 'ref' && attrs[1] !== 'value' && (!data.hasOwnProperty(varName) || Vue.isRef(data[varName]))) {
                                     attrs.splice(1, 0, 'value')
                                     bindName = attrs.join('.')
                                 }
@@ -108,15 +108,15 @@
                 const COMPONENT_PREF = '__s_component'
                 for (let i in components) data[ COMPONENT_PREF + '_' + i ] = components[i]
 
-                // setup前置方法
+                Surface.deepParse(setupHandlers.before).map(f => f(data));
                 _setupBefore(data)
-                Surface.deepParse(setupHandlers).map(f => f(data));
+                Surface.deepParse(setupHandlers.after).map(f => f(data));
 
                 Surface[id] = data;
                 return ()=>{
                     const children = []
                     for (let i in data) {
-                        if (typeof i === 'string' && i.indexOf(COMPONENT_PREF) === 0) children.push(new Surface.render(Vue.isRef(data[i]) ? data[i].value : data[i]).render())
+                        if (typeof i === 'string' && i.indexOf(COMPONENT_PREF) === 0) children.push(new Surface.Render(Vue.isRef(data[i]) ? data[i].value : data[i]).render())
                     }
                     return Vue.h('div', {class: 'surface-container'}, children)
                 }

@@ -15,6 +15,7 @@ $table = (new Table())
         [
             'columns' => [
                 (new TableColumn())->props(['type' => 'selection']),
+                (new TableColumn())->props(['type' => 'expand'])->children((new Component(['el' => 'div', ':children' => '{name} : {address}'])),),
                 (new TableColumn())->props(['label' => '姓名', 'prop' => 'name'])->children((new \surface\components\Input())),
                 (new TableColumn())->props(['label' => '年龄', 'prop' => 'age'])->children(
                     [// 4种自定义绑定表格数据格式
@@ -28,6 +29,16 @@ $table = (new Table())
                      (new Component(['el' => 'span', 'props' => [':innerHTML' => "<b>{name}</b>"]])),
                     ]
                 ),
+                (new TableColumn())->props(
+                    [
+                        'label' => '状态',
+                        'prop' => 'status',
+                        'column-key' => 'status',
+                        'filters' => [
+                            ['text' => "启用", 'value' => 1],
+                            ['text' => "禁用", 'value' => 0],
+                        ],
+                    ]),
                 (new TableColumn())->props(['label' => '状态', 'prop' => 'status'])->children(
                     (new \surface\components\Switcher())->props(
                         [
@@ -65,7 +76,8 @@ $table = (new Table())
                             ->reference('删除'),
                         (new \surface\components\Button())->props(
                             [
-                                'type'     => 'primary',
+                                'type'     => 'success',
+                                'size' => 'small',
                                 // 通过:注入当前列到方法
                                 ':onClick' => \surface\Functions::create(
                                     "return function(){ console.log(row) }",

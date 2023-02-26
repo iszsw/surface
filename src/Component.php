@@ -8,10 +8,10 @@ namespace surface;
  *
  * @property array $children
  *
- * @method self el(string $el) 标签名
- * @method self children(string|int|array|self|Functions $el) Functions类型的渲染时会立即执行 返回值中可以继续返回component的json对象渲染子组件
- * @method self props(array $props) 属性
- * @method self slot(string $slot) 插槽
+ * @method $this el(string $el) 标签名
+ * @method $this children(string|int|array|self|Functions $el) Functions类型的渲染时会立即执行 返回值中可以继续返回component的json对象渲染子组件
+ * @method $this props(array|string $props, $value = '') 属性
+ * @method $this slot(string $slot) 插槽
  *
  * @package surface
  */
@@ -115,44 +115,34 @@ class Component implements \JsonSerializable
 
     /**
      * ref创建一个全局响应式对象
+     * 仅创建一个响应式对象  如果需要绑创建并绑定 ["ref:name" => "value"]
      *
      * @param string $name
      * @param mixed  $value
      *
      * @return $this
      */
-    public function ref(string $name,mixed $value):self
+    public function ref(string $name, mixed $value = null):self
     {
-        $this->listen(self::EVENT_VIEW, function (Surface $surface) use ($name, $value) {
-            switch (true){
-                case is_array($value):
-                    $value = json_encode($value, JSON_UNESCAPED_UNICODE);
-                    break;
-                case is_string($value):
-                case $value instanceof \Stringable:
-                    $value = "'{(string)$value}'";
-                    break;
-            }
-            $surface->setup(Functions::create("return data.{$name} = Vue.ref($value)", ['data']));
+        return $this->listen(self::EVENT_VIEW, function (Surface $surface) use ($name, $value) {
+            return $surface->ref($name, $value);
         });
-        return $this;
     }
 
     /**
      * reactive创建一个全局响应式对象
+     * 仅创建一个响应式对象  如果需要绑创建并绑定 ["reactive:name" => [1,2,3]]
      *
      * @param string $name
      * @param array  $value
      *
      * @return $this
      */
-    public function reactive(string $name, array $value):self
+    public function reactive(string $name, array $value = []):self
     {
-        $this->listen(self::EVENT_VIEW, function (Surface $surface) use ($name, $value) {
-            $value = json_encode($value, JSON_UNESCAPED_UNICODE);
-            $surface->setup(Functions::create("return data.{$name} = Vue.reactive($value)", ['data']));
+        return $this->listen(self::EVENT_VIEW, function (Surface $surface) use ($name, $value) {
+            return $surface->reactive($name, $value);
         });
-        return $this;
     }
 
     /**
@@ -169,8 +159,7 @@ class Component implements \JsonSerializable
      */
     public function vModel( mixed $value = null, string $attr = 'modelValue', string $name = ''): self
     {
-        $this->props(["v-model:$attr:".($name?:$attr) => $value]);
-        return $this;
+        return $this->props(["v-model:$attr:".($name?:$attr) => $value]);
     }
 
 }

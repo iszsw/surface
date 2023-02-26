@@ -25,7 +25,10 @@ class Surface
     /**
      * @var array<Functions>
      */
-    private array $setups = [];
+    private array $setups = [
+        'before' => [], // 数据初始化之前执行（初始化变量）
+        'after' => [], // 数据初始化之后执行（对象赋值等）
+    ];
 
     /**
      * @var array<Component>
@@ -146,12 +149,13 @@ class Surface
      * fn(data):void
      *
      * @param Functions $fn
+     * @param Bool $before  数据初始化之前执行（初始化变量）
      *
      * @return $this
      */
-    public function setup(Functions $fn): self
+    public function setup(Functions $fn, bool $before = false): self
     {
-        $this->setups[] = $fn;
+        $this->setups[$before ? 'before' : 'after'][] = $fn;
 
         return $this;
     }
@@ -381,10 +385,17 @@ class Surface
             $registers[] = $register->format();
         }
 
-        $setups = [];
-        foreach ($this->setups as $setup)
+        $setups = [
+            'before' => [],
+            'after' => [],
+        ];
+        foreach ($this->setups['before'] as $setup)
         {
-            $setups[] = $setup->format();
+            $setups['before'][] = $setup->format();
+        }
+        foreach ($this->setups['after'] as $setup)
+        {
+            $setups['after'][] = $setup->format();
         }
 
         $id = $this->id();
@@ -396,6 +407,46 @@ class Surface
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'display.php';
 
         return ob_get_clean();
+    }
+
+
+    /**
+     * ref创建一个全局响应式对象
+     * 仅创建一个响应式对象  如果需要绑创建并绑定 ["ref:name" => "value"]
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return $this
+     */
+    public function ref(string $name, mixed $value = null):self
+    {
+        switch (true){
+            case $value instanceof \stdClass:
+            case is_array($value):
+                $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+                break;
+            case is_string($value):
+            case $value instanceof \Stringable:
+                $value = "'".((string)$value)."'";
+                break;
+        }
+        return $this->setup(Functions::create("return data.{$name} = Vue.ref($value)", ['data']), true);
+    }
+
+    /**
+     * reactive创建一个全局响应式对象
+     * 仅创建一个响应式对象  如果需要绑创建并绑定 ["reactive:name" => [1,2,3]]
+     *
+     * @param string $name
+     * @param array  $value
+     *
+     * @return $this
+     */
+    public function reactive(string $name, array $value = []):self
+    {
+        $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+        return $this->setup(Functions::create("return data.{$name} = Vue.reactive($value)", ['data']), true);;
     }
 
     /**

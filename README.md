@@ -39,14 +39,25 @@ composer require iszsw/surface
 
 ## 组件
 
-> 所有内容都是基于组件实现，组件的唯一必须要素就是 `el:标签名字` 参数
+### 组件的构成
+```
+Component:class
+    -el:string 所有内容都是基于组件实现，组件的唯一必须要素就是 `el:标签名字` 参数
+    -props:Array 元素所有的事件 属性等
+    -children:
+        -array  集合
+        -string 直接显示字符串内容
+        -Component:class 子组件
+        -Functions:class  返回自定义的子组件渲染逻辑(js返回一个function)
+    -slot:string 子组件所在的插槽名
+```
+> 
 
-#### 页面中显示 `<h1>hello world</h1>`
+#### 生成一个页面 内容显示 `<h1>hello world</h1>`
 ```php
 use \surface\Component;
 
 echo (new Component('h1'))->children("Hello world")->view();
-
 ```
 
 
@@ -116,44 +127,11 @@ echo $surface->view();
 - Surface.deepParse(object obj)  json对象深度解析 `FN:(){...}`
 - Surface.component(object component)  surface下组件注册
 - Surface.cloneDeep(object obj)  深度克隆
-- Surface.render():返回render对象  封装的json解析器 将json转为component 调用render方法直接渲染
+- Surface.Render():返回render对象  封装的json解析器 将json转为component 调用render方法直接渲染
 
 ## 内置增强组件
 
 ### [table 表格组件 (组件名：s-table)](example/table.php)
-
 ### [form 表单组件 (组件名：s-form)](example/form.php)
-
-## 切换主题
-
-> surface默认Element-plus组件库如果需要使用其他组件库可以自由切换 iview、Ant-design-vue、naive-ui 等
-
-下面以 [naiveui](https://www.naiveui.com/zh-CN/) 为例
-
-```php
-$surface = new \surface\Surface();
-
-// 1、启用自定义主题并关闭默认Element-plus主题，如果需要同时使用可以忽略
-$surface->courseTheme();
-
-// 2、引入UMD版本资源文件
-$surface->addScript('<script src="https://unpkg.com/naive-ui"></script>');
-// $surface->addStyle('<style href=""></style>'); 引入样式如果有
-
-// 3、注册naive到app对象
-$surface->use('naive');
-
-// 下面就可以自由使用了
-$component = (new \surface\Component('n-button'))
-    ->props(
-        [
-            'color' => '#8a2be2',
-            'onClick' => \surface\Functions::create("console.log('lalala')"),
-        ]
-    )
-    ->children("啦啦啦");
-
-$surface->append($component);
-
-echo $surface->view();
-```
+![EhXkv.png](https://i.328888.xyz/2023/02/26/EhXkv.png)
+![EhgB3.png](https://i.328888.xyz/2023/02/26/EhgB3.png)
