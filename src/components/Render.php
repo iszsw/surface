@@ -11,7 +11,7 @@ class Render extends Component
     protected function init()
     {
         $this->listen(self::EVENT_VIEW, function (Surface $surface){
-            $this->triggerAllSub($this->config->get('props.options'), self::EVENT_VIEW, [$surface]);
+            $this->triggerAllSub($this->config->get('props.columns'), self::EVENT_VIEW, [$surface]);
         },false);
     }
 

@@ -18,27 +18,32 @@ $table = (new Table())
                 (new TableColumn())->props(['type' => 'expand'])->children((new Component(['el' => 'div', ':children' => '{name} : {address}'])),),
                 (new TableColumn())->props(['label' => '姓名', 'prop' => 'name'])->children((new \surface\components\Input())),
                 (new TableColumn())->props(['label' => '年龄', 'prop' => 'age'])->children(
-                    [// 4种自定义绑定表格数据格式
-                     // 绑定到children
-                     (new Component(['el' => 'div', ':children' => ''])),
-                     // 当前列字段age提交到{age}位置
-                     (new Component(['el' => 'div', ':children' => '年龄：{age}'])),
-                     // 自定义处理函数返回字符串显示
-                     (new Component(['el' => 'div', ':children' => \surface\Functions::create("return '虚岁：' + row[field]", ['field', 'row', 'prop'])])),
-                     // html渲染需要绑定到innerHTML
-                     (new Component(['el' => 'span', 'props' => [':innerHTML' => "<b>{name}</b>"]])),
+                    [
+                        // 5种自定义绑定表格数据格式
+                        // * 注意下方参数前面带了 ':' 的值才会解析 *
+                        // 绑定到children
+                        (new Component(['el' => 'div', ':children' => ''])),
+                        // 当前列字段age提交到{age}位置
+                        (new Component(['el' => 'div', ':children' => '年龄：{age}'])),
+                        // 自定义处理函数返回字符串显示
+                        (new Component(['el' => 'div', ':children' => \surface\Functions::create("return '虚岁：' + row[field]", ['field', 'row', 'prop'])])),
+                        // html渲染需要绑定到innerHTML
+                        (new Component(['el' => 'span', 'props' => [':innerHTML' => "<b>{name}</b>"]])),
+                        // 指定当前组件绑定的值为 name 字段的值
+                        (new Component(['el' => 'span', 'props' => [TableColumn::MODEL_PROP => "name"]])),
                     ]
                 ),
                 (new TableColumn())->props(
                     [
-                        'label' => '状态',
-                        'prop' => 'status',
+                        'label'      => '状态',
+                        'prop'       => 'status',
                         'column-key' => 'status',
-                        'filters' => [
+                        'filters'    => [
                             ['text' => "启用", 'value' => 1],
                             ['text' => "禁用", 'value' => 0],
                         ],
-                    ]),
+                    ]
+                ),
                 (new TableColumn())->props(['label' => '状态', 'prop' => 'status'])->children(
                     (new \surface\components\Switcher())->props(
                         [
@@ -77,7 +82,7 @@ $table = (new Table())
                         (new \surface\components\Button())->props(
                             [
                                 'type'     => 'success',
-                                'size' => 'small',
+                                'size'     => 'small',
                                 // 通过:注入当前列到方法
                                 ':onClick' => \surface\Functions::create(
                                     "return function(){ console.log(row) }",
@@ -108,8 +113,8 @@ $table = (new Table())
                     'hide-on-single-page' => true,
                     'default-page-size'   => 2,
                 ],
-                'loadAfter' => \surface\Functions::create($surface->data() . ".total.value = res.data.total", ['res'])
-            ]
+                'loadAfter'       => \surface\Functions::create($surface->data().".total.value = res.data.total", ['res']),
+            ],
         ]
     )->children(
         [
@@ -128,18 +133,18 @@ $table = (new Table())
                         (new \surface\components\Number(['label' => "number1", 'name' => 'number1']))->col(['span' => 6]),
                     ],
                     'options' => [
-                        "col" => ['span' => 6],
-                        "submit" => [
-                            'props' => [
-                                'type' => 'primary'
+                        "col"          => ['span' => 6],
+                        "submit"       => [
+                            'props'    => [
+                                'type' => 'primary',
                             ],
-                            'children' => "搜索"
+                            'children' => "搜索",
                         ],
-                        "row" => [
+                        "row"          => [
                             "gutter" => 10 // 偏移 10px
                         ],
                         'props'        => ['label-width' => 0],
-                        'submitBefore' => \surface\Functions::create("{$surface->data()}.tableApi.value.load(data, true);return false", ['data'])
+                        'submitBefore' => \surface\Functions::create("{$surface->data()}.tableApi.value.load(data, true);return false", ['data']),
                     ],
                 ]
             ),

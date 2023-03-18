@@ -131,15 +131,15 @@ JS, ["node", "resolve"]
                         'limit'    => 2,
                         'action'   => '/api/upload.php',// 上传地址 根据options中config格式 data=['url' => '地址']
                         'multiple' => true,
-                        //                    'manage'   => [ // 管理页面
-                        //                        'url'     => '/api/manage.php',
-                        //                        'method'  => 'get',
-                        //                        'headers' => ['X-HEADER' => 'header'],
-                        //                        'data'    => ["id" => 123],
-                        //                    ],
+                        'manage'   => [ // 管理页面
+                            'url'     => '/api/manage.php',
+                            'method'  => 'get',
+                            'headers' => ['X-HEADER' => 'header'],
+                            'data'    => ["id" => 123],
+                        ],
                     ]
                 ),
-                (new \surface\components\Arrays(['label' => "Arrays", 'name' => 'Arrays', 'value' => [["key" => "key", 'Secret' => 'Secret']]]))->props(
+                (new \surface\components\Arrays(['label' => "Arrays", 'name' => 'Arrays', 'value' => [["key" => "key", 'secret' => 'Secret']]]))->props(
                     [
                         'columns' => [
                             (new \surface\components\Input(['name' => "key", 'label' => "Key"])),
@@ -148,7 +148,7 @@ JS, ["node", "resolve"]
                         'max' => 3
                     ]
                 ),
-                (new \surface\components\Objects(['label' => "Objects", 'name' => 'Objects', 'value' => ["key" => "key", 'Secret' => 'Secret']]))->props(
+                (new \surface\components\Objects(['label' => "Objects", 'name' => 'Objects', 'value' => ["key" => "key", 'secret' => 'Secret']]))->props(
                     [
                         'columns' => [
                             (new \surface\components\Input(['name' => "key", 'label' => "Key"])),

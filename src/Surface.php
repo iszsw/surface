@@ -62,7 +62,7 @@ class Surface
     }
 
     /**
-     * 添加模板
+     * 添加组件
      *
      * @param  Component|Functions  $component
      * @param  bool  $unshift
@@ -72,7 +72,7 @@ class Surface
     public function append(Component|Functions $component, bool $unshift = false): self
     {
         if ($component instanceof Functions) {
-            $component = (new Component())->children([[Component::COMPONENT_INVOKE => Functions::create("return {el: 'h2', children: '自定义动态渲染'}")]]);
+            $component = (new Component())->children([[Component::COMPONENT_INVOKE => $component]]);
         }
 
         if ($unshift) {
@@ -125,7 +125,7 @@ class Surface
      *
      * @return $this
      */
-    public function courseTheme(): self
+    public function customTheme(): self
     {
         $this->importTheme = true;
         return $this;
@@ -408,7 +408,6 @@ class Surface
 
         return ob_get_clean();
     }
-
 
     /**
      * ref创建一个全局响应式对象

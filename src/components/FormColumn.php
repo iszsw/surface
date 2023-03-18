@@ -6,6 +6,7 @@ use surface\Component;
 
 /**
  *
+ * @method $this label(string $label)
  * @method $this name(string $name)
  * @method $this value(string|number|array $value)
  * @method $this col(array $col) 布局col

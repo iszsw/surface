@@ -1,7 +1,4 @@
 <?php
-/*
- * Author: zsw iszsw@qq.com
- */
 
 namespace surface\exception;
 

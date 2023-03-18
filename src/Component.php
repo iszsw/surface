@@ -41,10 +41,9 @@ class Component implements \JsonSerializable
     const COMPONENT_INVOKE = "__invoke";
 
     /**
-     * @param array|string $config
-     *
+     * @param array|string $config 组件名或者组件配置
      */
-    public function __construct( $config = [] )
+    public function __construct( array|string $config = [] )
     {
         $this->config = new Config();
 
@@ -147,7 +146,7 @@ class Component implements \JsonSerializable
 
     /**
      * 绑定v-model
-     * 绑定格式 v-model:modelValue:name
+     * 绑定格式 v-model:attr:name
      * 如果不存在 'name' 将自动注册ref响应式对象
      *
      * @param mixed  $value 如果全局存在变量不会该值无效
