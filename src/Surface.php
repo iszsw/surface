@@ -50,6 +50,13 @@ class Surface
     private bool $importTheme = false;
 
     /**
+     * 全局配置
+     *
+     * @var array
+     */
+    private array $config = [];
+
+    /**
      * 组件库依赖
      *
      * @var array
@@ -141,6 +148,29 @@ class Surface
     {
         $this->importDependent = true;
         return $this;
+    }
+
+
+    public function config(array $config): self
+    {
+        $this->config = array_merge($this->config, $config);
+        return $this;
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * 注册配置
+     *
+     * @return void
+     */
+    protected function registerConfig()
+    {
+        $config = $this->toJson($this->getConfig());
+        $this->register(Functions::create("Surface.config({$config})", ['app']));
     }
 
     /**
@@ -355,6 +385,8 @@ class Surface
         $this->use('Surface');
 
         $this->registerUse();
+
+        $this->registerConfig();
     }
 
     protected function beforeView() :void

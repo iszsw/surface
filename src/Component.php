@@ -9,7 +9,7 @@ namespace surface;
  * @property array $children
  *
  * @method $this el(string $el) 标签名
- * @method $this children(string|int|array|self|Functions $el) Functions类型的渲染时会立即执行 返回值中可以继续返回component的json对象渲染子组件
+ * @method $this children(string|int|array|Component|Functions $el) Functions类型的渲染时会立即执行 返回值中可以继续返回component的json对象渲染子组件
  * @method $this props(array|string $props, $value = '') 属性
  * @method $this slot(string $slot) 插槽
  *
@@ -21,6 +21,11 @@ class Component implements \JsonSerializable
     use EventTrait;
 
     use ViewTrait;
+
+    /**
+     * 全局事件注入字段名
+     */
+    const EVENT = '__event';
 
     /**
      * 渲染时触发

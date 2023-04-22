@@ -11,7 +11,7 @@ use surface\Component;
  * @method $this value(string|number|array $value)
  * @method $this col(array $col) 布局col
  * @method $this item(?array $item) 外层form-item组件 null关闭外层item
- * @method $this visible(array $visible) 动态显示隐藏 [['name' => 'number1', 'value' => 1]]
+ * @method $this visible(array $visible) 动态显示隐藏['name' => 'number1', 'value' => 1] 多个条件就写成二维数组
  *      1、{name: 'name', value: 'val'}
  *      2、{name: 'name', exec: 'val >= 0'}
  *      3、{exec: 'models.input === "hello"'}

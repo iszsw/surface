@@ -47,14 +47,11 @@ $table = (new Table())
                 (new TableColumn())->props(['label' => '状态', 'prop' => 'status'])->children(
                     (new \surface\components\Switcher())->props(
                         [
-                            // 预处理修改事件
-                            TableColumn::EVENT_CHANGE => [
-                                'before'  => \surface\Functions::create("console.log('before')", ['prop', 'data']),
-                                'after'   => \surface\Functions::create("console.log('after')", ['prop', 'data', 'res']),
-                                'request' => [
-                                    'url' => "/api/change.php",
-                                ],
-                            ],
+                            Component::EVENT => [
+                                "changeBefore" => \surface\Functions::create("console.log('before')", ['prop', 'data']),
+                                "changeAfter" => \surface\Functions::create("console.log('after')", ['prop', 'data', 'res']),
+                                "changeRequest" => \surface\Functions::create( "return {url: 'change', data: {id: prop.row.id}}", ['prop', 'data']),
+                            ]
                         ]
                     )
                 ),

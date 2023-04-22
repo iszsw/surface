@@ -25,24 +25,6 @@ class TableColumn extends Component
 {
 
     /**
-     * table中子组件特有属性
-     * 只支持绑定到第一级子组件
-     *
-     * 表格数据修改事件 onChange事件
-     *
-     * $component->props([\surface\components\TableColumn::EVENT_CHANGE => $event]);
-     *
-     * @param array $event
-     *      [
-     *      'before' => Functions::class | [prop, data], // 前置方法 返回 false 阻止提交
-     *      'after' => Functions::class  | [prop：字段, data：本列数据, res：异步修改成功响应], // 修改成功触发后置方法,请求异常时after返回true不提示错误信息
-     *      'request' => ["url" => 'api/update', 'data'=>["id"=>"{id}"]], // 提交时request配置
-     *      ]
-     */
-    const EVENT_CHANGE = '__ev_change';
-
-
-    /**
      * table列子组件中自定义一个字段名不使用当前列的字段名
      */
     const MODEL_PROP = '__model_prop';
