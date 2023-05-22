@@ -6,6 +6,15 @@ namespace surface;
 class Surface
 {
 
+    use EventTrait;
+
+
+    /**
+     * 渲染时触发
+     * 回调参数 (Surface $surface:当前容器)
+     */
+    const EVENT_VIEW = 'view';
+
     /**
      * 唯一标识
      *
@@ -193,60 +202,64 @@ class Surface
     /**
      * 添加Javascript
      *
-     * @param $script
-     * @param  bool  $unshift  顶部插入
+     * @param $script   $script|[$script => $sort]
+     * @param int $sort 资源文件插入的位置
+     * @param bool $cover 整个sort完全覆盖
      *
      * @return $this
      */
-    public function addScript($script, bool $unshift = false): self
+    public function addScript($script, int $sort = 8, bool $cover = false): self
     {
-        return $this->addResources($script, 'script', $unshift);
+        return $this->addResources($script, 'script', $sort, $cover);
     }
 
     /**
      * 添加样式
      *
-     * @param $style
-     * @param  bool  $unshift  顶部插入
+     * @param $style    $style|[$style => $sort]
+     * @param int $sort 资源文件插入的位置
+     * @param bool $cover 整个sort完全覆盖
      *
      * @return $this
      */
-    public function addStyle($style, bool $unshift = false): self
+    public function addStyle($style, int $sort = 8, bool $cover = false): self
     {
-        return $this->addResources($style, 'style', $unshift);
+        return $this->addResources($style, 'style', $sort, $cover);
     }
 
-    protected function addResources($resource,string $type = 'script', bool $unshift = false): self
+    protected function addResources($resource, string $type = 'script', int $sort = 8, bool $cover = false): self
     {
         if (is_array($resource))
         {
-            if ($unshift) $resource = array_reverse($resource);
-
-            foreach ($resource as $v)
+            foreach ($resource as $res => $so)
             {
-                $this->addResources($v, $type, $unshift);
+                $this->addResources(is_numeric($res) ? $so : $res, $type, is_numeric($so) ? $so : $sort, $cover);
             }
         } else
         {
             if ($type === 'script')
             {
-                if ( ! in_array($resource, $this->script))
-                {
-                    if ($unshift) {
-                        array_unshift($this->script, $resource);
-                    }else{
-                        $this->script[] = $resource;
+                foreach ($this->script as $so => $script) {
+                    if (false !== $index = array_search($resource, $script)) {
+                        unset($this->script[$so][$index]);
                     }
+                }
+                if ($cover) {
+                    $this->script[$sort] = [$resource];
+                }else{
+                    $this->script[$sort][] = $resource;
                 }
             } else
             {
-                if ( ! in_array($resource, $this->style))
-                {
-                    if ($unshift) {
-                        array_unshift($this->style, $resource);
-                    }else{
-                        $this->style[] = $resource;
+                foreach ($this->style as $so => $style) {
+                    if (false !== $index = array_search($resource, $style)) {
+                        unset($this->style[$so][$index]);
                     }
+                }
+                if ($cover) {
+                    $this->style[$sort] = [$resource];
+                }else{
+                    $this->style[$sort][] = $resource;
                 }
             }
         }
@@ -303,7 +316,8 @@ class Surface
      */
     public function getStyle(): array
     {
-        return $this->style;
+        ksort($this->style);
+        return array_merge(...$this->style);
     }
 
     /**
@@ -313,7 +327,8 @@ class Surface
      */
     public function getScript(): array
     {
-        return $this->script;
+        ksort($this->script);
+        return array_merge(...$this->script);
     }
 
     /**
@@ -335,21 +350,11 @@ class Surface
     private function importTheme()
     {
         if (!$this->importTheme) {
-            $this->addScript(
-                [
-                    '<script src="//unpkg.com/element-plus"></script>',
-                    '<script src="//unpkg.com/element-plus/dist/locale/zh-cn"></script>',
-                ]
-            );
-
             $this->addStyle(
                 [
-                    '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">',
-                ], true
+                    '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">' => 0,
+                ]
             );
-
-            $this->use("ElementPlus", '{locale: ElementPlusLocaleZhCn, size: "default"}');
-
             $this->importTheme = true;
         }
     }
@@ -361,10 +366,16 @@ class Surface
         if (!$this->importDependent) {
             $this->addScript(
                 [
-                    '<script src="//unpkg.com/vue@3"></script>',
-                    '<script src="//unpkg.com/surface-plus"></script>',
-                ], true
+                    '<script src="//unpkg.com/vue@3"></script>' => 0,
+                    '<script src="//unpkg.com/element-plus"></script>' => 1,
+                    '<script src="//unpkg.com/@element-plus/icons-vue"></script>' => 2,
+                    '<script src="//unpkg.com/element-plus/dist/locale/zh-cn"></script>' => 3,
+                ]
             );
+
+            $this->addScript('<script src="//unpkg.com/surface-plus"></script>', 16);
+
+            $this->use("ElementPlus", '{locale: ElementPlusLocaleZhCn, size: "default"}');
 
             $this->importDependent = true;
         }
@@ -394,6 +405,8 @@ class Surface
         $this->importDependent();
 
         $this->importTheme();
+
+        $this->trigger(self::EVENT_VIEW, [$this]);
     }
 
     /**
@@ -421,10 +434,12 @@ class Surface
             'before' => [],
             'after' => [],
         ];
+
         foreach ($this->setups['before'] as $setup)
         {
             $setups['before'][] = $setup->format();
         }
+
         foreach ($this->setups['after'] as $setup)
         {
             $setups['after'][] = $setup->format();
@@ -488,6 +503,13 @@ class Surface
     public function view(): string
     {
         $this->beforeView();
+
+        $content = $this->display();
+
+        // 只能在display之后调用
+        $styles = implode("\r\n", $this->getStyle());
+
+        $scripts = implode("\r\n", $this->getScript());
 
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'view.php';
