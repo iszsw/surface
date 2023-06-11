@@ -13,7 +13,16 @@ class Functions implements IFormat
     private string $fn;
     private ?array $params;
 
-    const PREFIX = 'FN:';
+    /**
+     * 方法
+     */
+    const FUNCTION = 'FN:';
+
+    /**
+     * 原生代码
+     */
+    const RAW = 'RAW:';
+
 
     /**
      * Func constructor.
@@ -22,12 +31,12 @@ class Functions implements IFormat
      * @param array  $params 注入的参数
      *
      */
-    public function __construct(string $fn, array $params = [])
+    public function __construct(string $fn, array $params = [], private string $type = self::FUNCTION)
     {
         $fn = preg_replace("/<\/?script.*?>/", "", $fn);
         $fn = trim($fn, " \r\n");
         $pref = 'function(';
-        if (strpos($fn, $pref) === 0)
+        if (str_starts_with($fn, $pref))
         {
             $reCount = 1;
             $fn = str_replace($pref, '(', $fn, $reCount);
@@ -49,7 +58,6 @@ class Functions implements IFormat
      * @param array  $params 自定义回调参数名称
      *
      * @return static
-     * Author: zsw zswemail@qq.com
      */
     public static function create(string $fn, array $params = []): self
     {
@@ -57,13 +65,24 @@ class Functions implements IFormat
     }
 
     /**
+     * js原生代码
+     *
+     * @param string $code
+     * @return static
+     */
+    public static function raw(string $code): self
+    {
+        return new static($code, type: self::RAW);
+    }
+
+    /**
      * 格式化 返回js格式方法
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
-        return self::PREFIX.($this->params ? "(".implode(',', $this->params)."){{$this->fn}}" : $this->fn);
+        return $this->type.($this->params ? "(".implode(',', $this->params)."){{$this->fn}}" : $this->fn);
     }
 
 }

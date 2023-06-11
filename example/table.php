@@ -107,7 +107,6 @@ $table = (new Table())
                 ],
                 'paginationProps' => [
                     'background'          => true,
-                    'hide-on-single-page' => true,
                     'default-page-size'   => 2,
                 ],
                 'loadAfter'       => \surface\Functions::create($surface->data().".total.value = res.data.total", ['res']),

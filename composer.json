@@ -1,6 +1,6 @@
 {
     "name": "iszsw/surface",
-    "description": "CURD 页面构建器",
+    "description": "页面构建器",
     "license": "MIT",
     "keywords": ["curd", "Low code", "surface", "php"],
     "homepage": "https://zsw.ink/",

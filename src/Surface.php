@@ -204,7 +204,7 @@ class Surface
      *
      * @param $script   $script|[$script => $sort]
      * @param int $sort 资源文件插入的位置
-     * @param bool $cover 整个sort完全覆盖
+     * @param bool $cover 覆盖指定排序的sort
      *
      * @return $this
      */
@@ -352,7 +352,7 @@ class Surface
         if (!$this->importTheme) {
             $this->addStyle(
                 [
-                    '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">' => 0,
+                    '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">' => 1,
                 ]
             );
             $this->importTheme = true;

@@ -58,7 +58,7 @@ class Curd
                                         // 通过:注入当前列到方法
                                         ':onClick' => Functions::create("
                                 return function(){
-                                   {$this->surface->data()}.formData.value = row // 设置form数据
+                                   {$this->surface->data()}.formData.value = Surface.cloneDeep(row) // 设置form数据
                                    {$this->surface->data()}.dialogRef.value = true // 显示form弹窗
                                 }
                                 ",['filed', 'row']),
