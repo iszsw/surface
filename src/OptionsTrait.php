@@ -12,7 +12,7 @@ trait OptionsTrait
 
     public function options(array $options): self
     {
-        if (!isset($options[0])) {
+        if (! is_array(reset($options))) {
             $content = [];
             foreach ($options as $value => $label){
                 $content[] = [

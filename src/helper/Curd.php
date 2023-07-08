@@ -33,6 +33,13 @@ trait Curd
     protected string $formRef = 'formRef';
 
     /**
+     * 搜索form绑定的全局双向对象名称
+     *
+     * @var string
+     */
+    protected string $searchRef = 'searchRef';
+
+    /**
      * form绑定的全局双向对象名称
      *
      * @var string
@@ -184,6 +191,26 @@ trait Curd
     }
 
     /**
+     * 表单
+     *
+     * @return string
+     */
+    protected function getFormApi(): string
+    {
+        return "{$this->getSurface()->data()}.{$this->formRef}.value";
+    }
+
+    /**
+     * 搜索
+     *
+     * @return string
+     */
+    protected function getSearchApi(): string
+    {
+        return "{$this->getSurface()->data()}.{$this->searchRef}.value";
+    }
+
+    /**
      * 表单数据
      *
      * @return string
@@ -237,6 +264,7 @@ trait Curd
         }
 
         return (new Form())
+            ->vModel(name: $this->searchRef)
             ->props(
                 [
                     'columns' => $searchColumns,
@@ -275,16 +303,21 @@ trait Curd
     /**
      * 构建表单
      *
-     * @return Component
+     * @return Component|null
      */
-    protected function buildForm(): Component
+    protected function buildForm(): ?Component
     {
+
+        if (count($formColumns = $this->formColumns()) < 1) {
+            return null;
+        }
+
         $form = (new Form())
             ->vModel(name: $this->formRef)
             ->vModel([], 'data', $this->formDataRef)
             ->props(
                 [
-                    'columns' => $this->formColumns(),
+                    'columns' => $formColumns,
                     'options' => array_merge($this->formOptions(), [
                         'submitAfter' => Functions::create(
                             "
@@ -307,7 +340,7 @@ ElementPlus.ElMessage({type: 'success',message: res.msg || '成功'});
     {
         $this->getSurface()->append($this->buildTable());
 
-        $this->getSurface()->append($this->buildForm());
+        if ($form = $this->buildForm()) $this->getSurface()->append($this->buildForm());
     }
 
     /**
@@ -359,7 +392,7 @@ ElementPlus.ElMessage({type: 'success',message: res.msg || '成功'});
     {
         return (new Popconfirm())
             ->props(['title' => $confirmMsg])
-            ->onConfirm(is_array($url) ? $url : ["url" => $url, 'method' => 'DELETE'], $this->getTableApi().'.load()')
+            ->onConfirm(is_array($url) ? $url : ["url" => $url, 'method' => 'DELETE'], Functions::create($this->getTableApi().'.load()'))
             ->reference($btn, "danger");
     }
 

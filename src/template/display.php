@@ -101,6 +101,7 @@
         const app = Vue.createApp({
             setup(){
                 const data = {}
+
                 // 解析组件
                 const components = Surface.deepParse(componentData)
 

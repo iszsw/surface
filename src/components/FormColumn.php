@@ -24,7 +24,8 @@ use surface\Component;
 class FormColumn extends Component
 {
 
-    protected function init(){
+    protected function init(): void
+    {
         $this->config->set('col', []);
     }
 
@@ -39,7 +40,7 @@ class FormColumn extends Component
      */
     public function rules(array $rules): self
     {
-        if (!isset($rules[0])) {
+        if (! is_array(reset($rules))) {
             $rules = [$rules];
         }
         $this->config->set('item', ['rules' => $rules]);

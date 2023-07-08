@@ -7,7 +7,7 @@ namespace surface;
  *
  * @package surface
  */
-class Functions implements IFormat
+class Functions implements IFormat, \Stringable
 {
 
     private string $fn;
@@ -83,6 +83,11 @@ class Functions implements IFormat
     public function format(): string
     {
         return $this->type.($this->params ? "(".implode(',', $this->params)."){{$this->fn}}" : $this->fn);
+    }
+
+    public function __toString(): string
+    {
+        return $this->format();
     }
 
 }

@@ -6,10 +6,9 @@ namespace surface;
 trait EventTrait
 {
 
-    /**
-     * @var array
-     */
     protected array $listener = [];
+
+    protected static array $globalListener = [];
 
     /**
      * 注册事件监听
@@ -41,6 +40,35 @@ trait EventTrait
     }
 
     /**
+     * 注册全局事件
+     *
+     * @param string $event   事件名称
+     * @param mixed  $handler 监听操作（或者类名）
+     * @param bool   $first   是否优先执行
+     * @return void
+     */
+    public static function globalListen(string $event, $handler, bool $first = false): void
+    {
+        if (!isset(self::$globalListener[$event])) {
+            self::$globalListener[$event] = [];
+        }
+
+        $listener = [
+            'handler' => $handler,
+            'once'    => false,
+        ];
+
+        if ($first && isset(self::$globalListener[$event][static::class]))
+        {
+            array_unshift(self::$globalListener[$event][static::class], $listener);
+        } else
+        {
+            self::$globalListener[$event][static::class][] = $listener;
+        }
+
+    }
+
+    /**
      * 是否存在事件监听
      *
      * @access public
@@ -51,9 +79,8 @@ trait EventTrait
      */
     public function hasListener(string $event): bool
     {
-        return isset($this->listener[$event]);
+        return isset($this->listener[$event]) || isset(self::$globalListener[$event]);
     }
-
 
     /**
      * 触发事件
@@ -61,24 +88,37 @@ trait EventTrait
      * @access public
      *
      * @param string $event  事件名称
-     * @param mixed  $params 传入参数
+     * @param array  $params 传入参数
      */
-    public function trigger(string $event, $params = null): void
+    public function trigger(string $event, array $params = []): void
     {
+        if (!($params[0] ?? null) instanceof static) {
+            $params[0] = $this;
+        }
+
         if ($this->hasListener($event)) {
-            foreach ($this->listener[$event] as $k => $listener)
-            {
-                $handler = $listener['handler'];
-
-                $once = $listener['once'];
-
-                if ($once)
-                {
-                    unset($this->listener[$event][$k]);
+            if (isset(self::$globalListener[$event])) {
+                foreach (self::$globalListener[$event] as $static => &$events) {
+                    if ($this instanceof $static) {
+                        $this->triggerEvent($events, $params);
+                    }
                 }
-
-                $this->dispatch($handler, $params);
+                unset($events);
             }
+
+            isset($this->listener[$event]) && ($events = &$this->listener[$event]) && $this->triggerEvent($events, $params);
+            unset($events);
+        }
+    }
+
+    private function triggerEvent(array &$events, array $params = []): void
+    {
+        foreach ($events as $k => $listener)
+        {
+            $handler = $listener['handler'];
+            $once = $listener['once'];
+            if ($once) unset($events[$k]);
+            $this->dispatch($handler, $params);
         }
     }
 
@@ -90,8 +130,7 @@ trait EventTrait
         } elseif (class_exists($server))
         {
             $class = (new \ReflectionClass($server))->newInstanceArgs($params);
-
-            return method_exists($class, 'run') ? $class->run() : $class;
+            return method_exists($class, 'handle') ? $class->run() : $class;
         }
 
         return $server;

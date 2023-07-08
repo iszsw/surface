@@ -17,10 +17,10 @@ use surface\Surface;
 class Form extends Component
 {
 
-    protected function init()
+    protected function init(): void
     {
-        $this->listen(self::EVENT_VIEW, function (Surface $surface){
-            $this->triggerAllSub($this->config->get('props.columns'), self::EVENT_VIEW, [$surface]);
+        $this->listen(self::EVENT_VIEW, function (){
+            $this->triggerAllSub($this->config->get('props.columns'), self::EVENT_VIEW, func_get_args());
         },false);
     }
 

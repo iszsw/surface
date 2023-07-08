@@ -3,6 +3,7 @@
 namespace surface\components;
 
 use surface\Component;
+use surface\Functions;
 use surface\Surface;
 
 class Popconfirm extends Component
@@ -30,29 +31,29 @@ class Popconfirm extends Component
 
     /**
      * @param $request
-     * @param  string  $then 异步请求成功后执行的JS语句
+     * @param Functions|null $then 异步请求成功后执行的JS语句
      *
      * @return $this
      */
-    public function onConfirm( $request, string $then = '' ): self
+    public function onConfirm( $request, ?Functions $then = null ): self
     {
         return $this->makeHandler('onConfirm', $request,  $then);
     }
 
     /**
      * @param $request
-     * @param  string  $then 异步请求成功后执行的JS语句
+     * @param Functions|null $then 异步请求成功后执行的JS语句
      *
      * @return $this
      */
-    public function onCancel( $request, string $then = '' ): self
+    public function onCancel( $request, ?Functions $then = null ): self
     {
         return $this->makeHandler('onCancel', $request,  $then);
     }
 
-    private function makeHandler(string $name, $request, string $then = ''): self
+    private function makeHandler(string $name, $request, ?Functions $then = null): self
     {
-        $request instanceof \Closure || $request = function (Surface $surface) use ($name, $request, $then) {
+        $request instanceof \Closure || $request = function () use ($name, $request, $then) {
             $request = json_encode($request, JSON_UNESCAPED_UNICODE);
             // 支持参数替换 1.url中{field}替换为字段 2.无下标的参数 ['id']
             $handler = \surface\Functions::create(<<<JS
@@ -75,12 +76,13 @@ if (request.data) {
     request.data = data
 }
 
+const then = `{$then}` ? Surface.parseFn(`{$then}`) : null
 return function(){
     Surface.request(request).then(res => {
         if (res.code > 0) {
             ElementPlus.ElMessage({message: e.msg || "操作失败", type: 'error'})
         }else{
-            {$then}
+            then && then(res)
         }
     }).catch(e => {
         ElementPlus.ElMessage({message: e.msg || "操作失败", type: 'error'})

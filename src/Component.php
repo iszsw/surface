@@ -52,8 +52,8 @@ class Component implements \JsonSerializable
     {
         $this->config = new Config();
 
-        $this->listen(self::EVENT_VIEW, function (Surface $surface){
-            $this->triggerAllSub($this->children, self::EVENT_VIEW, [$surface]);
+        $this->listen(self::EVENT_VIEW, function (){
+            $this->triggerAllSub($this->children, self::EVENT_VIEW, func_get_args());
         },false);
 
         if (method_exists($this, 'init')) $this->init();
@@ -104,9 +104,9 @@ class Component implements \JsonSerializable
      *
      * @param        $children
      * @param string $event
-     * @param null   $params
+     * @param array $params
      */
-    protected function triggerAllSub($children, string $event, $params = null): void
+    protected function triggerAllSub($children, string $event, array $params = []): void
     {
         if (is_array($children)) {
             foreach ($children as $child){

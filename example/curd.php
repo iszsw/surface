@@ -47,8 +47,8 @@ class Curd
                             [
                                 (new Popconfirm())
                                     ->props(['title' => "确认删除？"])
-                                    ->onConfirm(["url" => "/api/change.php", 'method' => 'post', 'data' => ["status" => "OK", "id"]], "{$this->surface->data()}.tableApi.value.load()")
-                                    ->onCancel(["url" => "/api/change.php", 'method' => 'post', 'data' => ["status" => "NO", "id"]], "{$this->surface->data()}.tableApi.value.load()")
+                                    ->onConfirm(["url" => "/api/change.php", 'method' => 'post', 'data' => ["status" => "OK", "id"]],  Functions::create("{$this->surface->data()}.tableApi.value.load()"))
+                                    ->onCancel(["url" => "/api/change.php", 'method' => 'post', 'data' => ["status" => "NO", "id"]], Functions::create("{$this->surface->data()}.tableApi.value.load()"))
                                     ->reference('删除'),
 
                                 (new Button())->props(

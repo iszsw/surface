@@ -115,7 +115,6 @@ class Surface
             'name' => $name,
             'config' => $config
         ];
-
         return $this;
     }
 
@@ -347,7 +346,7 @@ class Surface
      *
      * @return void
      */
-    private function importTheme()
+    private function importTheme(): void
     {
         if (!$this->importTheme) {
             $this->addStyle(
@@ -362,7 +361,8 @@ class Surface
     /**
      * 核心依赖
      */
-    private function importDependent(){
+    private function importDependent(): void
+    {
         if (!$this->importDependent) {
             $this->addScript(
                 [
@@ -381,7 +381,8 @@ class Surface
         }
     }
 
-    protected function registerUse(){
+    protected function registerUse(): void
+    {
         $useStr = "";
         foreach ($this->uses as $use) {
             $name = $use['name'];
@@ -419,7 +420,7 @@ class Surface
     {
         foreach ($this->components as $component)
         {
-            $component->trigger(Component::EVENT_VIEW, [$this]);
+            $component->trigger(Component::EVENT_VIEW, [$component, $this]);
         }
 
         $this->beforeDisplay();
