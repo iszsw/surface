@@ -2,8 +2,6 @@
 
 namespace surface\components;
 
-use surface\Surface;
-
 /**
  * 数组组件
  *
@@ -17,7 +15,7 @@ use surface\Surface;
 class Arrays extends FormColumn
 {
 
-    protected function init()
+    protected function init(): void
     {
         parent::init();
         $this->listen(self::EVENT_VIEW, function (){

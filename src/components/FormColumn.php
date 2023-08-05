@@ -8,9 +8,9 @@ use surface\Component;
  *
  * @method $this label(string $label)
  * @method $this name(string $name)
- * @method $this value(string|number|array $value)
- * @method $this col(array $col) 布局col
- * @method $this item(?array $item) 外层form-item组件 null关闭外层item
+ * @method $this value(string|number|array|\stdClass $value)
+ * @method $this col(array|\stdClass $col) 布局col
+ * @method $this item(?array|\stdClass $item) 外层form-item组件 null关闭外层item
  * @method $this visible(array $visible) 动态显示隐藏['name' => 'number1', 'value' => 1] 多个条件就写成二维数组
  *      1、{name: 'name', value: 'val'}
  *      2、{name: 'name', exec: 'val >= 0'}

@@ -35,11 +35,9 @@ class Functions implements IFormat, \Stringable
     {
         $fn = preg_replace("/<\/?script.*?>/", "", $fn);
         $fn = trim($fn, " \r\n");
-        $pref = 'function(';
-        if (str_starts_with($fn, $pref))
-        {
-            $reCount = 1;
-            $fn = str_replace($pref, '(', $fn, $reCount);
+        $pattern = "/^\s*function([\w\s]*)\(/";
+        if (preg_match($pattern, $fn) > 0) {
+            $fn = preg_replace($pattern, '(', $fn);
             $this->params = null;
         } else
         {
@@ -51,8 +49,8 @@ class Functions implements IFormat, \Stringable
     /**
      * 创建 Function
      *
-     * 1、('function(app){app.component()}')
-     * 2、('app.component(...)',[app])
+     * 1、create('function(app){app.component()}')
+     * 2、create('app.component(...)',[app])
      *
      * @param string $fn
      * @param array  $params 自定义回调参数名称

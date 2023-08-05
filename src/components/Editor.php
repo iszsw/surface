@@ -21,7 +21,7 @@ class Editor extends FormColumn
 
     private bool $customLoad = false;
 
-    protected function init()
+    protected function init(): void
     {
         parent::init();
 

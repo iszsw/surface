@@ -13,9 +13,11 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
 {
     protected array $config = [];
 
-    public function __construct(?array $default = [])
+    public function __construct(array $default = [])
     {
-        $this->config = $default ?? [];
+        if (count($default)) {
+            $this->set($default);
+        }
     }
 
     public function __get($name)
@@ -106,7 +108,7 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
      * @access public
      * @param  string|array $name 配置名
      * @param  array|string  $val 配置参数
-     * @return array
+     * @return $this
      */
     public function set($name, $val = null)
     {
@@ -132,7 +134,7 @@ class Config implements \ArrayAccess, \JsonSerializable , \IteratorAggregate
             $this->config = $this->recursive($this->config, $config);
         }
 
-        return $this->config;
+        return $this;
     }
 
     /**

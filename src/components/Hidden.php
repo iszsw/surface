@@ -7,7 +7,7 @@ class Hidden extends Input
 
     protected string $name = 'input';
 
-    protected function init()
+    protected function init(): void
     {
         parent::init();
         $this->config->set(['item' => null, 'props' => ['type' => 'hidden']]);

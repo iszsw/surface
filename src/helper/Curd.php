@@ -53,7 +53,7 @@ trait Curd
      */
     protected string $dialogRef = 'dialogRef';
 
-    protected Surface $surface;
+    private Surface $surface;
 
 
     public function getSurface(): Surface
@@ -107,7 +107,7 @@ trait Curd
     {
         return [
             'request' => ['url' => ""],
-            'paginationProps' => ['page-size' => 1]
+            'paginationProps' => []
         ];
     }
 
@@ -340,7 +340,7 @@ ElementPlus.ElMessage({type: 'success',message: res.msg || '成功'});
     {
         $this->getSurface()->append($this->buildTable());
 
-        if ($form = $this->buildForm()) $this->getSurface()->append($this->buildForm());
+        if ($form = $this->buildForm()) $this->getSurface()->append($form);
     }
 
     /**

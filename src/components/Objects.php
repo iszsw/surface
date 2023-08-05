@@ -16,7 +16,7 @@ use surface\Surface;
 class Objects extends FormColumn
 {
 
-    protected function init()
+    protected function init(): void
     {
         parent::init();
         $this->listen(self::EVENT_VIEW, function (){
