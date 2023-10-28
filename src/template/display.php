@@ -1,8 +1,11 @@
+<?= $styles ?>
+
 <div id="<?=$id?>"></div>
 
+<?= $scripts ?>
 <script>
-    (function (){
-        const Surface = window.Surface || Surface
+    ;(function (){
+        const Surface = window.Surface || Surface;
 
         let id = '<?=$id?>',
             componentData = <?=$components?>,

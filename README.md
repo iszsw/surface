@@ -27,6 +27,10 @@ github地址：[https://github.com/iszsw/surface](https://github.com/iszsw/surfa
 
 [https://doc.zsw.ink](https://doc.zsw.ink)
 
+## 生态
+
+[CURD代码生成工具.](https://gitee.com/iszsw/curd)
+
 
 ## 安装
 

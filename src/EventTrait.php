@@ -6,8 +6,16 @@ namespace surface;
 trait EventTrait
 {
 
+    /**
+     * 实例事件
+     * @var array
+     */
     protected array $listener = [];
 
+    /**
+     * 全局事件 优先实例事件触发
+     * @var array
+     */
     protected static array $globalListener = [];
 
     /**
@@ -130,7 +138,7 @@ trait EventTrait
         } elseif (class_exists($server))
         {
             $class = (new \ReflectionClass($server))->newInstanceArgs($params);
-            return method_exists($class, 'handle') ? $class->run() : $class;
+            return method_exists($class, 'handle') ? $class->handle() : $class;
         }
 
         return $server;

@@ -3,6 +3,8 @@
 namespace surface;
 
 
+use JsonSerializable;
+
 class Surface
 {
 
@@ -111,7 +113,7 @@ class Surface
      */
     public function use(string $name, ?string $config = null): self
     {
-        $this->uses[] = [
+        $this->uses[$name] = [
             'name' => $name,
             'config' => $config
         ];
@@ -168,17 +170,6 @@ class Surface
     public function getConfig(): array
     {
         return $this->config;
-    }
-
-    /**
-     * 注册配置
-     *
-     * @return void
-     */
-    protected function registerConfig()
-    {
-        $config = $this->toJson($this->getConfig());
-        $this->register(Functions::create("Surface.config({$config})", ['app']));
     }
 
     /**
@@ -331,11 +322,11 @@ class Surface
     }
 
     /**
-     * @param  array|\JsonSerializable  $array
+     * @param array|JsonSerializable $array
      *
      * @return string
      */
-    private function toJson( $array ):string
+    private function toJson(array|JsonSerializable $array ):string
     {
         return json_encode($array, JSON_UNESCAPED_UNICODE);
     }
@@ -344,11 +335,12 @@ class Surface
     /**
      * 导入主题 默认使用 Element-plus
      *
+     * @param bool $view
      * @return void
      */
-    private function importTheme(): void
+    private function importTheme(bool $view = true): void
     {
-        if (!$this->importTheme) {
+        if ($view && !$this->importTheme) {
             $this->addStyle(
                 [
                     '<link href="//unpkg.com/element-plus/dist/index.css" rel="stylesheet">' => 1,
@@ -361,9 +353,10 @@ class Surface
     /**
      * 核心依赖
      */
-    private function importDependent(): void
+    private function importDependent(bool $view = true): void
     {
-        if (!$this->importDependent) {
+        // view 渲染时才载入静态资源
+        if ($view && !$this->importDependent) {
             $this->addScript(
                 [
                     '<script src="//unpkg.com/vue@3"></script>' => 0,
@@ -375,10 +368,10 @@ class Surface
 
             $this->addScript('<script src="//unpkg.com/surface-plus"></script>', 16);
 
-            $this->use("ElementPlus", '{locale: ElementPlusLocaleZhCn, size: "default"}');
-
             $this->importDependent = true;
         }
+
+        $this->use("ElementPlus", '{locale: ElementPlusLocaleZhCn, size: "default"}');
     }
 
     protected function registerUse(): void
@@ -386,7 +379,7 @@ class Surface
         $useStr = "";
         foreach ($this->uses as $use) {
             $name = $use['name'];
-            $config = $use['config'] ?? "{}";
+            $config = $use['config'] ?? "undefined";
             $useStr .= "app.use($name, $config);";
         }
         $this->register(Functions::create($useStr, ['app']));
@@ -394,30 +387,35 @@ class Surface
 
     protected function beforeDisplay() :void
     {
-        $this->use('Surface');
+        $config = $this->toJson($this->getConfig());
+
+        $this->use('Surface', $config);
 
         $this->registerUse();
-
-        $this->registerConfig();
     }
 
-    protected function beforeView() :void
+    protected function beforeView(bool $view = true) :void
     {
-        $this->importDependent();
+        $this->importDependent($view);
 
-        $this->importTheme();
+        $this->importTheme($view);
 
         $this->trigger(self::EVENT_VIEW, [$this]);
     }
 
     /**
+     *
      * 生成代码
-     * 不包括样式和依赖的js
+     * 不包括公共样式和依赖的js
+     *
+     * @param  bool  $view  来自view
      *
      * @return string
      */
-    public function display(): string
+    public function display(bool $view = false): string
     {
+        $this->beforeView($view);
+
         foreach ($this->components as $component)
         {
             $component->trigger(Component::EVENT_VIEW, [$component, $this]);
@@ -450,6 +448,10 @@ class Surface
         $setups = $this->toJson($setups);
         $registers = $this->toJson($registers);
         $components = $this->toJson($this->components);
+
+        $styles = implode("\r\n", $this->getStyle());
+
+        $scripts = implode("\r\n", $this->getScript());
 
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'display.php';
@@ -503,14 +505,7 @@ class Surface
      */
     public function view(): string
     {
-        $this->beforeView();
-
-        $content = $this->display();
-
-        // 只能在display之后调用
-        $styles = implode("\r\n", $this->getStyle());
-
-        $scripts = implode("\r\n", $this->getScript());
+        $content = $this->display(true);
 
         ob_start();
         include dirname(__FILE__).DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'view.php';
